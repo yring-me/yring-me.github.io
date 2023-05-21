@@ -1,0 +1,15 @@
+---
+cover: true
+robots: noindex,nofollow
+sitemap: false
+seo_title: 404 Not Found
+bottom_meta: false
+sidebar: []
+twikoo:
+  path: /404.html
+  placeholder: 它会在哪呢
+---
+
+{% p logo center huge, 404 %}
+{% p center bold, 荒芜 不是么 %}
+{% p center small, 也许 它在另一个地方 %}
