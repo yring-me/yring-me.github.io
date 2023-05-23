@@ -16,22 +16,22 @@
   <meta name="author" content="yring">
   <meta name="keywords" content="">
   
-    <meta name="description" content="本文是对angr文档的搬运，选了我认为比较重要或者有用的部分，原文档链接在此angr">
+    <meta name="description" content="本文是对angr文档的搬运，选了我认为比较重要或者有用的部分，原文档链接在此">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Angr-Core Concept">
+<meta property="og:title" content="CoreConcept">
 <meta property="og:url" content="http://example.com/2023/05/23/angr/index.html">
 <meta property="og:site_name" content="yring">
-<meta property="og:description" content="本文是对angr文档的搬运，选了我认为比较重要或者有用的部分，原文档链接在此angr">
+<meta property="og:description" content="本文是对angr文档的搬运，选了我认为比较重要或者有用的部分，原文档链接在此">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-05-23T12:39:44.000Z">
-<meta property="article:modified_time" content="2023-05-23T12:45:13.630Z">
+<meta property="article:modified_time" content="2023-05-23T12:52:37.384Z">
 <meta property="article:author" content="yring">
 <meta property="article:tag" content="reverse">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>Angr-Core Concept - yring</title>
+  <title>CoreConcept - yring</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -214,7 +214,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Angr-Core Concept"></span>
+            <span id="subtitle" data-typed-text="CoreConcept"></span>
           
         </div>
 
@@ -286,12 +286,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Angr-Core Concept</h1>
+            <h1 style="display: none">CoreConcept</h1>
             
             
               <div class="markdown-body">
                 
-                <p>本文是对<a target="_blank" rel="noopener" href="https://docs.angr.io/en/latest/core-concepts/toplevel.html">angr</a>文档的搬运，选了我认为比较重要或者有用的部分，原文档链接在此<a target="_blank" rel="noopener" href="https://docs.angr.io/en/latest/core-concepts/toplevel.html">angr</a></p>
+                <p>本文是对<a target="_blank" rel="noopener" href="https://angr.io/">angr</a>文档的搬运，选了我认为比较重要或者有用的部分，原文档链接<a target="_blank" rel="noopener" href="https://docs.angr.io/en/latest/core-concepts/toplevel.html">在此</a></p>
 <span id="more"></span>
 
 <h2 id="To-start-proj-angr-Project-39-ELF-path-39"><a href="#To-start-proj-angr-Project-39-ELF-path-39" class="headerlink" title="To start: proj = angr.Project(&#39;/ELF_path&#39;)"></a><em>To start</em>: <code>proj = angr.Project(&#39;/ELF_path&#39;)</code></h2><p>We can do these things with <code>proj</code> :</p>
@@ -325,7 +325,7 @@
 <p>About <code>mem</code></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-number">1.</span>Use array[index] notation to specify an address<br><br><span class="hljs-number">2.</span>Use .&lt;<span class="hljs-built_in">type</span>&gt; to specify that the memory should be interpreted <span class="hljs-keyword">as</span> &amp;lt;<span class="hljs-built_in">type</span>&amp;gt; (common values: char, short, <span class="hljs-built_in">int</span>, long, size_t, uint8_t, uint16_t…)<br><br>From there, you can either:<br><br> <span class="hljs-number">1</span>˚ Store a value to it, either a bitvector <span class="hljs-keyword">or</span> a Python <span class="hljs-built_in">int</span><br><br> <span class="hljs-number">2</span>˚ Use .resolved to get the value <span class="hljs-keyword">as</span> a bitvector<br><br> <span class="hljs-number">3</span>˚ Use .concrete to get the value <span class="hljs-keyword">as</span> a Python <span class="hljs-built_in">int</span><br></code></pre></td></tr></table></figure>
 
-<h2 id="Simulation-Managers"><a href="#Simulation-Managers" class="headerlink" title="Simulation Managers"></a><em>Simulation Managers</em></h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-number">1.</span> simgr = proj.factory.simulation_manager(state)<br><span class="hljs-comment">#  The constructor can take a state or a list of states.</span><br>out: &lt;SimulationManager <span class="hljs-keyword">with</span> <span class="hljs-number">1</span> active&gt;<br><br><span class="hljs-number">2.</span> simgr.step()<br><span class="hljs-comment"># 这个step会进入block的下个块，如果有分支，angr则都会进入，后面的文章会再提及</span><br></code></pre></td></tr></table></figure>
+<h2 id="Simulation-Managers"><a href="#Simulation-Managers" class="headerlink" title="Simulation Managers"></a><em>Simulation Managers</em></h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-number">1.</span> simgr = proj.factory.simulation_manager(state)<br><span class="hljs-comment">#  The constructor can take a state or a list of states.</span><br>out: &lt;SimulationManager <span class="hljs-keyword">with</span> <span class="hljs-number">1</span> active&gt;<br><br><span class="hljs-number">2.</span> simgr.step()<br><span class="hljs-comment"># 这个step会进入block的下个块，如果有分支，那么angr都会进入，后面的文章会再提及</span><br></code></pre></td></tr></table></figure>
 
 <h2 id="Analyses"><a href="#Analyses" class="headerlink" title="Analyses"></a><em><strong>Analyses</strong></em></h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ange has lots of built-in analyses</span><br> proj.analyses.BackwardSlice        proj.analyses.CongruencyCheck      proj.analyses.reload_analyses<br> proj.analyses.BinaryOptimizer      proj.analyses.DDG                  proj.analyses.StaticHooker<br> proj.analyses.BinDiff              proj.analyses.DFG                  proj.analyses.VariableRecovery<br> proj.analyses.BoyScout             proj.analyses.Disassembly          proj.analyses.VariableRecoveryFast<br> proj.analyses.CDG                  proj.analyses.GirlScout            proj.analyses.Veritesting<br> proj.analyses.CFG                  proj.analyses.Identifier           proj.analyses.VFG<br> proj.analyses.CFGEmulated          proj.analyses.LoopFinder           proj.analyses.VSA_DDG<br> proj.analyses.CFGFast              proj.analyses.Reassembler<br></code></pre></td></tr></table></figure>
 
@@ -382,7 +382,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Angr-Core Concept</div>
+      <div>CoreConcept</div>
       <div>http://example.com/2023/05/23/angr/</div>
     </div>
     <div class="license-meta">
