@@ -1,0 +1,755 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305221933187.jpeg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="yring">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本文是对angr文档的搬运，选了我认为比较重要或者有用的部分，原文档链接在此">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Simulation Managers">
+<meta property="og:url" content="http://example.com/2023/05/24/Simulation-Managers/index.html">
+<meta property="og:site_name" content="yring">
+<meta property="og:description" content="本文是对angr文档的搬运，选了我认为比较重要或者有用的部分，原文档链接在此">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-05-23T16:15:44.000Z">
+<meta property="article:modified_time" content="2023-05-23T16:15:42.323Z">
+<meta property="article:author" content="yring">
+<meta property="article:tag" content="reverse">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Simulation Managers - yring</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/shubiao.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/gradient.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":50,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>yring</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305222054379.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Simulation Managers"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-05-24 00:15" pubdate>
+          May 24, 2023 am
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.2k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          52 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Simulation Managers</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>本文是对<a target="_blank" rel="noopener" href="https://angr.io/">angr</a>文档的搬运，选了我认为比较重要或者有用的部分，原文档链接<a target="_blank" rel="noopener" href="https://docs.angr.io/en/latest/core-concepts/pathgroups.html#simulation-managers">在此</a></p>
+<span id="more"></span>
+
+<blockquote>
+<p>The most important control interface in angr is the SimulationManager, which allows you to control symbolic execution over groups of states simultaneously, applying search strategies to explore a program’s state space. Here, you’ll learn how to use it.</p>
+</blockquote>
+<p>概括：angr里面最重要的控制接口就是<code>SimulationManager</code>,可以以此同时控制不同的<code>states</code>符号执行，我们也可以以此来执行我们的搜索策略</p>
+<blockquote>
+<p>Simulation managers let you wrangle multiple states in a slick way. States are organized into “stashes”, which you can step forward, filter, merge, and move around as you wish. This allows you to, for example, step two different stashes of states at different rates, then merge them together. The default stash for most operations is the <code>active</code> stash, which is where your states get put when you initialize a new simulation manager.</p>
+</blockquote>
+<p>概括：我们可以用用<code>Simulation Managers</code>来管理多个<code>states</code>,<code>States</code>又是由<code>stashes</code>组成，这些<code>stashes</code>我们可以步入、过滤、融合甚至移到另一个<code>stashes</code>,对于绝大多数的<code>stashes</code>都是<code>active</code></p>
+<p>note: 这里一直说的<code>stashes</code>其实就是一种状态标志，意味这个block是否还能继续走下去，比如说一个block是<code>active</code>的，那么它就还有后继而且还能继续往下执行。所以当我们初始丢给<code>Simulation Manager</code>的state应该是<code>active</code>的，这样它<code>Simulation Manager</code>才会为我们模拟执行</p>
+<h2 id="Stepping"><a href="#Stepping" class="headerlink" title="Stepping"></a>Stepping</h2><p>一个简单的demo</p>
+<p>我们使用<code>.step()</code>来让当前的state执行一步，去到下一个block。demo中给出了两个block的地址</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> angr<br>proj = angr.Project(<span class="hljs-string">&#x27;examples/fauxware/fauxware&#x27;</span>, auto_load_libs=<span class="hljs-literal">False</span>)<br>state = proj.factory.entry_state()<br>simgr = proj.factory.simgr(state)<br>simgr.active<br>[&lt;SimState @ <span class="hljs-number">0x400580</span>&gt;]<br><br>simgr.step()<br>simgr.active<br>[&lt;SimState @ <span class="hljs-number">0x400540</span>&gt;]<br></code></pre></td></tr></table></figure>
+
+<p>你一定想问，那如果一个state的后继不止有一个呢？答案是<code>.step()</code>都会执行</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># Step until the first symbolic branch</span><br><span class="hljs-meta">&gt;&gt;&gt; </span><span class="hljs-keyword">while</span> <span class="hljs-built_in">len</span>(simgr.active) == <span class="hljs-number">1</span>:     <span class="hljs-comment">#只有当前处于active的数量为1，才往下执行</span><br><span class="hljs-meta">... </span>   simgr.step()<br><br><span class="hljs-meta">&gt;&gt;&gt; </span>simgr<br>&lt;SimulationManager <span class="hljs-keyword">with</span> <span class="hljs-number">2</span> active&gt;<br><span class="hljs-meta">&gt;&gt;&gt; </span>simgr.active<br>[&lt;SimState @ <span class="hljs-number">0x400692</span>&gt;, &lt;SimState @ <span class="hljs-number">0x400699</span>&gt;]<br><br><span class="hljs-comment"># Step until everything terminates</span><br><span class="hljs-meta">&gt;&gt;&gt; </span>simgr.run()<br><span class="hljs-meta">&gt;&gt;&gt; </span>simgr<br>&lt;SimulationManager <span class="hljs-keyword">with</span> <span class="hljs-number">3</span> deadended&gt;<br></code></pre></td></tr></table></figure>
+
+<p>如果我们不关心中间过程，只希望它能一直跑下去，直到再也没有后继块可以执行，那么我们可以用.<code>run()</code></p>
+<p>现在我们使用了<code>.run()</code>得到最终的state，它有三个<code>stash</code>,并且都是<code>deadended</code>状态，也就是跑不动了</p>
+<h2 id="Stash-Management"><a href="#Stash-Management" class="headerlink" title="Stash Management"></a>Stash Management</h2><p>我们可以用<code>.move()</code>来转移状态，它有三个参数<code>from_stash</code>,<code>to_statsh</code>,以及一个可选参数<code>filter_func</code></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs py">simgr.move(from_stash=<span class="hljs-string">&#x27;deadended&#x27;</span>, to_stash=<span class="hljs-string">&#x27;authenticated&#x27;</span>, filter_func=<span class="hljs-keyword">lambda</span> s: <span class="hljs-string">b&#x27;Welcome&#x27;</span> <span class="hljs-keyword">in</span> s.posix.dumps(<span class="hljs-number">1</span>))<br>simgr<br>&lt;SimulationManager <span class="hljs-keyword">with</span> <span class="hljs-number">2</span> authenticated, <span class="hljs-number">1</span> deadended&gt;<br></code></pre></td></tr></table></figure>
+
+<p>这个demo让我们把输出含有<code>Welcome</code>的state转移到<code>authenticated</code>，也就是说<code>authenticated</code>里的state都含有<code>Welcome</code></p>
+<p>每一个<code>stash</code>都是一个列表，我们可以用常规的去索引，也可以用其他方法。如果我们加一个前缀<code>one_</code>那么我们就会访问这个<code>stash</code>的第一个元素，如果用<code>mp_</code>就可以同时访问全部，关于<code>mp_</code>这有一个<a target="_blank" rel="noopener" href="https://github.com/zardus/mulpyplexer">说明</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> s <span class="hljs-keyword">in</span> simgr.deadended + simgr.authenticated:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-built_in">hex</span>(s.addr))<br><span class="hljs-number">0x1000030</span><br><span class="hljs-number">0x1000078</span><br><span class="hljs-number">0x1000078</span><br><br>simgr.one_deadended<br>&lt;SimState @ <span class="hljs-number">0x1000030</span>&gt;<br>simgr.mp_authenticated<br>MP([&lt;SimState @ <span class="hljs-number">0x1000078</span>&gt;, &lt;SimState @ <span class="hljs-number">0x1000078</span>&gt;])<br>simgr.mp_authenticated.posix.dumps(<span class="hljs-number">0</span>)<br>MP([<span class="hljs-string">&#x27;\x00\x00\x00\x00\x00\x00\x00\x00\x00SOSNEAKY\x00&#x27;</span>,<br>    <span class="hljs-string">&#x27;\x00\x00\x00\x00\x00\x00\x00\x00\x00S\x80\x80\x80\x80@\x80@\x00&#x27;</span>])<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Of course, <code>step</code>, <code>run</code>, and any other method that operates on a single stash of paths can take a <code>stash</code> argument, specifying which stash to operate on.</p>
+</blockquote>
+<p>也就是所有的<code>step</code>,<code>run</code>方法都可以接受一个<code>stash</code>参数，来决定执行哪一个</p>
+<h3 id="Stash-types"><a href="#Stash-types" class="headerlink" title="Stash types"></a>Stash types</h3><p>You can use stashes for whatever you like, but there are a few stashes that will be used to categorize some special kinds of states. These are:</p>
+<table>
+<thead>
+<tr>
+<th>Stash</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>active</td>
+<td>可执行的</td>
+</tr>
+<tr>
+<td>deadended</td>
+<td>再也无法执行的，可能是因为无法到达，没有后继等</td>
+</tr>
+<tr>
+<td>pruned</td>
+<td>（不太确定）当使用<code>LAZY_SOLVES</code>时，states不会再检查可满足性，当一个state发现是<code>unsat</code>时，这个states路径上的所有states都会变成<code>pruned</code></td>
+</tr>
+<tr>
+<td>unconstrained</td>
+<td>如果 <code>save_unconstrained</code> 传递给SimelationManager constructor, 那些无约束的就时<code>unconstrained</code></td>
+</tr>
+<tr>
+<td>unsat</td>
+<td>如果 <code>save_unsat</code> 传递给SimelationManager constructor, 那些无解的就时<code>unsat</code>,比如要求输入同时满足即是’AAAA’又是’BBBB’</td>
+</tr>
+</tbody></table>
+<h2 id="Simple-Exploration"><a href="#Simple-Exploration" class="headerlink" title="Simple Exploration"></a>Simple Exploration</h2><p>符号执行很普遍的用法是找到一个可以到达某个地址的states，而忽略其他所有的states，angr提供<code>.explore()</code>来方便执行。</p>
+<p>当我们使用<code>.explore()</code>方法时，它可以接受两个参数<code>find</code>以及<code>avoid</code>。其中<code>find</code>可以是一个地址，一个列表，一个以<code>state</code>为参数返回某些值的函数，当任何一个<code>active</code>符合<code>find</code>的要求，那么它就会被放入<code>found</code>stash里面，同时停止执行，<code>avoid</code>一样，不过是放入<code>avoided</code>stash里面，然后继续符号执行。<code>num_find</code>可以决定找多少个<code>found</code>，简单demo</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 装载</span><br>proj = angr.Project(<span class="hljs-string">&#x27;examples/CSCI-4968-MBE/challenges/crackme0x00a/crackme0x00a&#x27;</span>)<br><span class="hljs-comment"># 创建对象</span><br>simgr = proj.factory.simgr()<br><span class="hljs-comment"># 开始符号执行 搜索</span><br>simgr.explore(find=<span class="hljs-keyword">lambda</span> s: <span class="hljs-string">b&quot;Congrats&quot;</span> <span class="hljs-keyword">in</span> s.posix.dumps(<span class="hljs-number">1</span>))<br>&lt;SimulationManager <span class="hljs-keyword">with</span> <span class="hljs-number">1</span> active, <span class="hljs-number">1</span> found&gt;<br><span class="hljs-comment"># 找到一个 利用索引的方式得到该state</span><br>s = simgr.found[<span class="hljs-number">0</span>]<br><span class="hljs-comment"># 查看该state的输出</span><br><span class="hljs-built_in">print</span>(s.posix.dumps(<span class="hljs-number">1</span>))<br>Enter password: Congrats!<br><span class="hljs-comment"># 查看该state的输入</span><br>flag = s.posix.dumps(<span class="hljs-number">0</span>)<br><span class="hljs-built_in">print</span>(flag)<br>g00dJ0B!<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="Exploration-Techniques"><a href="#Exploration-Techniques" class="headerlink" title="Exploration Techniques"></a>Exploration Techniques</h2><p>angr内置了很多种的搜索算法，但是我们也可以自己写一个搜索算法，并通过<code>simgr.use_technique(tech)</code>调用，这里的<code>tech</code>是<code>ExplorationTechnique</code>子类。后面会再详谈，这里先列出angr内置的一些搜索算法</p>
+<ul>
+<li><em>DFS</em>: Depth first search, as mentioned earlier. Keeps only one state active at once, putting the rest in the <code>deferred</code> stash until it deadends or errors.</li>
+<li><em>Explorer</em>: This technique implements the <code>.explore()</code> functionality, allowing you to search for and avoid addresses.</li>
+<li><em>LengthLimiter</em>: Puts a cap on the maximum length of the path a state goes through.</li>
+<li><em>LoopSeer</em>: Uses a reasonable approximation of loop counting to discard states that appear to be going through a loop too many times, putting them in a <code>spinning</code> stash and pulling them out again if we run out of otherwise viable states.</li>
+<li><em>ManualMergepoint</em>: Marks an address in the program as a merge point, so states that reach that address will be briefly held, and any other states that reach that same point within a timeout will be merged together.</li>
+<li><em>MemoryWatcher</em>: Monitors how much memory is free&#x2F;available on the system between simgr steps and stops exploration if it gets too low.</li>
+<li><em>Oppologist</em>: The “operation apologist” is an especially fun gadget - if this technique is enabled and angr encounters an unsupported instruction, for example a bizzare and foreign floating point SIMD op, it will concretize all the inputs to that instruction and emulate the single instruction using the unicorn engine, allowing execution to continue.</li>
+<li><em>Spiller</em>: When there are too many states active, this technique can dump some of them to disk in order to keep memory consumption low.</li>
+<li><em>Threading</em>: Adds thread-level parallelism to the stepping process. This doesn’t help much because of Python’s global interpreter locks, but if you have a program whose analysis spends a lot of time in angr’s native-code dependencies (unicorn, z3, libvex) you can seem some gains.</li>
+<li><em>Tracer</em>: An exploration technique that causes execution to follow a dynamic trace recorded from some other source. The <a target="_blank" rel="noopener" href="https://github.com/angr/tracer">dynamic tracer repository</a> has some tools to generate those traces.</li>
+<li><em>Veritesting</em>: An implementation of a [CMU paper](<a target="_blank" rel="noopener" href="https://users.ece.cmu.edu/~dbrumley/pdf/Avgerinos">https://users.ece.cmu.edu/~dbrumley/pdf/Avgerinos</a> et al._2014_Enhancing Symbolic Execution with Veritesting.pdf) on automatically identifying useful merge points. This is so useful, you can enable it automatically with <code>veritesting=True</code> in the SimulationManager constructor! Note that it frequenly doesn’t play nice with other techniques due to the invasive way it implements static symbolic execution.</li>
+</ul>
+<p>Look at the API documentation for the <a target="_blank" rel="noopener" href="https://docs.angr.io/en/latest/api.html#angr.sim_manager.SimulationManager"><code>SimulationManager</code></a> and <a target="_blank" rel="noopener" href="https://docs.angr.io/en/latest/api.html#angr.exploration_techniques.ExplorationTechnique"><code>ExplorationTechnique</code></a> classes for more information.</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CTF/" class="category-chain-item">CTF</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/CTF/angr/" class="category-chain-item">angr</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/reverse/">#reverse</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Simulation Managers</div>
+      <div>http://example.com/2023/05/24/Simulation-Managers/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>yring</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>May 24, 2023</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/05/23/Core-Concept/" title="Core Concept">
+                        <span class="hidden-mobile">Core Concept</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <i class="iconfont icon-love"></i>nobody knows ,but we always know
+
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/DynamicLine.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/love.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/snowflake.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/scroll.css.js"></script>
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/runtime.min.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
