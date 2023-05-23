@@ -16,22 +16,22 @@
   <meta name="author" content="yring">
   <meta name="keywords" content="">
   
-    <meta name="description" content="To start: proj &#x3D; angr.Project(&#39;&#x2F;ELF_path&#39;)We can do these things with proj : 1231. Check arch: proj.arch #查看架构2. Check entry: proj.entry #查看程序入口3. See Name : proj.filename #查看文件名字  To Load: pr">
+    <meta name="description" content="本文是对angr文档的搬运，选了我认为比较重要或者有用的部分，原文档链接在此angr  &lt;! – more –&gt; To start: proj &#x3D; angr.Project(&#39;&#x2F;ELF_path&#39;)We can do these things with proj : 1231. Check arch: proj.arch #查看架构2. Check entry: pr">
 <meta property="og:type" content="article">
-<meta property="og:title" content="To start">
+<meta property="og:title" content="Core Concept">
 <meta property="og:url" content="http://example.com/2023/05/23/angr/index.html">
 <meta property="og:site_name" content="yring">
-<meta property="og:description" content="To start: proj &#x3D; angr.Project(&#39;&#x2F;ELF_path&#39;)We can do these things with proj : 1231. Check arch: proj.arch #查看架构2. Check entry: proj.entry #查看程序入口3. See Name : proj.filename #查看文件名字  To Load: pr">
+<meta property="og:description" content="本文是对angr文档的搬运，选了我认为比较重要或者有用的部分，原文档链接在此angr  &lt;! – more –&gt; To start: proj &#x3D; angr.Project(&#39;&#x2F;ELF_path&#39;)We can do these things with proj : 1231. Check arch: proj.arch #查看架构2. Check entry: pr">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-05-23T05:05:44.000Z">
-<meta property="article:modified_time" content="2023-05-23T12:28:55.108Z">
+<meta property="article:published_time" content="2023-05-23T12:39:44.000Z">
+<meta property="article:modified_time" content="2023-05-23T12:39:11.910Z">
 <meta property="article:author" content="yring">
 <meta property="article:tag" content="reverse">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>To start - yring</title>
+  <title>Core Concept - yring</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -214,7 +214,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="To start"></span>
+            <span id="subtitle" data-typed-text="Core Concept"></span>
           
         </div>
 
@@ -225,7 +225,7 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-05-23 13:05" pubdate>
+        <time datetime="2023-05-23 20:39" pubdate>
           May 23, 2023 pm
         </time>
       </span>
@@ -237,7 +237,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.6k words
+          3.7k words
         
       </span>
     
@@ -286,18 +286,22 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">To start</h1>
+            <h1 style="display: none">Core Concept</h1>
             
             
               <div class="markdown-body">
                 
-                <h3 id="To-start-proj-angr-Project-39-ELF-path-39"><a href="#To-start-proj-angr-Project-39-ELF-path-39" class="headerlink" title="To start: proj = angr.Project(&#39;/ELF_path&#39;)"></a>To start: <code>proj = angr.Project(&#39;/ELF_path&#39;)</code></h3><p>We can do these things with <code>proj</code> :</p>
+                <blockquote>
+<p>本文是对angr文档的搬运，选了我认为比较重要或者有用的部分，原文档链接在此<a target="_blank" rel="noopener" href="https://docs.angr.io/en/latest/core-concepts/toplevel.html">angr</a></p>
+</blockquote>
+<p>&lt;! – more –&gt;</p>
+<h2 id="To-start-proj-angr-Project-39-ELF-path-39"><a href="#To-start-proj-angr-Project-39-ELF-path-39" class="headerlink" title="To start: proj = angr.Project(&#39;/ELF_path&#39;)"></a><em>To start</em>: <code>proj = angr.Project(&#39;/ELF_path&#39;)</code></h2><p>We can do these things with <code>proj</code> :</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-number">1.</span> Check arch: proj.arch <span class="hljs-comment">#查看架构</span><br><span class="hljs-number">2.</span> Check entry: proj.entry <span class="hljs-comment">#查看程序入口</span><br><span class="hljs-number">3.</span> See Name : proj.filename <span class="hljs-comment">#查看文件名字</span><br></code></pre></td></tr></table></figure>
 
-<h3 id="To-Load-proj-loader"><a href="#To-Load-proj-loader" class="headerlink" title="To Load: proj.loader"></a>To Load: <code>proj.loader</code></h3><p>We can do these things with <code>proj.loader</code></p>
+<h2 id="To-Load-proj-loader"><a href="#To-Load-proj-loader" class="headerlink" title="To Load: proj.loader"></a><em>To Load</em>: <code>proj.loader</code></h2><p>We can do these things with <code>proj.loader</code></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-number">1.</span> See Shared_objects: proj.loader.shared_objects<br><span class="hljs-number">2.</span> See min_addr: proj.loader.min_addr<br><span class="hljs-number">3.</span> see max_addr: proj.loader.max_addr<br><span class="hljs-number">4.</span> See main_object: proj.loader.main_object <span class="hljs-comment"># 主要对象</span><br><span class="hljs-number">5.</span> Check the binary have an executable stack: proj.loader.main_object.execstack<br><span class="hljs-number">6.</span> Check this binary position-independent : proj.loader.main_object.pic<br></code></pre></td></tr></table></figure>
 
-<h2 id="The-Factory"><a href="#The-Factory" class="headerlink" title="The Factory"></a>The Factory</h2><blockquote>
+<h2 id="The-Factory"><a href="#The-Factory" class="headerlink" title="The Factory"></a><em>The Factory</em></h2><blockquote>
 <p>There are a lot of classes in <code>angr</code>, and most of them require a project to be instantiated. Instead of making you pass around the project everywhere, we provide <code>project.factory</code>, which has several convenient constructors for common objects you’ll want to use frequently.</p>
 </blockquote>
 <p>angr有很多的类，基本上每一个类都需要一个<code>project</code>对象来实例化。angr提供了<code>project.factory</code>这一个接口，可以方便供我们使用</p>
@@ -322,7 +326,7 @@
 <p>About <code>mem</code></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-number">1.</span>Use array[index] notation to specify an address<br><br><span class="hljs-number">2.</span>Use .&lt;<span class="hljs-built_in">type</span>&gt; to specify that the memory should be interpreted <span class="hljs-keyword">as</span> &amp;lt;<span class="hljs-built_in">type</span>&amp;gt; (common values: char, short, <span class="hljs-built_in">int</span>, long, size_t, uint8_t, uint16_t…)<br><br>From there, you can either:<br><br> <span class="hljs-number">1</span>˚ Store a value to it, either a bitvector <span class="hljs-keyword">or</span> a Python <span class="hljs-built_in">int</span><br><br> <span class="hljs-number">2</span>˚ Use .resolved to get the value <span class="hljs-keyword">as</span> a bitvector<br><br> <span class="hljs-number">3</span>˚ Use .concrete to get the value <span class="hljs-keyword">as</span> a Python <span class="hljs-built_in">int</span><br></code></pre></td></tr></table></figure>
 
-<h2 id="Simulation-Managers"><a href="#Simulation-Managers" class="headerlink" title="*** Simulation Managers***"></a>*** Simulation Managers***</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-number">1.</span> simgr = proj.factory.simulation_manager(state)<br><span class="hljs-comment">#  The constructor can take a state or a list of states.</span><br>out: &lt;SimulationManager <span class="hljs-keyword">with</span> <span class="hljs-number">1</span> active&gt;<br><br><span class="hljs-number">2.</span> simgr.step()<br><span class="hljs-comment"># 这个step会进入block的下个块，如果有分支，angr则都会进入，后面的文章会再提及</span><br></code></pre></td></tr></table></figure>
+<h2 id="Simulation-Managers"><a href="#Simulation-Managers" class="headerlink" title="Simulation Managers"></a><em>Simulation Managers</em></h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-number">1.</span> simgr = proj.factory.simulation_manager(state)<br><span class="hljs-comment">#  The constructor can take a state or a list of states.</span><br>out: &lt;SimulationManager <span class="hljs-keyword">with</span> <span class="hljs-number">1</span> active&gt;<br><br><span class="hljs-number">2.</span> simgr.step()<br><span class="hljs-comment"># 这个step会进入block的下个块，如果有分支，angr则都会进入，后面的文章会再提及</span><br></code></pre></td></tr></table></figure>
 
 <h2 id="Analyses"><a href="#Analyses" class="headerlink" title="Analyses"></a><em><strong>Analyses</strong></em></h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ange has lots of built-in analyses</span><br> proj.analyses.BackwardSlice        proj.analyses.CongruencyCheck      proj.analyses.reload_analyses<br> proj.analyses.BinaryOptimizer      proj.analyses.DDG                  proj.analyses.StaticHooker<br> proj.analyses.BinDiff              proj.analyses.DFG                  proj.analyses.VariableRecovery<br> proj.analyses.BoyScout             proj.analyses.Disassembly          proj.analyses.VariableRecoveryFast<br> proj.analyses.CDG                  proj.analyses.GirlScout            proj.analyses.Veritesting<br> proj.analyses.CFG                  proj.analyses.Identifier           proj.analyses.VFG<br> proj.analyses.CFGEmulated          proj.analyses.LoopFinder           proj.analyses.VSA_DDG<br> proj.analyses.CFGFast              proj.analyses.Reassembler<br></code></pre></td></tr></table></figure>
 
@@ -379,7 +383,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>To start</div>
+      <div>Core Concept</div>
       <div>http://example.com/2023/05/23/angr/</div>
     </div>
     <div class="license-meta">
