@@ -7,7 +7,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305221933187.jpeg">
   <link rel="icon" href="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305221933187.jpeg">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -23,12 +23,16 @@
 <meta property="og:site_name" content="yring">
 <meta property="og:description" content="本文是对angr文档的搬运，选了我认为比较重要或者有用的部分，原文档链接在此">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305242007427.jpg">
 <meta property="article:published_time" content="2023-05-23T12:39:44.000Z">
-<meta property="article:modified_time" content="2023-05-23T14:43:17.333Z">
+<meta property="article:modified_time" content="2023-05-24T12:28:32.653Z">
 <meta property="article:author" content="yring">
 <meta property="article:tag" content="reverse">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305242007427.jpg">
   
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
   
   
   <title>Core Concept - yring</title>
@@ -237,7 +241,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.6k words
+          4k words
         
       </span>
     
@@ -248,12 +252,20 @@
         
         
         
-          31 mins
+          16 mins
         
       </span>
     
 
     
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> views
+        </span>
+        
+      
     
   </div>
 
@@ -308,7 +320,15 @@
 <p>What can do with <code>block</code></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-number">1.</span> To see <span class="hljs-built_in">all</span> the instructions: block.pp()<br>out:	<span class="hljs-number">0x401670</span>:       xor     ebp, ebp<br>			<span class="hljs-number">0x401672</span>:       mov     r9, rdx<br>			<span class="hljs-number">0x401675</span>:       pop     rsi<br>			<span class="hljs-number">0x401676</span>:       mov     rdx, rsp<br>			<span class="hljs-number">0x401679</span>:       <span class="hljs-keyword">and</span>     rsp, <span class="hljs-number">0xfffffffffffffff0</span><br>			<span class="hljs-number">0x40167d</span>:       push    rax<br>			<span class="hljs-number">0x40167e</span>:       push    rsp<br>			<span class="hljs-number">0x40167f</span>:       lea     r8, [rip + <span class="hljs-number">0x2e2a</span>]<br>			<span class="hljs-number">0x401686</span>:       lea     rcx, [rip + <span class="hljs-number">0x2db3</span>]<br>			<span class="hljs-number">0x40168d</span>:       lea     rdi, [rip - <span class="hljs-number">0xd4</span>]<br>			<span class="hljs-number">0x401694</span>:       call    qword ptr [rip + <span class="hljs-number">0x205866</span>]<br><span class="hljs-number">2.</span>The number of the instructions:block.instructions<br><span class="hljs-number">3.</span>The address of the instructions: block.instrutions_addr<br>out:[<span class="hljs-number">0x401670</span>, <span class="hljs-number">0x401672</span>, <span class="hljs-number">0x401675</span>, <span class="hljs-number">0x401676</span>, <span class="hljs-number">0x401679</span>, <span class="hljs-number">0x40167d</span>, <span class="hljs-number">0x40167e</span>, <span class="hljs-number">0x40167f</span>, <span class="hljs-number">0x401686</span>, <span class="hljs-number">0x40168d</span>, <span class="hljs-number">0x401694</span>]<br></code></pre></td></tr></table></figure>
 
-<h2 id="state-state-proj-factory-entry-state"><a href="#state-state-proj-factory-entry-state" class="headerlink" title="state: state = proj.factory.entry_state()"></a><em>state</em>: <code>state = proj.factory.entry_state()</code></h2><p>Some Examples:</p>
+<h2 id="State-state-proj-factory-entry-state"><a href="#State-state-proj-factory-entry-state" class="headerlink" title="State: state = proj.factory.entry_state()"></a><em>State</em>: <code>state = proj.factory.entry_state()</code></h2><p>Some Examples:</p>
+<blockquote>
+<p>Here’s another fact about angr - the <code>Project</code> object only represents an “initialization image” for the program. When you’re performing execution with angr, you are working with a specific object representing a <em>simulated program state</em> - a <code>SimState</code>. Let’s grab one right now!</p>
+</blockquote>
+<p>Project只是程序的一个初始框架，真正符号执行的是一个个<code>SimState</code>,现在创建一个state</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs py">state = proj.factory.entry_state()<br>&lt;SimState @ <span class="hljs-number">0x401670</span>&gt;<br></code></pre></td></tr></table></figure>
+
+
+
 <blockquote>
 <p>A SimState contains a program’s memory, registers, filesystem data… any “live data” that can be changed by execution has a home in the state.</p>
 </blockquote>
@@ -685,6 +705,8 @@
   <script>Fluid.plugins.imageCaption();</script>
 
   <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
 
 
 

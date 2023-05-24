@@ -1,0 +1,762 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305221933187.jpeg">
+  <link rel="icon" href="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305221933187.jpeg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="yring">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="简单说说Factory SimManger State关系">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Factory SimManger State">
+<meta property="og:url" content="http://example.com/2023/05/24/Factory%20SimManger%20State/index.html">
+<meta property="og:site_name" content="yring">
+<meta property="og:description" content="简单说说Factory SimManger State关系">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305242007427.jpg">
+<meta property="article:published_time" content="2023-05-24T08:20:00.000Z">
+<meta property="article:modified_time" content="2023-05-24T12:23:43.239Z">
+<meta property="article:author" content="yring">
+<meta property="article:tag" content="reverse">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305242007427.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Factory SimManger State - yring</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/shubiao.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/gradient.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":50,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>yring</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305222054379.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Factory SimManger State"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-05-24 16:20" pubdate>
+          May 24, 2023 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.8k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          27 mins
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> views
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Factory SimManger State</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>简单说说Factory SimManger State关系</p>
+<span id="more"></span>
+
+<p>一般使用angr时，都会以以下几句开头</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> angr<br>proj = angr.Project(<span class="hljs-string">&#x27;examples/fauxware/fauxware&#x27;</span>, auto_load_libs=<span class="hljs-literal">False</span>)<br>state = proj.factory.entry_state()<br>simgr = proj.factory.simgr(state)<br></code></pre></td></tr></table></figure>
+
+<p>现在就来看看<code>factory</code>都究竟是个啥</p>
+<p>首先[factory](<a target="_blank" rel="noopener" href="https://docs.angr.io/en/latest/_modules/angr/factory.html">angr.factory - angr documentation</a>)是一个类，但是它更像是一个工具类，帮助我们完成一些事情，我们就可以简单调用里面的方法。比如我们想要初始化一个入口函数的<code>state</code>,那么我们就可以调用<code>factory</code>里面的<code>entry_state()</code>,就不用自己再去关心那细节。</p>
+<p>现在就来看看里面还有哪些方法</p>
+<h2 id="State"><a href="#State" class="headerlink" title="State"></a>State</h2><h3 id="blank-state-self-kwargs"><a href="#blank-state-self-kwargs" class="headerlink" title="blank_state(self**,** ******kwargs)"></a>blank_state(self**,** ******kwargs)</h3><p>调用此方法，会返回一个几乎没有初始化的state对象</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">blank_state</span>(<span class="hljs-params">self,**kwargs</span>)<br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">        Returns a mostly-uninitialized state object. All parameters are optional.</span><br><span class="hljs-string"></span><br><span class="hljs-string">        :param addr:            State 开始的地址</span><br><span class="hljs-string">        :param initial_prefix:  如果提供，所有的符号寄存器都会有一个以此为前缀字符串的符号值</span><br><span class="hljs-string">        :param fs:              A dictionary of file names with associated preset SimFile objects.</span><br><span class="hljs-string">        :param concrete_fs:     bool describing whether the host filesystem should be consulted when opening files.</span><br><span class="hljs-string">        :param chroot:          A path to use as a fake root directory, Behaves similarly to a real chroot. Used only when concrete_fs is set to True.</span><br><span class="hljs-string">        :param kwargs:          Any additional keyword args will be passed to the SimState constructor.</span><br><span class="hljs-string">        :return:                返回一个空 state</span><br><span class="hljs-string">        :rtype:                 返回类型 SimState</span><br><span class="hljs-string"> &quot;&quot;&quot;</span><br> <span class="hljs-keyword">return</span> self.project.simos.state_blank<br></code></pre></td></tr></table></figure>
+
+<h3 id="entry-state-self-kwargs"><a href="#entry-state-self-kwargs" class="headerlink" title="entry_state(self**,** ******kwargs)"></a>entry_state(self**,** ******kwargs)</h3><p>调用此方法，返回一个起始地址的<code>state</code></p>
+<h3 id="full-init-state-self-kwargs"><a href="#full-init-state-self-kwargs" class="headerlink" title="full_init_state(self**,** ******kwargs)"></a>full_init_state(self**,** ******kwargs)</h3><blockquote>
+<p><em>Very much like :meth:<code>entry_state()</code>, except that instead of starting execution at the program entry point,</em>        <em>execution begins at a special SimProcedure that plays the role of the dynamic loader, calling each of the</em>        <em>initializer functions that should be called before execution reaches the entry point.</em>         <em>It can take any of the arguments that can be provided to <code>entry_state</code>, except for <code>addr</code>.</em></p>
+</blockquote>
+<p>意思是，这个方法拥有以上的所有参数除了addr，因为这个方法是先于符号执行的，它的作用是初始化，调用哪些所有的初始化函数</p>
+<h3 id="call-state-self-addr-args-kwargs"><a href="#call-state-self-addr-args-kwargs" class="headerlink" title="call_state(self**,** addr**,** *args, ******kwargs)"></a>call_state(self**,** addr**,** *<strong><strong>args</strong>,</strong> ******kwargs)</h3><p>很显然是一个创建call到某个函数的state，它的参数</p>
+<blockquote>
+<p><em>Returns a state object initialized to the start of a given function, as if it were called with given parameters.</em>         </p>
+<p><em>:param addr:            The address the state should start at instead of the entry point.</em>        </p>
+<p><em>:param args:            Any additional positional arguments will be used as arguments to the function call.</em> </p>
+</blockquote>
+<p>返回一个以给定函数起初地址的<code>state</code>，换句话说提供<code>addr</code>,它将以此创建一个<code>state</code>,而不再是entry point。它也可以通过<code>args</code>来传递所call的函数参数</p>
+<h2 id="Simulation-Manager"><a href="#Simulation-Manager" class="headerlink" title="Simulation Manager"></a>Simulation Manager</h2><h3 id="simgr-simulation-manager-self-thing-Optional-Union-List-SimState-SimState-x3D-None-kwargs"><a href="#simgr-simulation-manager-self-thing-Optional-Union-List-SimState-SimState-x3D-None-kwargs" class="headerlink" title="simgr simulation_manager( self**,** thing**:** Optional**[Union[List[SimState],** SimState**]]** &#x3D; None,******kwargs)"></a>simgr simulation_manager( self**,** thing**:** Optional**[<strong>Union</strong>[<strong>List</strong>[<strong>SimState</strong>],** SimState**]]** <strong>&#x3D;</strong> <strong>None</strong>,******kwargs)</h3><blockquote>
+<p><em>Constructs a new simulation manager.</em>         </p>
+<p><em>:param thing: 	What to put in the new SimulationManager’s active stash (either a SimState 								  or a list of</em>  <em>SimStates).</em> </p>
+<p><em>:param kwargs:  Any additional keyword arguments will be passed to the SimulationManager 		                       constructor</em>        </p>
+<p><em>:returns:               The new SimulationManager</em>        </p>
+<p><em>:rtype:                 angr.sim_manager.SimulationManager</em> </p>
+</blockquote>
+<p>这个方法也很常用，但是它不再是创建和返回state对象，而是利用state对象创建一个simulation manager对象并返回。它的参数就是接受一个state列表或者单独一个state，并把他们放进stash的active里面。如果什么参数也不传，那么它就默认以entry_point为state创建。</p>
+<p>那么这个<code>simulation manager</code>对象是个啥呢？</p>
+<h3 id="SimulationManager"><a href="#SimulationManager" class="headerlink" title="SimulationManager"></a>SimulationManager</h3><p>angr在[文档](<a target="_blank" rel="noopener" href="https://docs.angr.io/en/latest/_modules/angr/sim_manager.html#SimulationManager">angr.sim_manager - angr documentation</a>)里面这样评论<em>The Simulation Manager is the future future.</em></p>
+<p>SimulationManager 也是angr里面的一个类。这个类的功能就是帮助我们根据state的stash来管理state，可以往下step，可以过滤filter，也可以融合merge。可以通过属性值来直接获取stash，比如<code>.active</code>,也可以用一些前缀比如<code>mp_</code>,那么就可以<code>mp_active</code>,同理<code>one_</code>.</p>
+<p>这是它的一些成员</p>
+<blockquote>
+<p><em>:param project:           A Project instance.</em>    </p>
+<p><em>:type project:              angr.project.Project</em>   </p>
+<p> <em>:param stashes:</em>           一个字典用于存储stash   </p>
+<p><em>:param active_states:   Active states to seed the “active” stash with.</em>    </p>
+<p><em>:param hierarchy:</em>         一个StateHierarchy对象，用于追踪state之间关系</p>
+<p> <em>:param resilience:</em>        收集error的集合    </p>
+<p><em>:param save_unsat:</em>       如果为True，则保留unsat的state，而不是直接丢掉 </p>
+<p><em>:param auto_drop:</em>        存放直接丢弃的stash的名字</p>
+<p><em>:param completion_mode:</em>     描述exploretion techniques的函数</p>
+<p> <em>:param techniques:</em> 		需要预先设定exploretion tech的列表    </p>
+<p>……</p>
+</blockquote>
+<p>当然里面也有很多的方法，最重要的是<code>step</code> ,<code>explore</code>,<code>use_technique</code>三个方法</p>
+<p>看看它的构造函数，通过初始化函数就能这些成员有一个更直观的了解</p>
+<h4 id="init"><a href="#init" class="headerlink" title="__init__"></a>__init__</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params"></span><br><span class="hljs-params">        self,</span><br><span class="hljs-params">        project,</span><br><span class="hljs-params">        active_states=<span class="hljs-literal">None</span>,</span><br><span class="hljs-params">        stashes=<span class="hljs-literal">None</span>,</span><br><span class="hljs-params">        hierarchy=<span class="hljs-literal">None</span>,</span><br><span class="hljs-params">        resilience=<span class="hljs-literal">None</span>,</span><br><span class="hljs-params">        save_unsat=<span class="hljs-literal">False</span>,</span><br><span class="hljs-params">        auto_drop=<span class="hljs-literal">None</span>,</span><br><span class="hljs-params">        errored=<span class="hljs-literal">None</span>,</span><br><span class="hljs-params">        completion_mode=<span class="hljs-built_in">any</span>,</span><br><span class="hljs-params">        techniques=<span class="hljs-literal">None</span>,</span><br><span class="hljs-params">        suggestions=<span class="hljs-literal">True</span>,</span><br><span class="hljs-params">        **kwargs,</span><br><span class="hljs-params">    </span>):<br>        <span class="hljs-built_in">super</span>().__init__()<br><br>        self._project = project<br>        self.completion_mode = completion_mode<br>        self._errored = []<br>        self._lock = PicklableLock()<br>		<span class="hljs-comment">#  这里就可以放入自己的stash</span><br>        <span class="hljs-keyword">if</span> stashes <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:<br>            stashes = self._create_integral_stashes()<br>        self._stashes: DefaultDict[<span class="hljs-built_in">str</span>, <span class="hljs-type">List</span>[<span class="hljs-string">&quot;SimState&quot;</span>]] = stashes<br>        self._hierarchy = StateHierarchy() <span class="hljs-keyword">if</span> hierarchy <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">else</span> hierarchy<br>        self._save_unsat = save_unsat<br>        self._auto_drop = &#123;<br>            SimulationManager.DROP,<br>        &#125;<br>        self._techniques = []<br><br>        <span class="hljs-keyword">if</span> resilience <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:<br>            self._resilience = (AngrError, SimError, claripy.ClaripyError)<br>        <span class="hljs-keyword">elif</span> resilience <span class="hljs-keyword">is</span> <span class="hljs-literal">True</span>:<br>            self._resilience = (<br>                AngrError,<br>                SimError,<br>                claripy.ClaripyError,<br>                KeyError,<br>                IndexError,<br>                TypeError,<br>                ValueError,<br>                ArithmeticError,<br>                MemoryError,<br>            )<br>        <span class="hljs-keyword">elif</span> resilience <span class="hljs-keyword">is</span> <span class="hljs-literal">False</span>:<br>            self._resilience = ()<br>        <span class="hljs-keyword">else</span>:<br>            self._resilience = <span class="hljs-built_in">tuple</span>(resilience)<br><br>        <span class="hljs-keyword">if</span> suggestions:<br>            self.use_technique(Suggestions())<br><br>        <span class="hljs-comment"># 8&lt;----------------- Compatibility layer -----------------</span><br><br>        <span class="hljs-keyword">if</span> auto_drop <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> kwargs.pop(<span class="hljs-string">&quot;save_unconstrained&quot;</span>, <span class="hljs-literal">True</span>):<br>            self._auto_drop |= &#123;<span class="hljs-string">&quot;unconstrained&quot;</span>&#125;<br><br>        <span class="hljs-keyword">if</span> kwargs.pop(<span class="hljs-string">&quot;veritesting&quot;</span>, <span class="hljs-literal">False</span>):<br>            self.use_technique(Veritesting(**kwargs.get(<span class="hljs-string">&quot;veritesting_options&quot;</span>, &#123;&#125;)))<br>        kwargs.pop(<span class="hljs-string">&quot;veritesting_options&quot;</span>, &#123;&#125;)<br><br>        threads = kwargs.pop(<span class="hljs-string">&quot;threads&quot;</span>, <span class="hljs-literal">None</span>)<br>        <span class="hljs-keyword">if</span> threads <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:<br>            self.use_technique(Threading(threads))<br><br>        <span class="hljs-keyword">if</span> kwargs:<br>            <span class="hljs-keyword">raise</span> TypeError(<span class="hljs-string">&quot;Unexpected keyword arguments: &quot;</span> + <span class="hljs-string">&quot; &quot;</span>.join(kwargs))<br>        <span class="hljs-comment"># ------------------ Compatibility layer ----------------&gt;8</span><br><br>        <span class="hljs-keyword">if</span> auto_drop:<br>            self._auto_drop |= <span class="hljs-built_in">set</span>(auto_drop)<br><br>        <span class="hljs-keyword">if</span> errored <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:<br>            self._errored.extend(errored)<br><br>        <span class="hljs-keyword">if</span> active_states:<br>            self._store_states(<span class="hljs-string">&quot;active&quot;</span>, active_states)<br><br>        <span class="hljs-keyword">if</span> techniques:<br>            <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> techniques:<br>                self.use_technique(t)<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="step"><a href="#step" class="headerlink" title="step"></a>step</h4><p>看看它的参数即可</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">step</span>(<span class="hljs-params"></span><br><span class="hljs-params">        self,</span><br><span class="hljs-params">        stash=<span class="hljs-string">&quot;active&quot;</span>,</span><br><span class="hljs-params">        target_stash=<span class="hljs-literal">None</span>,</span><br><span class="hljs-params">        n=<span class="hljs-literal">None</span>,</span><br><span class="hljs-params">        selector_func=<span class="hljs-literal">None</span>,</span><br><span class="hljs-params">        step_func=<span class="hljs-literal">None</span>,</span><br><span class="hljs-params">        error_list=<span class="hljs-literal">None</span>,</span><br><span class="hljs-params">        successor_func=<span class="hljs-literal">None</span>,</span><br><span class="hljs-params">        until=<span class="hljs-literal">None</span>,</span><br><span class="hljs-params">        filter_func=<span class="hljs-literal">None</span>,</span><br><span class="hljs-params">        **run_args,</span><br><span class="hljs-params">    </span>):<br>    <br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><em>stash</em> : 				需要step的stash名字，默认是active</p>
+<p><em>target_stash</em> :	  将结果放入哪个stash</p>
+<p><em>n</em> :					    如果<code>until</code>是NULL的话，那么会一直执行n步</p>
+<p><em><strong>selector_fun</strong></em> :	 接收一个以state为参数、返回类型为布尔的函数，如果返回为True，那么执行该                                                                                               state，否则保持原样		</p>
+<p><em><strong>step_fun</strong></em> :		   接收一个以SimulationManager为参数并返回SimulantionManager的函数，每一次调用<code>step()</code>时，都会调用该函数，但该函数里面不应该有<code>step(</code>)</p>
+<p><em>error_list</em> :			一个list来存储<code>ErroredState</code></p>
+<p><em>successor_fun</em> :	接收一个以state为参数并返回它后继的函数</p>
+<p>until：				  接收一个以SimulationManger为参数并返回布尔值的函数，一直执行到返回为True</p>
+<p><em>filter_func</em> ：		 接收一个以state为参数并返回该state要移去哪个stash名字的函数</p>
+</blockquote>
+<p>现在的angr中<code>n</code>和<code>until</code>已经移植到<code>run()</code>中，用法相同</p>
+<h4 id="use-technique"><a href="#use-technique" class="headerlink" title="use_technique"></a>use_technique</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string"> Use an exploration technique with this SimulationManager.</span><br><span class="hljs-string"></span><br><span class="hljs-string"> Techniques can be found in :mod:`angr.exploration_techniques`.</span><br><span class="hljs-string"></span><br><span class="hljs-string">:param tech:    一个ExplorationTechnique对象，用以控制该SimluationManger行为</span><br><span class="hljs-string">:type tech:     ExplorationTechnique           （note：ExplorationTechnique也是angr的一个比较重要的类）</span><br><span class="hljs-string">:return:        The technique that was added, for convenience</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">isinstance</span>(tech, ExplorationTechnique):<br>            <span class="hljs-keyword">raise</span> SimulationManagerError<br><br>        <span class="hljs-comment"># <span class="hljs-doctag">XXX:</span> as promised</span><br>        tech.project = self._project<br>        tech.setup(self)<br><br>        HookSet.install_hooks(self, **tech._get_hooks())<br>        self._techniques.append(tech)<br>        <span class="hljs-keyword">return</span> tech<br></code></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>State是一个模拟状态，里面包含很多值，各种寄存器，内存以及几乎所有可以变得值，它是大多数函数的参数。</p>
+<p>我们想要得到一个state，可以调用factory里的关于state的方法。还可以使用得到的state的对象以及factory.simgr方法得到一个SimManger对象。factory相当于一个工具箱，封装angr内部许多常用方法，方便我们调用，就不需要自己手动操作了。</p>
+<p>当我们拥有一个state的时候，就可以把它丢给SimManger了，我们可以到一个SimManger的对象，这一步相当于把这个state拉伸进内存，得到更多有效信息，就可以开始正式执行了，而且我们还可以设定各种执行方式，是只走一步还是一直走到尽头?中间状态要怎么处理？以什么方式走？等等</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CTF/" class="category-chain-item">CTF</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/CTF/angr/" class="category-chain-item">angr</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/reverse/">#reverse</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Factory SimManger State</div>
+      <div>http://example.com/2023/05/24/Factory SimManger State/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>yring</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>May 24, 2023</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/05/24/Simulation-Managers/" title="Simulation Managers">
+                        <span class="hidden-mobile">Simulation Managers</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <i class="iconfont icon-love"></i>nobody knows ,but we always know
+
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/DynamicLine.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/love.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/snowflake.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/scroll.css.js"></script>
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/runtime.min.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
