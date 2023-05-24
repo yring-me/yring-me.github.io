@@ -16,23 +16,21 @@
   <meta name="author" content="yring">
   <meta name="keywords" content="">
   
-    <meta name="description" content="简单说说Factory SimManger State关系">
+    <meta name="description" content="简单说说facntory SimManger State关系">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Factory SimManger State">
 <meta property="og:url" content="http://example.com/2023/05/24/Factory%20SimManger%20State/index.html">
 <meta property="og:site_name" content="yring">
-<meta property="og:description" content="简单说说Factory SimManger State关系">
+<meta property="og:description" content="简单说说facntory SimManger State关系">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305242007427.jpg">
 <meta property="article:published_time" content="2023-05-24T08:20:00.000Z">
-<meta property="article:modified_time" content="2023-05-24T12:23:43.239Z">
+<meta property="article:modified_time" content="2023-05-24T14:45:15.719Z">
 <meta property="article:author" content="yring">
 <meta property="article:tag" content="reverse">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305242007427.jpg">
   
-  
-    <meta name="referrer" content="no-referrer-when-downgrade">
   
   
   <title>Factory SimManger State - yring</title>
@@ -241,7 +239,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          6.8k words
+          6.7k words
         
       </span>
     
@@ -258,14 +256,6 @@
     
 
     
-    
-      
-        <span id="busuanzi_container_page_pv" style="display: none">
-          <i class="iconfont icon-eye" aria-hidden="true"></i>
-          <span id="busuanzi_value_page_pv"></span> views
-        </span>
-        
-      
     
   </div>
 
@@ -303,31 +293,31 @@
             
               <div class="markdown-body">
                 
-                <p>简单说说Factory SimManger State关系</p>
+                <p>简单说说<a target="_blank" rel="noopener" href="https://docs.angr.io/en/latest/_modules/angr/factory.html">facntory</a> <a target="_blank" rel="noopener" href="https://docs.angr.io/en/latest/_modules/angr/sim_manager.html#SimulationManager">SimManger</a> State关系</p>
 <span id="more"></span>
 
 <p>一般使用angr时，都会以以下几句开头</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> angr<br>proj = angr.Project(<span class="hljs-string">&#x27;examples/fauxware/fauxware&#x27;</span>, auto_load_libs=<span class="hljs-literal">False</span>)<br>state = proj.factory.entry_state()<br>simgr = proj.factory.simgr(state)<br></code></pre></td></tr></table></figure>
 
 <p>现在就来看看<code>factory</code>都究竟是个啥</p>
-<p>首先[factory](<a target="_blank" rel="noopener" href="https://docs.angr.io/en/latest/_modules/angr/factory.html">angr.factory - angr documentation</a>)是一个类，但是它更像是一个工具类，帮助我们完成一些事情，我们就可以简单调用里面的方法。比如我们想要初始化一个入口函数的<code>state</code>,那么我们就可以调用<code>factory</code>里面的<code>entry_state()</code>,就不用自己再去关心那细节。</p>
+<p>首先factory是一个类，但是它更像是一个工具类，帮助我们完成一些事情，我们就可以简单调用里面的方法。比如我们想要初始化一个入口函数的<code>state</code>,那么我们就可以调用<code>factory</code>里面的<code>entry_state()</code>,就不用自己再去关心那细节。</p>
 <p>现在就来看看里面还有哪些方法</p>
-<h2 id="State"><a href="#State" class="headerlink" title="State"></a>State</h2><h3 id="blank-state-self-kwargs"><a href="#blank-state-self-kwargs" class="headerlink" title="blank_state(self**,** ******kwargs)"></a>blank_state(self**,** ******kwargs)</h3><p>调用此方法，会返回一个几乎没有初始化的state对象</p>
+<h2 id="State"><a href="#State" class="headerlink" title="State"></a>State</h2><h3 id="blank-state-self-kwargs"><a href="#blank-state-self-kwargs" class="headerlink" title="blank_state(self, **kwargs)"></a>blank_state(self, **kwargs)</h3><p>调用此方法，会返回一个几乎没有初始化的state对象</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">blank_state</span>(<span class="hljs-params">self,**kwargs</span>)<br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">        Returns a mostly-uninitialized state object. All parameters are optional.</span><br><span class="hljs-string"></span><br><span class="hljs-string">        :param addr:            State 开始的地址</span><br><span class="hljs-string">        :param initial_prefix:  如果提供，所有的符号寄存器都会有一个以此为前缀字符串的符号值</span><br><span class="hljs-string">        :param fs:              A dictionary of file names with associated preset SimFile objects.</span><br><span class="hljs-string">        :param concrete_fs:     bool describing whether the host filesystem should be consulted when opening files.</span><br><span class="hljs-string">        :param chroot:          A path to use as a fake root directory, Behaves similarly to a real chroot. Used only when concrete_fs is set to True.</span><br><span class="hljs-string">        :param kwargs:          Any additional keyword args will be passed to the SimState constructor.</span><br><span class="hljs-string">        :return:                返回一个空 state</span><br><span class="hljs-string">        :rtype:                 返回类型 SimState</span><br><span class="hljs-string"> &quot;&quot;&quot;</span><br> <span class="hljs-keyword">return</span> self.project.simos.state_blank<br></code></pre></td></tr></table></figure>
 
-<h3 id="entry-state-self-kwargs"><a href="#entry-state-self-kwargs" class="headerlink" title="entry_state(self**,** ******kwargs)"></a>entry_state(self**,** ******kwargs)</h3><p>调用此方法，返回一个起始地址的<code>state</code></p>
-<h3 id="full-init-state-self-kwargs"><a href="#full-init-state-self-kwargs" class="headerlink" title="full_init_state(self**,** ******kwargs)"></a>full_init_state(self**,** ******kwargs)</h3><blockquote>
+<h3 id="entry-state-self-kwargs"><a href="#entry-state-self-kwargs" class="headerlink" title="entry_state(self, **kwargs)"></a>entry_state(self, **kwargs)</h3><p>调用此方法，返回一个起始地址的<code>state</code></p>
+<h3 id="full-init-state-self-kwargs"><a href="#full-init-state-self-kwargs" class="headerlink" title="full_init_state(self, **kwargs)"></a>full_init_state(self, **kwargs)</h3><blockquote>
 <p><em>Very much like :meth:<code>entry_state()</code>, except that instead of starting execution at the program entry point,</em>        <em>execution begins at a special SimProcedure that plays the role of the dynamic loader, calling each of the</em>        <em>initializer functions that should be called before execution reaches the entry point.</em>         <em>It can take any of the arguments that can be provided to <code>entry_state</code>, except for <code>addr</code>.</em></p>
 </blockquote>
 <p>意思是，这个方法拥有以上的所有参数除了addr，因为这个方法是先于符号执行的，它的作用是初始化，调用哪些所有的初始化函数</p>
-<h3 id="call-state-self-addr-args-kwargs"><a href="#call-state-self-addr-args-kwargs" class="headerlink" title="call_state(self**,** addr**,** *args, ******kwargs)"></a>call_state(self**,** addr**,** *<strong><strong>args</strong>,</strong> ******kwargs)</h3><p>很显然是一个创建call到某个函数的state，它的参数</p>
+<h3 id="call-state-self-addr-args-kwargs"><a href="#call-state-self-addr-args-kwargs" class="headerlink" title="call_state(self, addr, *args, **kwargs)"></a>call_state(self, addr, *args, **kwargs)</h3><p>很显然是一个创建call到某个函数的state，它的参数</p>
 <blockquote>
 <p><em>Returns a state object initialized to the start of a given function, as if it were called with given parameters.</em>         </p>
 <p><em>:param addr:            The address the state should start at instead of the entry point.</em>        </p>
 <p><em>:param args:            Any additional positional arguments will be used as arguments to the function call.</em> </p>
 </blockquote>
 <p>返回一个以给定函数起初地址的<code>state</code>，换句话说提供<code>addr</code>,它将以此创建一个<code>state</code>,而不再是entry point。它也可以通过<code>args</code>来传递所call的函数参数</p>
-<h2 id="Simulation-Manager"><a href="#Simulation-Manager" class="headerlink" title="Simulation Manager"></a>Simulation Manager</h2><h3 id="simgr-simulation-manager-self-thing-Optional-Union-List-SimState-SimState-x3D-None-kwargs"><a href="#simgr-simulation-manager-self-thing-Optional-Union-List-SimState-SimState-x3D-None-kwargs" class="headerlink" title="simgr simulation_manager( self**,** thing**:** Optional**[Union[List[SimState],** SimState**]]** &#x3D; None,******kwargs)"></a>simgr simulation_manager( self**,** thing**:** Optional**[<strong>Union</strong>[<strong>List</strong>[<strong>SimState</strong>],** SimState**]]** <strong>&#x3D;</strong> <strong>None</strong>,******kwargs)</h3><blockquote>
+<h2 id="Simulation-Manager"><a href="#Simulation-Manager" class="headerlink" title="Simulation Manager"></a>Simulation Manager</h2><h3 id="simgr-simulation-manager-self-thing-Optional-Union-List-SimState-SimState-x3D-None-kwargs"><a href="#simgr-simulation-manager-self-thing-Optional-Union-List-SimState-SimState-x3D-None-kwargs" class="headerlink" title="simgr simulation_manager( self, thing: Optional[Union[List[SimState], SimState]] &#x3D; None,**kwargs)"></a>simgr simulation_manager( self, <strong>thing</strong>: Optional[Union[List[SimState], SimState]] &#x3D; None,**kwargs)</h3><blockquote>
 <p><em>Constructs a new simulation manager.</em>         </p>
 <p><em>:param thing: 	What to put in the new SimulationManager’s active stash (either a SimState 								  or a list of</em>  <em>SimStates).</em> </p>
 <p><em>:param kwargs:  Any additional keyword arguments will be passed to the SimulationManager 		                       constructor</em>        </p>
@@ -474,6 +464,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2023/05/24/ExplorationTechniques/" title="ExplorationTechnique">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">ExplorationTechnique</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
@@ -733,8 +729,6 @@
   <script>Fluid.plugins.imageCaption();</script>
 
   <script  src="/js/local-search.js" ></script>
-
-  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
 
 
 

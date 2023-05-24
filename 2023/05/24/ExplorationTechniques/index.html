@@ -16,16 +16,16 @@
   <meta name="author" content="yring">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Stepping Stash-Management Simple-Exploration Exploration-Techniques原文档链接在此">
+    <meta name="description" content="About [ExplorationTechnique](angr.exploration_techniques - angr documentation)">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Simulation Managers">
-<meta property="og:url" content="http://example.com/2023/05/24/Simulation-Managers/index.html">
+<meta property="og:title" content="ExplorationTechnique">
+<meta property="og:url" content="http://example.com/2023/05/24/ExplorationTechniques/index.html">
 <meta property="og:site_name" content="yring">
-<meta property="og:description" content="Stepping Stash-Management Simple-Exploration Exploration-Techniques原文档链接在此">
+<meta property="og:description" content="About [ExplorationTechnique](angr.exploration_techniques - angr documentation)">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305242007427.jpg">
-<meta property="article:published_time" content="2023-05-23T16:15:44.000Z">
-<meta property="article:modified_time" content="2023-05-24T14:36:39.718Z">
+<meta property="article:published_time" content="2023-05-24T14:45:22.872Z">
+<meta property="article:modified_time" content="2023-05-24T14:45:22.872Z">
 <meta property="article:author" content="yring">
 <meta property="article:tag" content="reverse">
 <meta name="twitter:card" content="summary_large_image">
@@ -33,7 +33,7 @@
   
   
   
-  <title>Simulation Managers - yring</title>
+  <title>ExplorationTechnique - yring</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -216,7 +216,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Simulation Managers"></span>
+            <span id="subtitle" data-typed-text="ExplorationTechnique"></span>
           
         </div>
 
@@ -227,8 +227,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-05-24 00:15" pubdate>
-          May 24, 2023 am
+        <time datetime="2023-05-24 22:45" pubdate>
+          May 24, 2023 pm
         </time>
       </span>
     
@@ -239,7 +239,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.8k words
+          2.5k words
         
       </span>
     
@@ -250,7 +250,7 @@
         
         
         
-          19 mins
+          10 mins
         
       </span>
     
@@ -288,93 +288,31 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Simulation Managers</h1>
+            <h1 style="display: none">ExplorationTechnique</h1>
             
             
               <div class="markdown-body">
                 
-                <p>Stepping Stash-Management Simple-Exploration Exploration-Techniques原文档链接<a target="_blank" rel="noopener" href="https://docs.angr.io/en/latest/core-concepts/pathgroups.html#simulation-managers">在此</a></p>
+                <p>About [ExplorationTechnique](<a target="_blank" rel="noopener" href="https://docs.angr.io/en/latest/_modules/angr/exploration_techniques.html#ExplorationTechnique">angr.exploration_techniques - angr documentation</a>)</p>
 <span id="more"></span>
 
+<p>首先，这也是一个类。先来看看angr对这个类的说明</p>
 <blockquote>
-<p>The most important control interface in angr is the SimulationManager, which allows you to control symbolic execution over groups of states simultaneously, applying search strategies to explore a program’s state space. Here, you’ll learn how to use it.</p>
+<p><em>An technique is a set of hooks for a simulation manager that assists in the implementation of new techniques in symbolic exploration.</em>      </p>
+<p><em>Any number of these methods may be overridden by a subclass.</em> <em>To use an exploration technique, call <code>simgr.use_technique</code> with an *instance* of the technique.</em></p>
 </blockquote>
-<p>概括：angr里面最重要的控制接口就是<code>SimulationManager</code>,可以以此同时控制不同的<code>states</code>符号执行，我们也可以以此来执行我们的搜索策略</p>
-<blockquote>
-<p>Simulation managers let you wrangle multiple states in a slick way. States are organized into “stashes”, which you can step forward, filter, merge, and move around as you wish. This allows you to, for example, step two different stashes of states at different rates, then merge them together. The default stash for most operations is the <code>active</code> stash, which is where your states get put when you initialize a new simulation manager.</p>
-</blockquote>
-<p>概括：我们可以用用<code>Simulation Managers</code>来管理多个<code>states</code>,<code>States</code>又是由<code>stashes</code>组成，这些<code>stashes</code>我们可以步入、过滤、融合甚至移到另一个<code>stashes</code>,对于绝大多数的<code>stashes</code>都是<code>active</code></p>
-<p>note: 这里一直说的<code>stashes</code>其实就是一种状态标志，意味这个block是否还能继续走下去，比如说一个block是<code>active</code>的，那么它就还有后继而且还能继续往下执行。所以当我们初始丢给<code>Simulation Manager</code>的state应该是<code>active</code>的，这样它<code>Simulation Manager</code>才会为我们模拟执行</p>
-<h2 id="Stepping"><a href="#Stepping" class="headerlink" title="Stepping"></a>Stepping</h2><p>一个简单的demo</p>
-<p>我们使用<code>.step()</code>来让当前的state执行一步，去到下一个block。demo中给出了两个block的地址</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> angr<br>proj = angr.Project(<span class="hljs-string">&#x27;examples/fauxware/fauxware&#x27;</span>, auto_load_libs=<span class="hljs-literal">False</span>)<br>state = proj.factory.entry_state()<br>simgr = proj.factory.simgr(state)<br>simgr.active<br>[&lt;SimState @ <span class="hljs-number">0x400580</span>&gt;]<br><br>simgr.step()<br>simgr.active<br>[&lt;SimState @ <span class="hljs-number">0x400540</span>&gt;]<br></code></pre></td></tr></table></figure>
+<p>就是说这个technique是一系列hook的集合，可以更好帮助我们符号执行。而且这个类里面的方法都可以使用子类重写，用一个实例来调用<code>simgr.use_technique</code> </p>
+<p>其实这个类就是帮我们把符号执行所必须的几个步骤给我们打包起来，然后让我们重载里面的步骤，新生成一个子类，然后按照这子类里面规定的方法去符号执行</p>
+<p>这是整个类的定义以及相关成员函数的说明</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">ExplorationTechnique</span>:<br><br>    <span class="hljs-comment"># 主要hook函数</span><br>    _hook_list = (<span class="hljs-string">&quot;step&quot;</span>, <span class="hljs-string">&quot;filter&quot;</span>, <span class="hljs-string">&quot;selector&quot;</span>, <span class="hljs-string">&quot;step_state&quot;</span>, <span class="hljs-string">&quot;successors&quot;</span>)<br><br>    <span class="hljs-comment"># 得到被重写的hook函数</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_get_hooks</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">return</span> &#123;name: <span class="hljs-built_in">getattr</span>(self, name) <span class="hljs-keyword">for</span> name <span class="hljs-keyword">in</span> self._hook_list <span class="hljs-keyword">if</span> self._is_overriden(name)&#125;<br>    <br>	<span class="hljs-comment"># 判断哪些函数被重写</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_is_overriden</span>(<span class="hljs-params">self, name</span>):<br>        <span class="hljs-keyword">return</span> <span class="hljs-built_in">getattr</span>(self, name).__code__ <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">getattr</span>(ExplorationTechnique, name).__code__<br><br>	<span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">hasattr</span>(self, <span class="hljs-string">&quot;project&quot;</span>):<br>            self.project: angr.project.Project = <span class="hljs-literal">None</span><br><br>	<span class="hljs-comment"># 这确实就是一个空函数，专门提供给使用者来初始化自己所要的</span><br>	<span class="hljs-keyword">def</span> <span class="hljs-title function_">setup</span>(<span class="hljs-params">self, simgr</span>):<br>        <br>	<br>	<span class="hljs-keyword">def</span> <span class="hljs-title function_">step</span>(<span class="hljs-params">self, simgr, stash=<span class="hljs-string">&quot;active&quot;</span>, **kwargs</span>): <br>        <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">         用来hook step函数，最后应该调用simgr.step以便真正执行</span><br><span class="hljs-string">         原本的step是往下执行一步，去到后继block</span><br><span class="hljs-string">        &quot;&quot;&quot;</span><br>        simgr.step(stash=stash, **kwargs)<br><br><br>	<span class="hljs-keyword">def</span> <span class="hljs-title function_">filter</span>(<span class="hljs-params">self, simgr, state, **kwargs</span>):  <br>        <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">          决定该state要被移去哪一个stash</span><br><span class="hljs-string">          </span><br><span class="hljs-string">          如果说这个state要被filter的话，就把这个state要被移去的stash名字返回</span><br><span class="hljs-string">          如果想在filter之前对state做一些改变，就返回一个stash的元组，并修改state</span><br><span class="hljs-string">          </span><br><span class="hljs-string">          这和step里的filter_fun起到的作用一样的</span><br><span class="hljs-string">        &quot;&quot;&quot;</span><br>        <span class="hljs-keyword">return</span> simgr.<span class="hljs-built_in">filter</span>(state, **kwargs)<br><br><br>	<span class="hljs-keyword">def</span> <span class="hljs-title function_">selector</span>(<span class="hljs-params">self, simgr, state, **kwargs</span>):  <br>        <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">        决定该state是否要参与进这个step round，也就是如果这个state要进入的话，就返		</span><br><span class="hljs-string">        回True否则返回False</span><br><span class="hljs-string">        </span><br><span class="hljs-string">        这个step里的selector_fun起到的作用是一样的</span><br><span class="hljs-string">        &quot;&quot;&quot;</span><br>        <span class="hljs-keyword">return</span> simgr.selector(state, **kwargs)<br><br><br>	<span class="hljs-keyword">def</span> <span class="hljs-title function_">step_state</span>(<span class="hljs-params">self, simgr, state, **kwargs</span>):  <br>        <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">        决定该state的successor应该放去哪个块。结果应该是一个stash到successor列表的字典映射</span><br><span class="hljs-string">        如[&quot;active:[succ1,succ2]&quot;]</span><br><span class="hljs-string">        </span><br><span class="hljs-string">        note:该函数的优先级高于filter filter是作用于当前返回的state</span><br><span class="hljs-string">        &quot;&quot;&quot;</span><br>        <span class="hljs-keyword">return</span> simgr.step_state(state, **kwargs)<br><br><br> 	<span class="hljs-keyword">def</span> <span class="hljs-title function_">successors</span>(<span class="hljs-params">self, simgr, state, **kwargs</span>):  <br>        <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">        在进入一个state时调用，返回一个SimSuccssors对象</span><br><span class="hljs-string">        &quot;&quot;&quot;</span><br>        <span class="hljs-keyword">return</span> simgr.successors(state, **kwargs)<br><br><br>	<span class="hljs-keyword">def</span> <span class="hljs-title function_">complete</span>(<span class="hljs-params">self, simgr</span>):  <br>        <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">        返回当前simgr是否到达 &quot;completed&quot; state</span><br><span class="hljs-string">        </span><br><span class="hljs-string">        该方法不是hook的对象，也不应该直接调用此方法，而是应该自己决定返回True或者False</span><br><span class="hljs-string">        &quot;&quot;&quot;</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span><br></code></pre></td></tr></table></figure>
 
-<p>你一定想问，那如果一个state的后继不止有一个呢？答案是<code>.step()</code>都会执行</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># Step until the first symbolic branch</span><br><span class="hljs-meta">&gt;&gt;&gt; </span><span class="hljs-keyword">while</span> <span class="hljs-built_in">len</span>(simgr.active) == <span class="hljs-number">1</span>:     <span class="hljs-comment">#只有当前处于active的数量为1，才往下执行</span><br><span class="hljs-meta">... </span>   simgr.step()<br><br><span class="hljs-meta">&gt;&gt;&gt; </span>simgr<br>&lt;SimulationManager <span class="hljs-keyword">with</span> <span class="hljs-number">2</span> active&gt;<br><span class="hljs-meta">&gt;&gt;&gt; </span>simgr.active<br>[&lt;SimState @ <span class="hljs-number">0x400692</span>&gt;, &lt;SimState @ <span class="hljs-number">0x400699</span>&gt;]<br><br><span class="hljs-comment"># Step until everything terminates</span><br><span class="hljs-meta">&gt;&gt;&gt; </span>simgr.run()<br><span class="hljs-meta">&gt;&gt;&gt; </span>simgr<br>&lt;SimulationManager <span class="hljs-keyword">with</span> <span class="hljs-number">3</span> deadended&gt;<br></code></pre></td></tr></table></figure>
-
-<p>如果我们不关心中间过程，只希望它能一直跑下去，直到再也没有后继块可以执行，那么我们可以用.<code>run()</code></p>
-<p>现在我们使用了<code>.run()</code>得到最终的state，它有三个<code>stash</code>,并且都是<code>deadended</code>状态，也就是跑不动了</p>
-<h2 id="Stash-Management"><a href="#Stash-Management" class="headerlink" title="Stash Management"></a>Stash Management</h2><p>我们可以用<code>.move()</code>来转移状态，它有三个参数<code>from_stash</code>,<code>to_statsh</code>,以及一个可选参数<code>filter_func</code></p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs py">simgr.move(from_stash=<span class="hljs-string">&#x27;deadended&#x27;</span>, to_stash=<span class="hljs-string">&#x27;authenticated&#x27;</span>, filter_func=<span class="hljs-keyword">lambda</span> s: <span class="hljs-string">b&#x27;Welcome&#x27;</span> <span class="hljs-keyword">in</span> s.posix.dumps(<span class="hljs-number">1</span>))<br>simgr<br>&lt;SimulationManager <span class="hljs-keyword">with</span> <span class="hljs-number">2</span> authenticated, <span class="hljs-number">1</span> deadended&gt;<br></code></pre></td></tr></table></figure>
-
-<p>这个demo让我们把输出含有<code>Welcome</code>的state转移到<code>authenticated</code>，也就是说<code>authenticated</code>里的state都含有<code>Welcome</code></p>
-<p>每一个<code>stash</code>都是一个列表，我们可以用常规的去索引，也可以用其他方法。如果我们加一个前缀<code>one_</code>那么我们就会访问这个<code>stash</code>的第一个元素，如果用<code>mp_</code>就可以同时访问全部，关于<code>mp_</code>这有一个<a target="_blank" rel="noopener" href="https://github.com/zardus/mulpyplexer">说明</a></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> s <span class="hljs-keyword">in</span> simgr.deadended + simgr.authenticated:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-built_in">hex</span>(s.addr))<br><span class="hljs-number">0x1000030</span><br><span class="hljs-number">0x1000078</span><br><span class="hljs-number">0x1000078</span><br><br>simgr.one_deadended<br>&lt;SimState @ <span class="hljs-number">0x1000030</span>&gt;<br>simgr.mp_authenticated<br>MP([&lt;SimState @ <span class="hljs-number">0x1000078</span>&gt;, &lt;SimState @ <span class="hljs-number">0x1000078</span>&gt;])<br>simgr.mp_authenticated.posix.dumps(<span class="hljs-number">0</span>)<br>MP([<span class="hljs-string">&#x27;\x00\x00\x00\x00\x00\x00\x00\x00\x00SOSNEAKY\x00&#x27;</span>,<br>    <span class="hljs-string">&#x27;\x00\x00\x00\x00\x00\x00\x00\x00\x00S\x80\x80\x80\x80@\x80@\x00&#x27;</span>])<br></code></pre></td></tr></table></figure>
-
-<blockquote>
-<p>Of course, <code>step</code>, <code>run</code>, and any other method that operates on a single stash of paths can take a <code>stash</code> argument, specifying which stash to operate on.</p>
-</blockquote>
-<p>也就是所有的<code>step</code>,<code>run</code>方法都可以接受一个<code>stash</code>参数，来决定执行哪一个</p>
-<h3 id="Stash-types"><a href="#Stash-types" class="headerlink" title="Stash types"></a>Stash types</h3><p>You can use stashes for whatever you like, but there are a few stashes that will be used to categorize some special kinds of states. These are:</p>
-<table>
-<thead>
-<tr>
-<th>Stash</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>active</td>
-<td>可执行的</td>
-</tr>
-<tr>
-<td>deadended</td>
-<td>再也无法执行的，可能是因为无法到达，没有后继等</td>
-</tr>
-<tr>
-<td>pruned</td>
-<td>（不太确定）当使用<code>LAZY_SOLVES</code>时，states不会再检查可满足性，当一个state发现是<code>unsat</code>时，这个states路径上的所有states都会变成<code>pruned</code></td>
-</tr>
-<tr>
-<td>unconstrained</td>
-<td>如果 <code>save_unconstrained</code> 传递给SimelationManager constructor, 那些无约束的就时<code>unconstrained</code></td>
-</tr>
-<tr>
-<td>unsat</td>
-<td>如果 <code>save_unsat</code> 传递给SimelationManager constructor, 那些无解的就时<code>unsat</code>,比如要求输入同时满足即是’AAAA’又是’BBBB’</td>
-</tr>
-</tbody></table>
-<h2 id="Simple-Exploration"><a href="#Simple-Exploration" class="headerlink" title="Simple Exploration"></a>Simple Exploration</h2><p>符号执行很普遍的用法是找到一个可以到达某个地址的states，而忽略其他所有的states，angr提供<code>.explore()</code>来方便执行。</p>
-<p>当我们使用<code>.explore()</code>方法时，它可以接受两个参数<code>find</code>以及<code>avoid</code>。其中<code>find</code>可以是一个地址，一个列表，一个以<code>state</code>为参数返回某些值的函数，当任何一个<code>active</code>符合<code>find</code>的要求，那么它就会被放入<code>found</code>stash里面，同时停止执行，<code>avoid</code>一样，不过是放入<code>avoided</code>stash里面，然后继续符号执行。<code>num_find</code>可以决定找多少个<code>found</code>，简单demo</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 装载</span><br>proj = angr.Project(<span class="hljs-string">&#x27;examples/CSCI-4968-MBE/challenges/crackme0x00a/crackme0x00a&#x27;</span>)<br><span class="hljs-comment"># 创建对象</span><br>simgr = proj.factory.simgr()<br><span class="hljs-comment"># 开始符号执行 搜索</span><br>simgr.explore(find=<span class="hljs-keyword">lambda</span> s: <span class="hljs-string">b&quot;Congrats&quot;</span> <span class="hljs-keyword">in</span> s.posix.dumps(<span class="hljs-number">1</span>))<br>&lt;SimulationManager <span class="hljs-keyword">with</span> <span class="hljs-number">1</span> active, <span class="hljs-number">1</span> found&gt;<br><span class="hljs-comment"># 找到一个 利用索引的方式得到该state</span><br>s = simgr.found[<span class="hljs-number">0</span>]<br><span class="hljs-comment"># 查看该state的输出</span><br><span class="hljs-built_in">print</span>(s.posix.dumps(<span class="hljs-number">1</span>))<br>Enter password: Congrats!<br><span class="hljs-comment"># 查看该state的输入</span><br>flag = s.posix.dumps(<span class="hljs-number">0</span>)<br><span class="hljs-built_in">print</span>(flag)<br>g00dJ0B!<br></code></pre></td></tr></table></figure>
-
-
-
-<h2 id="Exploration-Techniques"><a href="#Exploration-Techniques" class="headerlink" title="Exploration Techniques"></a>Exploration Techniques</h2><p>angr内置了很多种的搜索算法，但是我们也可以自己写一个搜索算法，并通过<code>simgr.use_technique(tech)</code>调用，这里的<code>tech</code>是<code>ExplorationTechnique</code>子类。后面会再详谈，这里先列出angr内置的一些搜索算法</p>
-<ul>
-<li><em>DFS</em>: 深度优先，只会让一个state为active，把其他的放进<code>deferred</code>stash</li>
-<li><em>Explorer</em>: 实现<code>.explore()</code>,可以使用<code>find</code>,<code>avoid</code>方法</li>
-<li><em>LengthLimiter</em>:最长路径截断</li>
-<li><em>LoopSeer</em>: 如果可能在一个循环里面，放入<code>spining</code>stash,直到其他可达路径都走完</li>
-<li><em>ManualMergepoint</em>: 标记一个地址作为merge点，当一个stata到达此处时将其挂起，当其他state在某个时间内到达这个点时会被merge</li>
-<li><em>Memory</em>：在<code>.step()</code>之间监视内存释放&#x2F;使用情况,如果内存释放&#x2F;使用得少的话，停止探索</li>
-<li><em>Oppologist</em>: 当angr遇到一个不支持的指令的时候，会具体化所有的输入，并使用unicorn引擎来单独模拟这条指令，使得可以继续符号执行</li>
-<li><em>Spiller</em>: 当有太多states处于active状态时，这可以把一些states放进磁盘中，使得内存开销比较小</li>
-<li><em>Threading</em>: 使用多线程并行处理，但由于python全局变量线程锁的原因，这并不会有多大提升。但是如果在angr的native-code依赖（z3，unicorn，libvex）上花太多时间可以考虑这项技术</li>
-<li><em>Tracer</em>：可以动态追踪资源</li>
-<li><em>Veritesting</em>:自动识别有用的可合并点，使用<code>veritesting=True</code>来启用，这会提高搜索效率，但与其他算法配合得并不是很好</li>
-</ul>
-<p>Look at the API documentation for the <a target="_blank" rel="noopener" href="https://docs.angr.io/en/latest/api.html#angr.sim_manager.SimulationManager"><code>SimulationManager</code></a> and <a target="_blank" rel="noopener" href="https://docs.angr.io/en/latest/api.html#angr.exploration_techniques.ExplorationTechnique"><code>ExplorationTechnique</code></a> classes for more information.</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><code>setup</code> 	初始化</p>
+<p><code>step</code> hook步入</p>
+<p><code>filter</code>决定该state放去哪 即丢去哪</p>
+<p><code>selector</code> 决定该state是否执行 </p>
+<p><code>step_state</code> 决定successors放去哪个stash</p>
+<p><code>successors</code> 在进入一个state时调用</p>
+<p><code>complete</code> 是否全部完成</p>
 
                 
               </div>
@@ -427,8 +365,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Simulation Managers</div>
-      <div>http://example.com/2023/05/24/Simulation-Managers/</div>
+      <div>ExplorationTechnique</div>
+      <div>http://example.com/2023/05/24/ExplorationTechniques/</div>
     </div>
     <div class="license-meta">
       
@@ -472,18 +410,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/05/24/Factory%20SimManger%20State/" title="Factory SimManger State">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Factory SimManger State</span>
-                        <span class="visible-mobile">Previous</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/05/23/Core-Concept/" title="Core Concept">
-                        <span class="hidden-mobile">Core Concept</span>
+                      <a href="/2023/05/24/Factory%20SimManger%20State/" title="Factory SimManger State">
+                        <span class="hidden-mobile">Factory SimManger State</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
