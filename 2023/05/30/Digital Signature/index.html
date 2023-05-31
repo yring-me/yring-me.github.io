@@ -25,7 +25,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://www.nasachina.cn/wp-content/uploads/2023/05/SeaBlueSky_Horalek_960_annotated.jpg">
 <meta property="article:published_time" content="2023-05-30T15:07:00.000Z">
-<meta property="article:modified_time" content="2023-05-31T11:38:59.789Z">
+<meta property="article:modified_time" content="2023-05-31T11:52:33.269Z">
 <meta property="article:author" content="yring">
 <meta property="article:tag" content="Crypto">
 <meta name="twitter:card" content="summary_large_image">
@@ -507,7 +507,7 @@
 <li>对于消息 <em>m</em> ，首先随机选取一个整数 <em>k</em>，$1 \leq k \leq p-2 $ ,然后计算<br>$$ {left}<br>\begin{align}<br>&amp;r &#x3D; (g^k \bmod p ) \bmod q \<br>&amp;s &#x3D; (h(m) + xr) K^{-1} \bmod q<br>\end{align}<br>$$<br>则 <em>m</em> 的签名为 $(r,s$) ,其中 <em>h</em> 为Hash函数SHA</li>
 </ul>
 <h4 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h4><ul>
-<li><p>接收方收到消息 <em>m</em> 和 签名 $(r,s$)，后计算<br>$$<br>\begin{align}<br>u_1 &amp;&#x3D; h(m) s^{-1} \bmod q \<br>u_2 &amp;&#x3D; rs^{-1} \bmod q<br>\end{align}<br>$$</p>
+<li><p>接收方收到消息 <em>m</em> 和 签名 $(r,s$)，后计算<br>$$<br>\begin{align}<br>u_1 &amp;&#x3D; h(m) s^{-1} \bmod q \newline<br>u_2 &amp;&#x3D; rs^{-1} \bmod q<br>\end{align}<br>$$</p>
 </li>
 <li><p>验证等式<br>$$<br>(g^{u_1}y^{u_2} \bmod p) \bmod q &#x3D;r<br>$$</p>
 </li>
@@ -517,7 +517,7 @@
 <h4 id="正确性"><a href="#正确性" class="headerlink" title="正确性"></a>正确性</h4><ul>
 <li><p>因为 $u_1 + xu_2 \bmod q &#x3D; (h(m) + xr)s^{-1} \bmod q &#x3D; k$</p>
 </li>
-<li><p>所以<br>$$<br>\begin{align}<br>g^{u_1}y^{u_2} \bmod p \bmod q &amp;&#x3D; g^{u_1+ xu_2} \bmod p \bmod q \<br>&amp;&#x3D; g^k \bmod p \bmod q \<br>&amp;&#x3D;r<br>\end{align}<br>$$</p>
+<li><p>所以<br>$$<br>\begin{align}<br>g^{u_1}y^{u_2} \bmod p \bmod q &amp;&#x3D; g^{u_1+ xu_2} \bmod p \bmod q \newline<br>&amp;&#x3D; g^k \bmod p \bmod q \newline<br>&amp;&#x3D;r<br>\end{align}<br>$$</p>
 </li>
 </ul>
 <h2 id="特殊性质的签名算法"><a href="#特殊性质的签名算法" class="headerlink" title="特殊性质的签名算法"></a>特殊性质的签名算法</h2><h3 id="盲签名"><a href="#盲签名" class="headerlink" title="盲签名"></a>盲签名</h3><h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><ul>
