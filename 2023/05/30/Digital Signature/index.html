@@ -25,7 +25,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://www.nasachina.cn/wp-content/uploads/2023/05/SeaBlueSky_Horalek_960_annotated.jpg">
 <meta property="article:published_time" content="2023-05-30T15:07:00.000Z">
-<meta property="article:modified_time" content="2023-05-31T16:37:33.900Z">
+<meta property="article:modified_time" content="2023-06-13T04:54:38.733Z">
 <meta property="article:author" content="yring">
 <meta property="article:tag" content="Crypto">
 <meta name="twitter:card" content="summary_large_image">
@@ -239,7 +239,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          7.6k words
+          7.7k words
         
       </span>
     
@@ -250,7 +250,7 @@
         
         
         
-          30 mins
+          31 mins
         
       </span>
     
@@ -412,6 +412,7 @@
 <li>g：$Z^*_p $的一个生成元</li>
 <li>x：用户A的密钥，$x \in Z^*_p$</li>
 <li>y：用户A的公钥，$y \equiv g^x(\bmod p)$</li>
+<li>K:  随机数，用于计算 $r &#x3D; g^k \bmod p$, $r$ 是签名之一</li>
 </ul>
 </li>
 <li>参数要求：<ul>
@@ -446,7 +447,7 @@
 <ul>
 <li><p>因为 $ s &#x3D; (h(m) - x \cdot r) \cdot k^{-1} \bmod (p-1)$</p>
 </li>
-<li><p>所以 $ s \cdot r + x \cdot r &#x3D; h(m) \bmod (p-1)$</p>
+<li><p>所以 $ s \cdot k + x \cdot r &#x3D; h(m) \bmod (p-1)$</p>
 </li>
 <li><p>所以  $ g^{h(m)} &#x3D; g^{(s \cdot k + x \cdot r)} &#x3D; g^{sk} \cdot g^{xr} &#x3D; y^r \cdot r^s \bmod p$</p>
 </li>
