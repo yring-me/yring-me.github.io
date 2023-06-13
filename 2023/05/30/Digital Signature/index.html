@@ -25,7 +25,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://www.nasachina.cn/wp-content/uploads/2023/05/SeaBlueSky_Horalek_960_annotated.jpg">
 <meta property="article:published_time" content="2023-05-30T15:07:00.000Z">
-<meta property="article:modified_time" content="2023-06-13T04:54:38.733Z">
+<meta property="article:modified_time" content="2023-06-13T05:03:12.553Z">
 <meta property="article:author" content="yring">
 <meta property="article:tag" content="Crypto">
 <meta name="twitter:card" content="summary_large_image">
@@ -462,7 +462,7 @@
 <p>Answer1:</p>
 <ul>
 <li>由于私钥 <em>x</em> 是保密的，所以如果攻击者想要得到这个密钥，必须求解离散对数问题 $\log_gy$ ,这是一个困难问题。但是随机数 <em>K</em> 泄露，则可解 $ x &#x3D; (h(m) - sk)r^{-1} \bmod (p-1)$ 得到 <em>x</em>，方案被攻破</li>
-<li>note：为什么 <em>x</em> 泄露方案会被攻破呢<ul>
+<li>note：为什么 <em>K</em> 泄露方案会被攻破呢<ul>
 <li>先看看公开参数有什么 <ul>
 <li>大素数 <em>P</em></li>
 <li>生成元 <em>g</em></li>
@@ -471,10 +471,11 @@
 <li>签名二 <em>s</em> , <em>s</em> 由 $s &#x3D; (h(m) -x \cdot r) \cdot k^{-1} \bmod (p-1)$ 得到</li>
 </ul>
 </li>
-<li>现在假设我们是中间人，我们可以获得这些消息，并想篡改消息 <em>m</em>，但是一旦篡改消息 <em>m</em>，会导致 <em>h(m)</em> 发生改变，从而导致 $$y^r \cdot r^s \neq g^{h(m)} $$ ，接收者就知道消息已被篡改。因此想要不被发现，必须连带着把 <em>s</em> 也一起改变，即重新计算$$s &#x3D; (h(m) -x \cdot r) \cdot k^{-1} \bmod (p-1) $$ ，得到 $s^{‘}$ ,并发送篡改后的签名 $(r,s^{‘})$，这样接收方就无法判断消息是否被篡改</li>
-<li>所以现在的问题是，如何计算 $s^{‘}$ ? 看看 <em>s</em> 的生成式，我们必须知道 <em>x</em> 和 <em>k</em> 才能计算 <em>s</em> </li>
+<li>现在假设我们是中间人，我们可以获得这些消息，并想篡改消息 <em>m</em>，但是一旦篡改消息 <em>m</em>，会导致 <em>h(m)</em> 发生改变，从而导致 $$y^r \cdot r^s \neq g^{h(m)} $$ ，接收者就知道消息已被篡改。因此想要不被发现，必须连带着把 <em>s</em> 也一起改变，即重新计算$$s &#x3D; (h(m) -x \cdot r) \cdot k^{-1} \bmod (p-1) $$ ，得到 $s^{‘}$ ,并发送篡改后的签名 $(r,s’)$，这样接收方就无法判断消息是否被篡改</li>
+<li>所以现在的问题是，如何计算 $s’$ ? 看看 <em>s</em> 的生成式，我们必须知道 <em>x</em> 和 <em>k</em> 才能计算 <em>s</em> </li>
 <li>我们手上现在跟 <em>K</em> 相关的式子只有两条 $r&#x3D;g^k \bmod p$ 和 $s &#x3D; (h(m) -x \cdot r) \cdot k^{-1} \bmod (p-1)$ ，显然我们应该用前面那一条式子，因为后面的式子有两个未知数</li>
 <li>那就来看看第一个式子吧， 我们现在知道 $r, g, p$，需要求 <em>g</em> 的几次方模 <em>p</em> 等于 <em>r</em> ，然而这是个很困难的问题，也就是离散对数问题，EIGamal的安全性就基于此。</li>
+<li>一旦 <em>K</em> 泄露，就可以计算出 <em>x</em> ，整个消息就可以被篡改并进行重新签名得到 $s’$</li>
 </ul>
 </li>
 </ul>
