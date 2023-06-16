@@ -25,7 +25,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://www.nasachina.cn/wp-content/uploads/2023/05/virgoCL1024.jpg">
 <meta property="article:published_time" content="2023-05-31T16:28:00.000Z">
-<meta property="article:modified_time" content="2023-06-16T03:42:56.644Z">
+<meta property="article:modified_time" content="2023-06-16T09:48:42.237Z">
 <meta property="article:author" content="yring">
 <meta property="article:tag" content="Crypto">
 <meta name="twitter:card" content="summary_large_image">
@@ -239,7 +239,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.3k words
+          5.6k words
         
       </span>
     
@@ -250,7 +250,7 @@
         
         
         
-          10 mins
+          22 mins
         
       </span>
     
@@ -347,7 +347,7 @@
 <li>身份识别：我是否知道你是谁<ul>
 <li>验证方不知道来访人是否为合法身份，没有比较确定的目标，<em><strong>只要满足某个条件就可判定身份的特点</strong></em>，验证者一般为权威机构</li>
 <li>一般在实体认证中需要，比如判断来访者是否是在逃犯，是否为密码开启者，是否为本公司员工。通常用 <em><strong>指纹、虹膜技术</strong></em></li>
-<li>具体技术： *** 输入个人信息，经过处理提取模板信息，试着在存储数据库中找出一个与之匹配的模板而后得出结论***</li>
+<li>具体技术： <em><strong>输入个人信息，经过处理提取模板信息，试着在存储数据库中找出一个与之匹配的模板而后得出结论</strong></em></li>
 </ul>
 </li>
 </ul>
@@ -419,8 +419,174 @@
 <li>最后还由于 <em>网络本身存在延迟</em> ，因此不能期望协议的各方能保持精确的同步。 所以任何基于时戳的处理过程、协议等都 <em>必须允许同步有一个误差范围</em> ，<em><strong>考虑到网络本身的延迟</strong></em>， <em>误差范围应足够大</em> ，<em><strong>考虑到可能存在攻击</strong></em>， <em>误差范围又应该足够小</em></li>
 </ul>
 </li>
+<li>询问-应答方式则不适合于无连接的应用过程<ul>
+<li>这是因为无连接传输以前需经询问-应答这一额外握手过程，这与无连接应用过程的本质特性不符</li>
+<li>对于无连接的应用程序来说，利用某种安全的 <em>时间服务器</em> 保持各方始终同步是防止重放攻击最好的方法</li>
 </ul>
-<p>&lt;未完待续…..&gt;</p>
+</li>
+<li>关于有状态和无状态的协议<ul>
+<li>如果协议的运行需要一些历史和当前的状态作为上下文来维护，则称为有状态的协议，这样一次协议的运行要考虑历史的状态，会造成负担或者失同步的问题</li>
+<li>如果每次协议运行独立于历史状态参数，则是无状态的，实现和资源占用更少</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="双向认证和单向认证"><a href="#双向认证和单向认证" class="headerlink" title="双向认证和单向认证"></a>双向认证和单向认证</h3><ul>
+<li><p>A 和 B是网络的两个用户 ，他们想过网络先建立安全的共享密钥在进行保密通信</p>
+<p><em>A 和 B 如何确信自己正在和通信的人是 B 和 A 而不是 C呢？</em> 即双方的身份认证</p>
+</li>
+<li><p>这种通信方式为 <em>双向通信</em> ，此时的认证称为 <em>相互认证</em></p>
+<p><em>双向认证也叫相互认证 双方认证等</em></p>
+</li>
+<li><p>类似地 对于 <em>单向通信</em> 来说，认证称为 <em>单向认证</em></p>
+</li>
+</ul>
+<h3 id="包含可信第三方的认证"><a href="#包含可信第三方的认证" class="headerlink" title="包含可信第三方的认证"></a>包含可信第三方的认证</h3><ul>
+<li>A 和 B 直接进行认证的前提是二者之间具有共享的密钥，有时在实际应用中，这种方式并不实用，因为用户多是两两用户之间都要共享密钥，因此一种更为常见的方式是基于可信第三方的认证</li>
+<li>这时，双方都与可信第三方共享初始密钥，系统扩展性好，便于密钥管理，借助可信第三方提供的帮助来实现认证和密钥协商</li>
+<li>可信第三饭可以在线也可以离线</li>
+</ul>
+<h4 id="建立共享密钥"><a href="#建立共享密钥" class="headerlink" title="建立共享密钥"></a>建立共享密钥</h4><ul>
+<li><p>A 和 B 两个用户在 <em>建立共享密钥时</em> 需要考虑的核心问题是 <em><strong>保密性和实时性</strong></em></p>
+</li>
+<li><p>保密性： 为防止会话密钥的伪造或泄露，<em>会话密钥在通信双方之间交换时应为密文形式，所以通信双方事先就应该有密钥或公开钥</em></p>
+</li>
+<li><p>实时性即新鲜性，可使用前述的基本认证技术（时间戳 and 询问-应答）</p>
+</li>
+<li><p>通信双方建立共享密钥时可采用 <em>对称密钥加密体制</em> 和 <em>公钥加密体制</em></p>
+</li>
+</ul>
+<h3 id="基于公钥加密和会话密钥的分配协议"><a href="#基于公钥加密和会话密钥的分配协议" class="headerlink" title="基于公钥加密和会话密钥的分配协议"></a>基于公钥加密和会话密钥的分配协议</h3><ul>
+<li>由于 <em>公钥加密的速度过慢</em> ，因此进行保密通信不太合适，但 <em>用于分配对称密钥密码体制的密钥却非常合适</em></li>
+</ul>
+<h4 id="密钥分配"><a href="#密钥分配" class="headerlink" title="密钥分配"></a>密钥分配</h4><ul>
+<li><p>下图表示简单使用公钥加密算法建立会话密钥过程，如果A希望与B通信，可通过以下几步建立会话密钥</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202306161524512.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+</ul>
+<ol>
+<li>A产生自己的一对密钥$\lbrace PK_A,SK_A \rbrace$, 并向B发送 $PK_A \left| \right| ID_A$,其中$ID_A$ 表示A的身份</li>
+<li>B产生会话密钥 $K_S$ ,并用A的公开钥 $PK_A$ 对 $K_S$ 加密后发往A</li>
+<li>A由 $D_{SKA} \left[E_{PK_A} \left[K_S \right]\right]$ 恢复密钥，因为只有A能解读 $K_S$ ，所以仅A和B知道这一共享密钥</li>
+<li>A销毁 $\lbrace PK_A SK_A \rbrace$ ,B销毁 $PK_A$</li>
+</ol>
+<ul>
+<li>A、B现在可以用单钥加密算法以 $K_S$ 作为会话密钥进行保密通信，通信完成后，又都将 $K_S$ 销毁</li>
+<li>这种分配方法尽管简单，但却由于A、B双方在通信前和完成通信后，<em>都未存储密钥</em> 因此，<em>密钥泄露的危险性为最小，且可以防止双方的通信被敌手监听</em><ul>
+<li>每次公私钥由发方临时产生</li>
+</ul>
+</li>
+<li>但由于公钥缺少证书管理机构认证且非物理传输容易受到主动攻击</li>
+</ul>
+<h4 id="中间人攻击"><a href="#中间人攻击" class="headerlink" title="中间人攻击"></a>中间人攻击</h4><p>如果敌手E已接入A、B双方的通信信道，就可通过以下不被察觉的方式截获双方的通信：</p>
+<ol>
+<li><p>E截获A的发送后，建立自己的一对密钥 $\lbrace PK_E,SK_E\rbrace$, 并将 $PK_E \left| \right | ID_A$ 发送给B</p>
+<p>即把原本要发送的$PK_A$ 替换为$PK_E$</p>
+</li>
+<li><p>B产生会话密钥 $K_S$ 后，将 $E_{PKE}\left[K_S \right]$ 发送出去</p>
+</li>
+<li><p>E截获B发送的消息后，由 $D_{PKE} \left[ E_{PK_E}\left[ K_S\right] \right]$ 解读出 $K_S$</p>
+</li>
+<li><p>E再将 $E_{PK_A}\left[K_S \right]$ 发送 A</p>
+</li>
+</ol>
+<p>现在A和B知道 $K_S$ ，但并未意识到 $K_S$ 已被E截获，A、B在用$K_S$ 通信时，E就可以实时监听</p>
+<h2 id="Diffie-Hellman-密钥交换"><a href="#Diffie-Hellman-密钥交换" class="headerlink" title="Diffie-Hellman 密钥交换"></a>Diffie-Hellman 密钥交换</h2><h3 id="概念-1"><a href="#概念-1" class="headerlink" title="概念"></a>概念</h3><ul>
+<li><p>密钥交换是实现安全通信的基础</p>
+<p>商用加密算法AES和DES需要在安全通信之前，实现通信双方的密钥共享</p>
+</li>
+<li><p>密钥交换的方法</p>
+<ul>
+<li>基于RSA的密钥交换</li>
+<li>基于KDC技术（Key Distributed Center，密钥分发中心)</li>
+<li><em><strong>Diffile-Hellman密钥交换（简称：DH算法）</strong></em></li>
+<li>基于物理层的密钥交换</li>
+</ul>
+</li>
+<li><p>DH算法是不安全信道下实现安全密钥共享的一种方法，由 W.Diffie 和 M.Hellman 在1976年提出的第一个公开的公钥密码算法</p>
+</li>
+</ul>
+<h3 id="交换流程"><a href="#交换流程" class="headerlink" title="交换流程"></a>交换流程</h3><ul>
+<li>用户A和B协商一个<em><strong>素数p</strong></em>，以及该素数的<em><strong>本原元g</strong></em></li>
+<li>用户A选择一个随机数 $x，x&lt;p$ ，用户B选择一个随机数 $y，y&lt;p$</li>
+<li>用户A计算 $Y_A &#x3D; g^x \bmod p$ ，用户B计算 $Y_B &#x3D; g^y \bmod p$ </li>
+<li>用户A，用户B交换 $Y_A$ ，$Y_B$</li>
+<li>用户A计算密钥 $K &#x3D; {Y_B}^x &#x3D; g^{xy} \bmod p$ 用户B计算密钥 $K &#x3D; {Y_A}^y &#x3D; g^{xy} \bmod p$</li>
+<li>完成密钥协商</li>
+</ul>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202306161606279.png" srcset="/img/loading.gif" lazyload alt="2.png"></p>
+<ul>
+<li>例子<ul>
+<li>假设素数 $p &#x3D; 97$ ，其本原元 $g&#x3D;5$</li>
+<li>用户A选取随机数 $x&#x3D;36$ ，用户B选取随机数 $ x&#x3D; 58 $</li>
+<li>用户A计算：$Y_A \equiv g^x \equiv 5^{36}  \equiv 50 \bmod  97 $</li>
+<li>用户B计算：$Y_B \equiv g^y \equiv 5^{58}\equiv 44 \bmod 97 $</li>
+<li>交换 $Y_A$ ，$Y_B$</li>
+<li>用户A计算密钥：$K \equiv {Y_B}^x \equiv g^{xy} \equiv 44^{36}  \equiv 75\bmod 97$</li>
+<li>用户B计算密钥：$K \equiv {Y_A}^y \equiv g^{xy} \equiv 50^{58}  \equiv 75\bmod 97$</li>
+</ul>
+</li>
+</ul>
+<h3 id="安全问题"><a href="#安全问题" class="headerlink" title="安全问题"></a>安全问题</h3><h4 id="安全性分析"><a href="#安全性分析" class="headerlink" title="安全性分析"></a>安全性分析</h4><ul>
+<li><p>公开可截获的信息 <em><strong>素数 $p$<em><strong>、</strong></em>本原元 $ g $</strong></em> 、中间值 $Y_A$ $Y_B$</p>
+</li>
+<li><p>若攻击者想要获取密钥 $K$ 必须通过<br>$ Y_A \equiv g^x \bmod p $ 和 $ Y_B \equiv g^y \bmod p $</p>
+<p>计算出 $x$ 和 $y$ ，然而这是一个很困难的问题</p>
+</li>
+<li><p>因此，算法的安全性基求于离散对数的困难性</p>
+</li>
+</ul>
+<h4 id="其余安全问题"><a href="#其余安全问题" class="headerlink" title="其余安全问题"></a>其余安全问题</h4><ul>
+<li>容易遭受阻塞攻击：因为幂运算时计算密性的，当敌手发起大量的密钥请求，受攻击者将花费大计算资源来做幂运算</li>
+<li>容易遭受 <em><strong>中间人攻击</strong></em> ：敌手可分别冒充用户A和用户B中的一方，与另一方交换密钥，从而实现监听</li>
+</ul>
+<h4 id="中间人攻击-1"><a href="#中间人攻击-1" class="headerlink" title="中间人攻击"></a>中间人攻击</h4><ul>
+<li><p>现有用户A 、用户B  、中间人C</p>
+</li>
+<li><p>用户A 、用户B 正常协商一个 <em><strong>素数</strong></em> $p$ ,<em><strong>本原元</strong></em> g </p>
+</li>
+<li><p>用户A 、用户B 正常选择自己的随机数 $x$ , $y$ ，并计算 </p>
+<p>$Y_A \equiv g^x \bmod p$ 和 $Y_B \equiv g^y \bmod p$</p>
+</li>
+<li><p>中间人C 选择随机数 $z$ ,计算 $Y_C \equiv g^Z \bmod p$ </p>
+</li>
+<li><p>中间人截获用户A传递的 $Y_A$ </p>
+<ul>
+<li>利用 $Y_A$ 计算 $K_{AC} \equiv {Y_A}^z \equiv g^{xz} \bmod p$</li>
+<li>并将 $Y_C$ 传给用户B</li>
+<li>用户B根据 $Y_C$ 计算 $K_{BC} \equiv {Y_C}^y \equiv g^{yz}\bmod p$</li>
+</ul>
+</li>
+<li><p>中间人截获用户B传递的 $Y_B$ </p>
+<ul>
+<li>利用 $Y_B$ 计算 $K_{BC} \equiv {Y_B}^z \equiv g^{yz} \bmod p$</li>
+<li>并将 $Y_C$ 传给用户A</li>
+<li>用户A根据 $Y_C$ 计算 $K_{AC} \equiv {Y_C}^x \equiv g^{xz}\bmod p$</li>
+</ul>
+</li>
+<li><p>此时用户A以为共享密钥是 $K_{AC}$ ,用户B以为共享密钥是 $K_{BC}$ ，而中间人拥有 $K_{AC}$ ， $K_{BC}$ ，可以监听用户A和用户B</p>
+</li>
+</ul>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202306161740612.png" srcset="/img/loading.gif" lazyload alt="3"></p>
+<h2 id="秘密共享"><a href="#秘密共享" class="headerlink" title="秘密共享"></a>秘密共享</h2><p>问题引入：</p>
+<ul>
+<li>保险柜的开启 <ul>
+<li>保险柜中存放有10个人的共有财产 </li>
+<li>要从保险柜中取出物品，必须有 <em><strong>半数以上</strong></em> 的人在场才可取出，半数以下则不行</li>
+<li>如何构造锁的设计方案</li>
+</ul>
+</li>
+<li>导弹控制发射，重要场所通行检验，通常需要多人同时参与才能生效，需要将秘密分为多人掌管，并且由<em><strong>一定</strong></em> 掌管秘密的人数同时到场才能恢复秘密</li>
+</ul>
+<h3 id="概念-2"><a href="#概念-2" class="headerlink" title="概念"></a>概念</h3><ul>
+<li><p>定义</p>
+<p>秘密 <em>s</em> （通过某种方案）被分割成n个部分，每个部分称为 <em><strong>份额（share）</strong></em> 或 <em><strong>影子（shadow）</strong></em> ，由一个参与者持有，使得： </p>
+<ul>
+<li>由 <em><strong>k</strong></em> 个或多于 <em><strong>k</strong></em> 个参与者所持有的部分信息可重构 <em>s</em> 。 </li>
+<li>由少于 <em><strong>k</strong></em> 个参与者所持有的部分信息则无法重构 <em>s</em> 。 </li>
+<li>称该方案为 <em><strong>$(k，n)$ 秘密分割门限方案</strong></em> ，<em>k</em> 称为门限值，少于 <em><strong>k</strong></em> 个参与者所持有的部分信息得不到 <em>s</em> 任何信息称该 <em><strong>门限方案是完善的</strong></em></li>
+</ul>
 </li>
 </ul>
 
