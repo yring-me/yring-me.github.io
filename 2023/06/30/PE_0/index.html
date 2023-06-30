@@ -16,16 +16,16 @@
   <meta name="author" content="yring">
   <meta name="keywords" content="">
   
-    <meta name="description" content="PE文件结构（一）">
+    <meta name="description" content="PE文件结构（一） DOS头 NT头">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PE文件结构（一）">
 <meta property="og:url" content="http://example.com/2023/06/30/PE_0/index.html">
 <meta property="og:site_name" content="yring">
-<meta property="og:description" content="PE文件结构（一）">
+<meta property="og:description" content="PE文件结构（一） DOS头 NT头">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://www.nasachina.cn/wp-content/uploads/2023/06/M24_2023grapod1024.jpg">
 <meta property="article:published_time" content="2023-06-30T05:10:00.000Z">
-<meta property="article:modified_time" content="2023-06-30T09:28:48.712Z">
+<meta property="article:modified_time" content="2023-06-30T10:40:17.696Z">
 <meta property="article:author" content="yring">
 <meta property="article:tag" content="reverse">
 <meta property="article:tag" content="PE">
@@ -240,7 +240,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          7.4k words
+          7.5k words
         
       </span>
     
@@ -251,7 +251,7 @@
         
         
         
-          29 mins
+          30 mins
         
       </span>
     
@@ -303,6 +303,7 @@
               <div class="markdown-body">
                 
                 <p> PE文件结构（一）</p>
+<p>DOS头 NT头</p>
 <span id="more"></span>
 
 <h2 id="总起"><a href="#总起" class="headerlink" title="总起"></a>总起</h2><p>首先我们需要知道PE是什么。PE，即Portable Executable，也就是Windows下的可执行文件，它包括exe文件，也包括dll、sys文件等，当我们使用十六进制文本编辑器打开一些exe文件时，会得到如下样子</p>
@@ -352,12 +353,14 @@
 
 
 <h3 id="可选PE头"><a href="#可选PE头" class="headerlink" title="可选PE头"></a>可选PE头</h3><p>标准PE头过后就是可选PE头,这里就仅给出结构体成员，带星号为重要成员</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">IMAGE_OPTIONAL_HEADER</span> &#123;</span>  <br>    WORD    Magic;  <span class="hljs-comment">//* 10B 32位PE 20B 64位PE 107 ROM映像</span><br>    BYTE    MajorLinkerVersion;  <span class="hljs-comment">// 链接器版本号</span><br>    BYTE    MinorLinkerVersion;  <span class="hljs-comment">// 链接器副版本号</span><br>    DWORD   SizeOfCode;  <span class="hljs-comment">//* 所有代码节的总和  该大小是基于文件对齐后的大小</span><br>    DWORD   SizeOfInitializedData; <span class="hljs-comment">//*  所有含已初始化数据的节的总大小</span><br>    DWORD   SizeOfUninitializedData; <span class="hljs-comment">//* 所有含未初始化数据的节的大小</span><br>    DWORD   AddressOfEntryPoint; <span class="hljs-comment">// 程序执行入口RVA</span><br>    DWORD   BaseOfCode; <span class="hljs-comment">//* 代码节的起始RVA</span><br>    DWORD   BaseOfData; <span class="hljs-comment">//* 数据节的起始RVA</span><br>    DWORD   ImageBase;  <span class="hljs-comment">//* 程序的优先装载地址</span><br>    DWORD   SectionAlignment; <span class="hljs-comment">//* 内存中节的对齐粒度</span><br>    DWORD   FileAlignment; <span class="hljs-comment">//* 文件中节的对齐粒度</span><br>    WORD    MajorOperatingSystemVersion; <span class="hljs-comment">// 操作系统主版本号</span><br>    WORD    MinorOperatingSystemVersion; <span class="hljs-comment">// 操作系统副版本号</span><br>    WORD    MajorImageVersion;  <span class="hljs-comment">// PE文件映像的版本号</span><br>    WORD    MinorImageVersion;  <br>    WORD    MajorSubsystemVersion; <span class="hljs-comment">// 子系统的版本号</span><br>    WORD    MinorSubsystemVersion;  <br>    DWORD   Win32VersionValue;  <span class="hljs-comment">// 未用 必须设置0</span><br>    DWORD   SizeOfImage;  <span class="hljs-comment">// 内存中整个PE文件的映像尺寸</span><br>    DWORD   SizeOfHeaders;  <span class="hljs-comment">// 所有节表按照文件对齐粒度后的大小</span><br>    DWORD   CheckSum; <span class="hljs-comment">// 校验和</span><br>    WORD    Subsystem; <span class="hljs-comment">// 指定使用界面的子系统</span><br>    WORD    DllCharacteristics; <span class="hljs-comment">//  DALL文件属性</span><br>    DWORD   SizeOfStackReserve; <span class="hljs-comment">// 初始化时保留的栈的大小</span><br>    DWORD   SizeOfStackCommit; <span class="hljs-comment">//* 初始化时实际提交的栈的大小</span><br>    DWORD   SizeOfHeapReserve; <span class="hljs-comment">//* 初始化时保留的堆的大小</span><br>    DWORD   SizeOfHeapCommit; <span class="hljs-comment">//* 初始化时实际提交的堆的大小</span><br>    DWORD   LoaderFlags; <span class="hljs-comment">// 加载标志  未用</span><br>    DWORD   NumberOfRvaAndSizes; <span class="hljs-comment">// 下面的数据目录结构的数量</span><br>    IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];  <br>&#125; IMAGE_OPTIONAL_HEADER32, *PIMAGE_OPTIONAL_HEADER32;  <br></code></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">IMAGE_OPTIONAL_HEADER</span> &#123;</span>  <br>    WORD    Magic;  <span class="hljs-comment">//* 10B 32位PE 20B 64位PE 107 ROM映像</span><br>    BYTE    MajorLinkerVersion;  <span class="hljs-comment">// 链接器版本号</span><br>    BYTE    MinorLinkerVersion;  <span class="hljs-comment">// 链接器副版本号</span><br>    DWORD   SizeOfCode;  <span class="hljs-comment">//* 所有代码节的总和  必须是FileAlignment大小整数倍 已无用</span><br>    DWORD   SizeOfInitializedData; <span class="hljs-comment">//*  所有含已初始化数据的节的总大小 必须是FileAlignment大小整数倍 已无用</span><br>    DWORD   SizeOfUninitializedData; <span class="hljs-comment">//* 所有含未初始化数据的节的大小 必须是FileAlignment大小整数倍 已无用</span><br>    DWORD   AddressOfEntryPoint; <span class="hljs-comment">//* 程序执行入口RVA</span><br>    DWORD   BaseOfCode; <span class="hljs-comment">//* 代码节的起始RVA 已无用</span><br>    DWORD   BaseOfData; <span class="hljs-comment">//* 数据节的起始RVA 已无用</span><br>    DWORD   ImageBase;  <span class="hljs-comment">//* 程序的优先装载地址</span><br>    DWORD   SectionAlignment; <span class="hljs-comment">//* 内存中节的对齐粒度</span><br>    DWORD   FileAlignment; <span class="hljs-comment">//* 文件中节的对齐粒度</span><br>    WORD    MajorOperatingSystemVersion; <span class="hljs-comment">// 操作系统主版本号</span><br>    WORD    MinorOperatingSystemVersion; <span class="hljs-comment">// 操作系统副版本号</span><br>    WORD    MajorImageVersion;  <span class="hljs-comment">// PE文件映像的版本号</span><br>    WORD    MinorImageVersion;  <br>    WORD    MajorSubsystemVersion; <span class="hljs-comment">// 子系统的版本号</span><br>    WORD    MinorSubsystemVersion;  <br>    DWORD   Win32VersionValue;  <span class="hljs-comment">// 未用 必须设置0</span><br>    DWORD   SizeOfImage;  <span class="hljs-comment">//* 内存中整个PE文件的映像尺寸 必须是SectionAlignment整数倍</span><br>    DWORD   SizeOfHeaders;  <span class="hljs-comment">//* 所有节表按照文件对齐粒度后的大小</span><br>    DWORD   CheckSum; <span class="hljs-comment">// 校验和</span><br>    WORD    Subsystem; <span class="hljs-comment">// 指定使用界面的子系统</span><br>    WORD    DllCharacteristics; <span class="hljs-comment">//  DALL文件属性</span><br>    DWORD   SizeOfStackReserve; <span class="hljs-comment">// 初始化时保留的栈的大小</span><br>    DWORD   SizeOfStackCommit; <span class="hljs-comment">//* 初始化时实际提交的栈的大小</span><br>    DWORD   SizeOfHeapReserve; <span class="hljs-comment">//* 初始化时保留的堆的大小</span><br>    DWORD   SizeOfHeapCommit; <span class="hljs-comment">//* 初始化时实际提交的堆的大小</span><br>    DWORD   LoaderFlags; <span class="hljs-comment">// 加载标志  未用</span><br>    DWORD   NumberOfRvaAndSizes; <span class="hljs-comment">//* 下面的数据目录结构的数量</span><br>    IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];  <br>&#125; IMAGE_OPTIONAL_HEADER32, *PIMAGE_OPTIONAL_HEADER32;  <br></code></pre></td></tr></table></figure>
 
 <h4 id="RVA"><a href="#RVA" class="headerlink" title="RVA"></a>RVA</h4><p>这里提到了几个新的名词RVA,即Relative Virual Address，虚拟相对地址。</p>
 <p>在解释此名词之前，需要明白一件事情，即PE文件实际上有两种格式，一种是存储在硬盘中，也就是16进制编辑器打开的样子，还有一种则是运行时，操作系统会分配一个独立的虚拟空间给它，通常这个虚拟空间大小是4GB，然后把这个文件装载到这个4GB中，装载到哪，则是先由ImageBase字段决定，一旦确定好从哪个地方装载，就相当于确定了一个基址，而这个RVA就是相对这个基址的偏移。</p>
 <p>比如这个文件从内存中0x10000000开始装载，如果RVA是0x32，那么在内存中它的地址就是0x10000032</p>
 <h4 id="FOA"><a href="#FOA" class="headerlink" title="FOA"></a>FOA</h4><p>可能会想起，那我们刚刚提到的<code>e_lfanew</code>是什么偏移？，既然PE文件有两种格式，那么偏移肯定也有两种，刚刚的提及的RVA是在虚拟内存中的，那么还有一种就是在文件中的偏移，即FOA - File Offset Address，也就是在16进制文本编辑器里的偏移</p>
+<h4 id="SectionAlignment-and-FileAlignment"><a href="#SectionAlignment-and-FileAlignment" class="headerlink" title="SectionAlignment and FileAlignment"></a>SectionAlignment and FileAlignment</h4><p>SectionAlignment ：在内存里面节的对齐大小，必须是这个的整数倍</p>
+<p>FileAlignment：在文件里面节的对齐大小，必须是这个的整数倍</p>
 <h2 id="使用代码读取"><a href="#使用代码读取" class="headerlink" title="使用代码读取"></a>使用代码读取</h2><p>得益于微软的内置库，可以方便的使用以及定义好的指针类型来读取，而不需要自己手动计算</p>
 <p>唯一需要注意的是，由于是文件读入内存中，因此文件在内存中相当于是有一个基址的，所以需要buffer+FOA。注意这里是把文件原封不动的读入程序内存，而不是运行时拉伸进内存。</p>
 <p>可以使用网上的一些PE查看器来验证自己是否读出正确数据</p>
@@ -377,19 +380,19 @@
 <li>Characteristics 文件属性</li>
 </ul>
 </li>
-<li><p>可选PE头，其重要成员</p>
+<li><p>可选PE头，其重要成员且仍有用成分</p>
 <ul>
 <li>Magic    该PE文件是什么类型的 10B 32位PE &#x2F;&#x2F; 20B 64位PE &#x2F;&#x2F; 107 ROM映像</li>
-<li>SizeOfCode  所有代码节的总和  该大小是基于文件对齐后的大小</li>
-<li>SizeOfInitializedData  所有含已初始化数据的节的总大小</li>
-<li>SizeOfUninitializedData  所有含未初始化数据的节的大小</li>
-<li>BaseOfCode   代码节的起始RVA</li>
-<li>BaseOfData  数据节的起始RVA</li>
+<li>AddressOfEntryPoint 程序入口，即所谓的OEP</li>
 <li>ImageBase   程序的优先装载地址</li>
 <li>SectionAlignment  内存中节的对齐粒度</li>
 <li>FileAlignment  文件中节的对齐粒度</li>
+<li>SizeOfImage 映像大小</li>
+<li>SizeOfHeaders 所有节表对齐后的大小</li>
 <li>SizeOfStackCommit  初始化时实际提交的栈的大小</li>
 <li>SizeOfHeapReserve   初始化时实际提交的堆的大小</li>
+<li>NumberOfRvaAndSizes 目录项</li>
+<li>（无用但保留的字段基本都是为了兼容）</li>
 </ul>
 </li>
 </ul>
@@ -491,6 +494,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2023/06/30/PE_1/" title="PE文件结构（二）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">PE文件结构（二）</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
