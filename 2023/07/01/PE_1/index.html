@@ -25,7 +25,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://www.nasachina.cn/wp-content/uploads/2023/06/corona_aus1024.jpg">
 <meta property="article:published_time" content="2023-06-30T19:50:00.000Z">
-<meta property="article:modified_time" content="2023-06-30T19:50:42.139Z">
+<meta property="article:modified_time" content="2023-07-01T15:26:39.251Z">
 <meta property="article:author" content="yring">
 <meta property="article:tag" content="reverse">
 <meta property="article:tag" content="PE">
@@ -294,7 +294,7 @@
               <p class="note note-info">
                 
                   
-                    Last updated on July 1, 2023 am
+                    Last updated on July 1, 2023 pm
                   
                 
               </p>
@@ -313,7 +313,7 @@
 <h4 id="节区数量"><a href="#节区数量" class="headerlink" title="节区数量"></a>节区数量</h4><p>既然提到了表，就说明这是一个线性结构，像一个数组一样存储了若干小表的信息，这个小表其实就是一个结构体，也即图中的<code>Image_Section_Table</code>,自然大小也就是确定的。每一个结构体都包含了对应节区的相关信息，比如节区的名字、大小等。我们现在可以找到节表，但是怎么确定这个节表中有多少个<code>Image_Section_Table</code>呢</p>
 <p>这就又要回想到之前的标准PE头，里面有一个字段<code>NumberOfSections</code>,顾名思义，就是存储了节表的数量。</p>
 <p>那么现在有了节表的起始位置，又有了节区的数量，节表的大小，尽管不知道节表里的结构体都有什么成员，但是最起码现在可以确定每一个结构体的起始终止了</p>
-<h4 id="结构体成员"><a href="#结构体成员" class="headerlink" title="结构体成员"></a>结构体成员</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">IMAGE_SECTION_HEADER</span> &#123;</span><br>    BYTE    Name[IMAGE_SIZEOF_SHORT_NAME];<span class="hljs-comment">//8个字节 IMAGE_SIZEOF_SHORT_NAME是宏 等于8 一般是ascii码 节区名字</span><br>    <span class="hljs-class"><span class="hljs-keyword">union</span> &#123;</span><br>            DWORD   PhysicalAddress;<br>            DWORD   VirtualSize;<br>    &#125; Misc;	<span class="hljs-comment">// 注意是联合体，其含义是没有对齐的真实尺寸 该值可以不准确</span><br>    DWORD   VirtualAddress;	<span class="hljs-comment">// 节区在内存中的偏移地址，是RVA</span><br>    DWORD   SizeOfRawData;	<span class="hljs-comment">// 节区在文件中对齐后的尺寸</span><br>    DWORD   PointerToRawData;	<span class="hljs-comment">// 节区在文件中偏移</span><br>    DWORD   PointerToRelocations;	<span class="hljs-comment">// 在obj文件中使用 对exe无意义</span><br>    DWORD   PointerToLinenumbers;	<span class="hljs-comment">// 行号表的位置 调试时使用</span><br>    WORD    NumberOfRelocations;	<span class="hljs-comment">// 在obj中使用 对exe无意义</span><br>    WORD    NumberOfLinenumbers;	<span class="hljs-comment">// 行号表的数量 调试时使用</span><br>    DWORD   Characteristics;	<span class="hljs-comment">// 节区属性 可写可读可执行等 通过或的形式来添加属性</span><br>    							<span class="hljs-comment">//0x00000020 含可执行代码 0x20000000 该块可执行 0x40000000 可读 0x80000000 可写</span><br>&#125; IMAGE_SECTION_HEADER, *PIMAGE_SECTION_HEADER;<br><br></code></pre></td></tr></table></figure>
+<h4 id="结构体成员"><a href="#结构体成员" class="headerlink" title="结构体成员"></a>结构体成员</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">IMAGE_SECTION_HEADER</span> &#123;</span><br>    BYTE    Name[IMAGE_SIZEOF_SHORT_NAME];<span class="hljs-comment">//8个字节 IMAGE_SIZEOF_SHORT_NAME是宏 等于8 一般是ascii码 节区名字</span><br>    <span class="hljs-class"><span class="hljs-keyword">union</span> &#123;</span><br>            DWORD   PhysicalAddress;<br>            DWORD   VirtualSize;<br>    &#125; Misc;	<span class="hljs-comment">// 注意是联合体，其含义是没有对齐的在内存中真实尺寸 该值可以不准确</span><br>    DWORD   VirtualAddress;	<span class="hljs-comment">// 节区在内存中的偏移地址，是RVA</span><br>    DWORD   SizeOfRawData;	<span class="hljs-comment">// 节区在文件中对齐后的尺寸</span><br>    DWORD   PointerToRawData;	<span class="hljs-comment">// 节区在文件中偏移</span><br>    DWORD   PointerToRelocations;	<span class="hljs-comment">// 在obj文件中使用 对exe无意义</span><br>    DWORD   PointerToLinenumbers;	<span class="hljs-comment">// 行号表的位置 调试时使用</span><br>    WORD    NumberOfRelocations;	<span class="hljs-comment">// 在obj中使用 对exe无意义</span><br>    WORD    NumberOfLinenumbers;	<span class="hljs-comment">// 行号表的数量 调试时使用</span><br>    DWORD   Characteristics;	<span class="hljs-comment">// 节区属性 可写可读可执行等 通过或的形式来添加属性</span><br>    							<span class="hljs-comment">//0x00000020 含可执行代码 0x20000000 该块可执行 0x40000000 可读 0x80000000 可写</span><br>&#125; IMAGE_SECTION_HEADER, *PIMAGE_SECTION_HEADER;<br><br></code></pre></td></tr></table></figure>
 
 <p>以一个对比图来说明</p>
 <p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202307010246517.png" srcset="/img/loading.gif" lazyload></p>
@@ -439,6 +439,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2023/07/02/PE_2/" title="PE文件结构（三）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">PE文件结构（三）</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
