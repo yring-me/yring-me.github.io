@@ -1,0 +1,715 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305221933187.jpeg">
+  <link rel="icon" href="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305221933187.jpeg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="yring">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="PE练习，扩大节、合并节">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PE文件结构（六）">
+<meta property="og:url" content="http://example.com/2023/07/04/PE_5/index.html">
+<meta property="og:site_name" content="yring">
+<meta property="og:description" content="PE练习，扩大节、合并节">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://www.nasachina.cn/wp-content/uploads/2023/07/WaterfallAurora_Letelier_960.jpg">
+<meta property="article:published_time" content="2023-07-04T09:25:00.000Z">
+<meta property="article:modified_time" content="2023-07-04T09:25:25.426Z">
+<meta property="article:author" content="yring">
+<meta property="article:tag" content="reverse">
+<meta property="article:tag" content="PE">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.nasachina.cn/wp-content/uploads/2023/07/WaterfallAurora_Letelier_960.jpg">
+  
+  
+  
+  <title>PE文件结构（六） - yring</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/shubiao.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/gradient.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":50,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>yring</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305222054379.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="PE文件结构（六）"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-07-04 17:25" pubdate>
+          July 4, 2023 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.4k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          26 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">PE文件结构（六）</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    Last updated on July 4, 2023 pm
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>PE练习，扩大节、合并节</p>
+<span id="more"></span>
+
+<h2 id="回顾"><a href="#回顾" class="headerlink" title="回顾"></a>回顾</h2><p>此前已经在一个节的空白区增加shellcode，而后又通过新增一个节的方式增加shellcode，实际上也可以通过对节进行合并、扩大操作来满足其他需求</p>
+<h2 id="练习"><a href="#练习" class="headerlink" title="练习"></a>练习</h2><h3 id="要求"><a href="#要求" class="headerlink" title="要求"></a>要求</h3><p>1.扩大最后一个节</p>
+<p>2.合并所有节</p>
+<h3 id="要求解决的问题"><a href="#要求解决的问题" class="headerlink" title="要求解决的问题"></a>要求解决的问题</h3><h4 id="扩大最后一个节"><a href="#扩大最后一个节" class="headerlink" title="扩大最后一个节"></a>扩大最后一个节</h4><p>Q1：为什么是扩大最后一个节</p>
+<p>A1：如果扩大中间的节，那么后面的节的地址就会全部变化，所有地址就全都无法正常使用，而扩大最后一个节则不会影响已有地址</p>
+<p>Q2：扩大多少合适</p>
+<p>A2：最好也是文件对齐FileAlignmentr和内存对齐SectionAlignment的倍数，这样可以减少很多麻烦，就可以直接在原文件状态下扩大，而不需要再考虑对齐。</p>
+<p>Q3：需要修改什么值</p>
+<p>A3：跟大小有关的值都需要修改，OptionalHeader里的SizeOfImage，最后一个节目录项的Misc、SizeOfRawData、</p>
+<h4 id="合并所有节"><a href="#合并所有节" class="headerlink" title="合并所有节"></a>合并所有节</h4><p>Q1：应该在哪种状态下合并</p>
+<p>A1：只能在内存状态下合并，因为合并所有节后，只有一个节目录项，只能通过这个去找节区。如果在文件状态下合并，那么后面的节区都不能正确放到它们该处的位置上。而后直接将内存状态保存为文件状态，也就是说这时候文件状态就已经是内存对齐的了。</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202307012317292.png" srcset="/img/loading.gif" lazyload></p>
+<p>Q2：需要修改哪些值</p>
+<p>A2：FileHeader里的NumberOfSections改为1；因为文件状态就是内存状态所以第一个节目录项的Misc、PointerToRawData需要按照内存状态下改变。属性值也需要修改，因为是合并所有节，那么就应该具有所有节的属性</p>
+<p>Q3：文件大小该如何确定</p>
+<p>A3：可以很方便的使用OptionalHeader里的SizeOfImage减去第一个节表开始地方，剩下就都是合并节后的大小了，还需要将第一个节目录项的SizeOfRawData改为这个大小。</p>
+<p>note：最后需要其他节目录项清零；fwrite的时候size要选为SizeOfImageHeader；实际上在Windows看来并不存在这些节的划分，只是人为通过不同的属性来划分，每一个节干特定的事，因此只需要把所有节属性都加上去，程序就一定可以正常运行，这是合并节可行的底层逻辑。</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span><span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span><span class="hljs-string">&lt;windows.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span><span class="hljs-string">&lt;malloc.h&gt;</span></span><br><br><span class="hljs-meta"># <span class="hljs-keyword">define</span> EnlargeSize 0x1000</span><br>DWORD <span class="hljs-title function_">Size</span><span class="hljs-params">(FILE* fp)</span>&#123;<br>    DWORD size = <span class="hljs-number">0</span>;<br>    fseek(fp,<span class="hljs-number">0</span>,SEEK_END);<br>    size = ftell(fp);<br>    fseek(fp,<span class="hljs-number">0</span>,SEEK_SET);<br>    <span class="hljs-keyword">return</span> size;<br>&#125;<br><br><br><span class="hljs-type">char</span>* <span class="hljs-title function_">FileToImage</span><span class="hljs-params">(<span class="hljs-type">char</span>* filebuffer)</span>&#123;<br><br>    <span class="hljs-comment">//定义一些指针</span><br>    PIMAGE_DOS_HEADER DosHeader = <span class="hljs-literal">NULL</span>;<br>	PIMAGE_NT_HEADERS NTHeader = <span class="hljs-literal">NULL</span>;<br>	PIMAGE_FILE_HEADER FileHeader = <span class="hljs-literal">NULL</span>;<br>	PIMAGE_OPTIONAL_HEADER OptionalHeader = <span class="hljs-literal">NULL</span>;<br>	PIMAGE_SECTION_HEADER SectionHeader = <span class="hljs-literal">NULL</span>;<br>	<span class="hljs-type">char</span>* TemBuffer = <span class="hljs-literal">NULL</span>;<br><br>    <span class="hljs-comment">//简单判断有效性</span><br>    <span class="hljs-keyword">if</span> (!filebuffer)<br>	&#123;<br>		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Invalid buffer!\n&quot;</span>);<br>		<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>	&#125;<br><br>	<span class="hljs-keyword">if</span> (*(PWORD)filebuffer != IMAGE_DOS_SIGNATURE)<br>	&#123;<br>		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;not a PE file!\n&quot;</span>);<br>		<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>	&#125;<br><br>    <span class="hljs-comment">//开始赋值相应指针</span><br>    DosHeader = (PIMAGE_DOS_HEADER)filebuffer;<br>	NTHeader = (PIMAGE_NT_HEADERS)  (filebuffer + DosHeader-&gt;e_lfanew);<br>	FileHeader = (PIMAGE_FILE_HEADER)(filebuffer + DosHeader-&gt;e_lfanew + <span class="hljs-number">4</span>);<br>	OptionalHeader = (PIMAGE_OPTIONAL_HEADER)(filebuffer + DosHeader-&gt;e_lfanew + <span class="hljs-number">4</span> + IMAGE_SIZEOF_FILE_HEADER);<br>	SectionHeader = (PIMAGE_SECTION_HEADER)(filebuffer + DosHeader-&gt;e_lfanew + <span class="hljs-number">4</span> + IMAGE_SIZEOF_FILE_HEADER + FileHeader-&gt;SizeOfOptionalHeader);<br><br>    <span class="hljs-comment">//申请内存中大小</span><br>	TemBuffer = (<span class="hljs-type">char</span>*)<span class="hljs-built_in">malloc</span>(OptionalHeader-&gt;SizeOfImage);<br><br>    <span class="hljs-comment">//初始化并复制头部数据</span><br>    <span class="hljs-built_in">memset</span>(TemBuffer,<span class="hljs-number">0</span>,OptionalHeader-&gt;SizeOfImage);<br>    <span class="hljs-built_in">memcpy</span>(TemBuffer,DosHeader,OptionalHeader-&gt;SizeOfHeaders);<br><br>    <span class="hljs-comment">//开始复制节区数据</span><br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i=<span class="hljs-number">0</span>;i&lt;FileHeader-&gt;NumberOfSections;i++)&#123;<br>        <span class="hljs-built_in">memcpy</span>((TemBuffer + SectionHeader-&gt;VirtualAddress),(filebuffer + SectionHeader-&gt;PointerToRawData),SectionHeader-&gt;SizeOfRawData);<br>		<span class="hljs-comment">//更新为下一个节区的结构体</span><br>		<span class="hljs-comment">// SectionHeader = (PIMAGE_SECTION_HEADER)(filebuffer + DosHeader-&gt;e_lfanew + 4 + IMAGE_SIZEOF_FILE_HEADER + FileHeader-&gt;SizeOfOptionalHeader + 40 * (i + 1));</span><br>		SectionHeader +=<span class="hljs-number">1</span>;<br>	&#125;<br><br>    <span class="hljs-keyword">return</span> TemBuffer;<br>&#125;<br><br><span class="hljs-type">char</span>* <span class="hljs-title function_">Enlage</span><span class="hljs-params">(<span class="hljs-type">char</span>* buffer)</span>&#123;<br>	<span class="hljs-comment">//原buffer的头部信息</span><br>	PIMAGE_DOS_HEADER DosHeader = <span class="hljs-literal">NULL</span>;<br>	PIMAGE_NT_HEADERS NTHeader = <span class="hljs-literal">NULL</span>;<br>	PIMAGE_FILE_HEADER FileHeader = <span class="hljs-literal">NULL</span>;<br>	PIMAGE_OPTIONAL_HEADER OptionalHeader = <span class="hljs-literal">NULL</span>;<br>	PIMAGE_SECTION_HEADER SectionHeader = <span class="hljs-literal">NULL</span>;<br><br>	DosHeader = (PIMAGE_DOS_HEADER)buffer;<br>	NTHeader = (PIMAGE_NT_HEADERS) (buffer + DosHeader-&gt;e_lfanew);<br>	FileHeader = (PIMAGE_FILE_HEADER)(buffer + DosHeader-&gt;e_lfanew + <span class="hljs-number">4</span>);<br>	OptionalHeader = (PIMAGE_OPTIONAL_HEADER)(buffer + DosHeader-&gt;e_lfanew + <span class="hljs-number">4</span> + IMAGE_SIZEOF_FILE_HEADER);<br>	SectionHeader = (PIMAGE_SECTION_HEADER)(buffer + DosHeader-&gt;e_lfanew + <span class="hljs-number">4</span> + IMAGE_SIZEOF_FILE_HEADER + FileHeader-&gt;SizeOfOptionalHeader);<br><br><br>	<span class="hljs-comment">// char* ImageBuffer = FileToImage(buffer);</span><br><br>	<span class="hljs-type">char</span>* NewBuffer = (<span class="hljs-type">char</span>*)<span class="hljs-built_in">malloc</span>(OptionalHeader-&gt;SizeOfImage + EnlargeSize);<br>	<span class="hljs-built_in">memset</span>(NewBuffer,<span class="hljs-number">0</span>,OptionalHeader-&gt;SizeOfImage + EnlargeSize);<br>	<span class="hljs-built_in">memcpy</span>(NewBuffer,buffer,OptionalHeader-&gt;SizeOfImage);<br><br>	DosHeader = (PIMAGE_DOS_HEADER)NewBuffer;<br>	NTHeader = (PIMAGE_NT_HEADERS) (NewBuffer + DosHeader-&gt;e_lfanew);<br>	FileHeader = (PIMAGE_FILE_HEADER)(NewBuffer + DosHeader-&gt;e_lfanew + <span class="hljs-number">4</span>);<br>	OptionalHeader = (PIMAGE_OPTIONAL_HEADER)(NewBuffer + DosHeader-&gt;e_lfanew + <span class="hljs-number">4</span> + IMAGE_SIZEOF_FILE_HEADER);<br>	SectionHeader = (PIMAGE_SECTION_HEADER)(NewBuffer + DosHeader-&gt;e_lfanew + <span class="hljs-number">4</span> + IMAGE_SIZEOF_FILE_HEADER + FileHeader-&gt;SizeOfOptionalHeader);<br><br><br>	PIMAGE_SECTION_HEADER LastSectionHeader = SectionHeader + FileHeader-&gt;NumberOfSections <span class="hljs-number">-1</span>;<br>	DWORD LastSize = LastSectionHeader-&gt;Misc.VirtualSize &gt; LastSectionHeader-&gt;SizeOfRawData?LastSectionHeader-&gt;Misc.VirtualSize : LastSectionHeader-&gt;SizeOfRawData;<br><br>	LastSectionHeader-&gt;Misc.VirtualSize = LastSize + EnlargeSize;<br>	LastSectionHeader-&gt;SizeOfRawData = LastSize + EnlargeSize;<br>	OptionalHeader-&gt;SizeOfImage += EnlargeSize;<br><br>	<span class="hljs-keyword">return</span> NewBuffer;<br><br>&#125;<br><br><span class="hljs-type">char</span>* <span class="hljs-title function_">Merge</span><span class="hljs-params">(<span class="hljs-type">char</span>* buffer,DWORD &amp;size)</span>&#123;<br><br>	<span class="hljs-type">char</span>* ImageBuffer = FileToImage(buffer);<br><br>	PIMAGE_DOS_HEADER DosHeader = <span class="hljs-literal">NULL</span>;<br>	PIMAGE_NT_HEADERS NTHeader = <span class="hljs-literal">NULL</span>;<br>	PIMAGE_FILE_HEADER FileHeader = <span class="hljs-literal">NULL</span>;<br>	PIMAGE_OPTIONAL_HEADER OptionalHeader = <span class="hljs-literal">NULL</span>;<br>	PIMAGE_SECTION_HEADER SectionHeader = <span class="hljs-literal">NULL</span>;<br>	PIMAGE_SECTION_HEADER NextSectionHeader =<span class="hljs-literal">NULL</span>;<br>	<br>	DosHeader = (PIMAGE_DOS_HEADER)ImageBuffer;<br>	NTHeader = (PIMAGE_NT_HEADERS) (ImageBuffer + DosHeader-&gt;e_lfanew);<br>	FileHeader = (PIMAGE_FILE_HEADER)(ImageBuffer + DosHeader-&gt;e_lfanew + <span class="hljs-number">4</span>);<br>	OptionalHeader = (PIMAGE_OPTIONAL_HEADER)(ImageBuffer + DosHeader-&gt;e_lfanew + <span class="hljs-number">4</span> + IMAGE_SIZEOF_FILE_HEADER);<br>	SectionHeader = (PIMAGE_SECTION_HEADER)(ImageBuffer + DosHeader-&gt;e_lfanew + <span class="hljs-number">4</span> + IMAGE_SIZEOF_FILE_HEADER + FileHeader-&gt;SizeOfOptionalHeader);<br>	<br>	<br>	SectionHeader-&gt;Misc.VirtualSize = OptionalHeader-&gt;SizeOfImage - SectionHeader-&gt;VirtualAddress;<br>	SectionHeader-&gt;SizeOfRawData = OptionalHeader-&gt;SizeOfImage - SectionHeader-&gt;VirtualAddress;<br>	SectionHeader-&gt;PointerToRawData = SectionHeader-&gt;VirtualAddress;<br>	NextSectionHeader = SectionHeader;<br>	<span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i=<span class="hljs-number">0</span>;i&lt;FileHeader-&gt;NumberOfSections;i++)&#123;<br>		NextSectionHeader += <span class="hljs-number">1</span>;<br>		SectionHeader-&gt;Characteristics |= NextSectionHeader-&gt;Characteristics; <br>	&#125;<br><br>	FileHeader-&gt;NumberOfSections = <span class="hljs-number">1</span>;<br>	<br>	<span class="hljs-built_in">memset</span>(NextSectionHeader,<span class="hljs-number">0</span>,IMAGE_SIZEOF_SECTION_HEADER * (FileHeader-&gt;NumberOfSections <span class="hljs-number">-1</span>));<br>	size = OptionalHeader-&gt;SizeOfImage;<br>	<span class="hljs-keyword">return</span> ImageBuffer;<br>&#125;<br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>&#123;<br>	<span class="hljs-type">char</span>* buffer;<br><br>    FILE* fp1 = <span class="hljs-literal">NULL</span>;<br>	FILE* fp2 = <span class="hljs-literal">NULL</span>;<br>    <span class="hljs-type">errno_t</span> err_1 = fopen_s(&amp;fp1, <span class="hljs-string">&quot;C:\\Users\\yongrin\\Desktop\\PE_info.exe&quot;</span>, <span class="hljs-string">&quot;rb&quot;</span>);<br>    <span class="hljs-type">errno_t</span> err_2 = fopen_s(&amp;fp2, <span class="hljs-string">&quot;C:\\Users\\yongrin\\Desktop\\PE_info_changed.exe&quot;</span>, <span class="hljs-string">&quot;wb&quot;</span>);<br><br>    DWORD size = Size(fp1);<br>    buffer = (<span class="hljs-type">char</span>*)<span class="hljs-built_in">malloc</span>(size);<br>    fread(buffer,size,<span class="hljs-number">1</span>,fp1);<br>	<br>	<span class="hljs-type">char</span>* newbuffer;<br>	<span class="hljs-comment">// newbuffer = Enlage(buffer);</span><br>	newbuffer = Merge(buffer,size);<br><br>	fwrite(newbuffer,size,<span class="hljs-number">1</span>,fp2);<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CTF/" class="category-chain-item">CTF</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/CTF/PE/" class="category-chain-item">PE</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/reverse/">#reverse</a>
+      
+        <a href="/tags/PE/">#PE</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>PE文件结构（六）</div>
+      <div>http://example.com/2023/07/04/PE_5/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>yring</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>July 4, 2023</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/07/04/PE_4/" title="PE文件结构（五）">
+                        <span class="hidden-mobile">PE文件结构（五）</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <i class="iconfont icon-love"></i>nobody knows ,but we always know
+
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/gh/bynotes/texiao/source/js/yinghua.js"></script>
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/DynamicLine.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/scroll.css.js"></script>
+<script src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/bynotes/texiao/source/js/boom.js"></script>
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/runtime.min.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
