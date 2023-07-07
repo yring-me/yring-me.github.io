@@ -25,7 +25,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://www.nasachina.cn/wp-content/uploads/2023/07/Caldwell_14_2023_HaLRGB_LRGB_stars_wm-scaled-1.png">
 <meta property="article:published_time" content="2023-07-07T15:50:00.000Z">
-<meta property="article:modified_time" content="2023-07-07T15:56:14.130Z">
+<meta property="article:modified_time" content="2023-07-07T18:00:56.052Z">
 <meta property="article:author" content="yring">
 <meta property="article:tag" content="reverse">
 <meta property="article:tag" content="PE">
@@ -295,7 +295,7 @@
               <p class="note note-info">
                 
                   
-                    Last updated on July 7, 2023 pm
+                    Last updated on July 8, 2023 am
                   
                 
               </p>
@@ -306,8 +306,8 @@
                 <p>导出表</p>
 <span id="more"></span>
 
-<h2 id="回顾"><a href="#回顾" class="headerlink" title="回顾"></a>回顾</h2><p>目前我们已经完成对PE基本结构的解析，了解PE各个头的主要成员，并基于对这些头的理解，对PE文件进行一些改动。如果完成之前的练习，相信一定PE文件头的组成已经有深刻的认识，而且对于C语言指针的理解也一定深入一个层次（：</p>
-<p>然而PE文件最为复杂结构还没有真正现身，即重定位表、导入表、导出表，这三张表比之前所有的加起来都还要复杂，它们也是PE文件能够正常运行的关键所在，接下来就慢慢深入学习把</p>
+<h2 id="回顾"><a href="#回顾" class="headerlink" title="回顾"></a>回顾</h2><p>目前我们已经完成对PE基本结构的解析，了解PE各个头的主要成员，并基于对这些头的理解，对PE文件进行一些改动。如果完成之前的练习，相信你一定对PE文件头的组成已经有了深刻的认识，而且对于C语言指针的理解也一定深入一个层次（：</p>
+<p>然而PE文件最为复杂结构还没有真正现身，即重定位表、导入表、导出表，这三张表比之前所有的加起来都还要复杂，它们也是PE文件能够正常运行的关键所在，接下来就慢慢深入探究吧</p>
 <h2 id="知识铺垫"><a href="#知识铺垫" class="headerlink" title="知识铺垫"></a>知识铺垫</h2><p>在学习这几张表之前还需要一些个知识的铺垫</p>
 <h3 id="静态链接"><a href="#静态链接" class="headerlink" title="静态链接"></a>静态链接</h3><p>当我们在写程序的时候，总会面临代码复用的问题，常见的解决办法是将相关函数进行一个封装单独放在一个文件里面，然后再在主工程里面使用一个头文件include进来</p>
 <p>![](C:\Users\yongrin\Desktop\截屏2023-07-06 14.42.05.png)</p>
