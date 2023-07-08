@@ -25,7 +25,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://www.nasachina.cn/wp-content/uploads/2023/07/Caldwell_14_2023_HaLRGB_LRGB_stars_wm-scaled-1.png">
 <meta property="article:published_time" content="2023-07-07T15:50:00.000Z">
-<meta property="article:modified_time" content="2023-07-07T18:00:56.052Z">
+<meta property="article:modified_time" content="2023-07-08T12:02:17.129Z">
 <meta property="article:author" content="yring">
 <meta property="article:tag" content="reverse">
 <meta property="article:tag" content="PE">
@@ -295,7 +295,7 @@
               <p class="note note-info">
                 
                   
-                    Last updated on July 8, 2023 am
+                    Last updated on July 8, 2023 pm
                   
                 
               </p>
@@ -356,8 +356,6 @@
 <li><p>NumberOfFunctions计算方式。之前提及，在使用def导出函数序号时，我们可以随意决定函数序号，而NumberOfFunctions就依赖这些序号计算。具体地，它会用<strong>最大的序号 - 最小的序号 + 1</strong>这个公式来计算。也就是说，NumberOfFunctions并不一定就是实际导出函数个数</p>
 <p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202307072233229.jpg" srcset="/img/loading.gif" lazyload></p>
 </li>
-<li><p>NumberOfNames计算方式由最大的序号直接确定。</p>
-</li>
 <li><p>地址表与名称地址表大小不一定。通常情况下地址表会大于名称地址表，因为地址表是由所有函数地址，名称表只是以名字导出的函数。但也是也可以让两个函数名字指向同一个函数，这种情况下名称地址表就有可能大于地址表</p>
 </li>
 <li><p>在导出函数的时候可以通过使用def文件的方式更改dll函数导出序号，但是def里的序号与序号表里序号并不是一样的，而是序号表的序号 &#x3D; def的序号 + base</p>
@@ -398,7 +396,7 @@
 </li>
 <li><p>NumberOfFuncitons &#x3D; 最大导出序号 - 最小导出序号 + 1</p>
 </li>
-<li><p>NumberOfNames &#x3D; 最大导出序号</p>
+<li><p>NumberOfNames &#x3D; 以名字导出函数个数</p>
 </li>
 <li><p>AddressOfFunctions，AddressOfNames，AddressOfNameOrdinals均是RVA，各自再指向一张表</p>
 <ul>
@@ -527,6 +525,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2023/07/09/PE_7/" title="PE文件结构（八）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">PE文件结构（八）</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
