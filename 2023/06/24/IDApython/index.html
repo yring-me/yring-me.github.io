@@ -25,7 +25,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://www.nasachina.cn/wp-content/uploads/2023/06/NGC-6872-LRGB-rev-5-crop-CDK-1000-22-May-2023_1024.jpg">
 <meta property="article:published_time" content="2023-06-24T13:25:00.000Z">
-<meta property="article:modified_time" content="2023-06-25T11:11:07.315Z">
+<meta property="article:modified_time" content="2023-07-30T09:30:32.685Z">
 <meta property="article:author" content="yring">
 <meta property="article:tag" content="reverse">
 <meta property="article:tag" content="idapython">
@@ -241,7 +241,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.6k words
+          2.9k words
         
       </span>
     
@@ -252,7 +252,7 @@
         
         
         
-          11 mins
+          12 mins
         
       </span>
     
@@ -295,7 +295,7 @@
               <p class="note note-info">
                 
                   
-                    Last updated on June 25, 2023 pm
+                    Last updated on July 30, 2023 pm
                   
                 
               </p>
@@ -306,7 +306,7 @@
                 <p>IDApython学习笔记</p>
 <span id="more"></span>
 
-<h2 id="基本指令"><a href="#基本指令" class="headerlink" title="基本指令"></a>基本指令</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python">ea = here() <span class="hljs-comment">#当前光标处地址</span><br><br>asm = idc.GetDisasm(ea) <span class="hljs-comment"># 获取当前地址的整句汇编指令 如 mov rax 1</span><br>op = idc.print_insn_mnem(ea) <span class="hljs-comment"># 获取当前地址汇编操作，如 mov </span><br>operand = idc.print_operand(ea,<span class="hljs-number">0</span>) <span class="hljs-comment"># 获取当前地址汇编操作的操作数，0是第一个操作数，1是第二个操作数，如果超过返回空</span><br><br>_prev_ins = idc.prev_head(ea) <span class="hljs-comment"># 上一条指令地址</span><br>_next_ins = idc.next_head(ea) <span class="hljs-comment"># 下一条指令地址</span><br><br>_prev_addr = idc.prev_addr(ea) <span class="hljs-comment"># 下一条指令地址 这里地址是连续的 比如ea = 0x4001 则返回0x4002 </span><br>_next_addr = idc.next_addr(ea) <span class="hljs-comment"># 下一条指令地址 这里地址是连续的 比如ea = 0x4001 则返回0x4002 </span><br><br>seg_name = idc.get_segm_name(ea) <span class="hljs-comment">#当前地址所处段</span><br><span class="hljs-keyword">for</span> seg <span class="hljs-keyword">in</span> Segments(): <span class="hljs-comment"># 获得每个段起始地址 返回值为每个段起始地址</span><br>    <span class="hljs-built_in">print</span>(seg)<br><br><span class="hljs-keyword">for</span> func <span class="hljs-keyword">in</span> Functions():<span class="hljs-comment"># 获得每一个函数名字</span><br>    <span class="hljs-built_in">print</span>(idc.get_func_name(func))<br><br></code></pre></td></tr></table></figure>
+<h2 id="基本指令"><a href="#基本指令" class="headerlink" title="基本指令"></a>基本指令</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python">ea = here() <span class="hljs-comment">#当前光标处地址</span><br><br>asm = idc.GetDisasm(ea) <span class="hljs-comment"># 获取当前地址的整句汇编指令 如 mov rax 1</span><br>op = idc.print_insn_mnem(ea) <span class="hljs-comment"># 获取当前地址汇编操作，如 mov </span><br>operand = idc.print_operand(ea,<span class="hljs-number">0</span>) <span class="hljs-comment"># 获取当前地址汇编操作的操作数，0是第一个操作数，1是第二个操作数，如果超过返回空</span><br><br>_prev_ins = idc.prev_head(ea) <span class="hljs-comment"># 上一条指令地址</span><br>_next_ins = idc.next_head(ea) <span class="hljs-comment"># 下一条指令地址</span><br><br>_prev_addr = idc.prev_addr(ea) <span class="hljs-comment"># 上一条指令地址 这里地址是连续的 比如ea = 0x4002 则返回0x4001</span><br>_next_addr = idc.next_addr(ea) <span class="hljs-comment"># 下一条指令地址 这里地址是连续的 比如ea = 0x4001 则返回0x4002 </span><br><br>seg_name = idc.get_segm_name(ea) <span class="hljs-comment">#当前地址所处段</span><br><span class="hljs-keyword">for</span> seg <span class="hljs-keyword">in</span> Segments(): <span class="hljs-comment"># 获得每个段起始地址 返回值为每个段起始地址</span><br>    <span class="hljs-built_in">print</span>(seg)<br><br><span class="hljs-keyword">for</span> func <span class="hljs-keyword">in</span> Functions():<span class="hljs-comment"># 获得每一个函数名字</span><br>    <span class="hljs-built_in">print</span>(idc.get_func_name(func))<br><br></code></pre></td></tr></table></figure>
 
 <h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><h3 id="基本指令-1"><a href="#基本指令-1" class="headerlink" title="基本指令"></a>基本指令</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs python">name = idc.get_func_name(ea) <span class="hljs-comment">#当前地址所属函数名字</span><br>func = ida_funcs.get_func(ea) <span class="hljs-comment">#当前地址所属函数 返回一个func_t对象</span><br>func = idaapi.get_func(ea) <span class="hljs-comment">#功能同上</span><br><br><span class="hljs-comment"># 利用func_t对象，有如下几个操作</span><br>func_start = func.start_ea <span class="hljs-comment">#该函数起始地址</span><br>func_end = func.end_ea <span class="hljs-comment">#该函数结束地址 注意结束地址是此函数最后一条指令的下一条指令地址</span><br><br>func_start = idc.get_func_attr(ea, FUNCATTR_START) <span class="hljs-comment"># 此地址所属函数起始地址 FUNCATTR_START是宏 等于0</span><br>func_end = idc.get_func_attr(ea,FUNCATTR_END)<span class="hljs-comment"># 此地址所属函数结束地址 同func_end FUNCATTR_END是宏 等于8</span><br><br><span class="hljs-comment"># 获取上一个函数起始地址</span><br>idc.get_prev_fchunk(ea) <br>idc.get_prev_func(ea) <br><br><span class="hljs-comment"># 获取下一个函数起始地址</span><br>idc.get_next_fchunk(ea) <br>idc.get_next_func(ea) <br></code></pre></td></tr></table></figure>
 
@@ -324,11 +324,11 @@
 
 
 
+<h2 id="获取数据"><a href="#获取数据" class="headerlink" title="获取数据"></a>获取数据</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">idc.get_wide_byte(ea) // 获取单字节<br>idc.get_wide_word(ea) // 获取一个字<br>idc.get_wide_dword(ea) // 获取双字<br>idc.get_qword(ea) // 获取四字<br>idc.GetFloat(ea) <br>idc.GetDouble(ea)<br></code></pre></td></tr></table></figure>
 
 
 
-
-
+<h2 id="补丁"><a href="#补丁" class="headerlink" title="补丁"></a>补丁</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">patch_byte(ea, value)<br>patch_word(ea, value)<br>patch_dword(ea, value)<br>patch_qword(ea, value)<br></code></pre></td></tr></table></figure>
 
 
 
