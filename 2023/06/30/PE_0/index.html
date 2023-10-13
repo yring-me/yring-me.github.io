@@ -25,7 +25,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://www.nasachina.cn/wp-content/uploads/2023/06/M24_2023grapod1024.jpg">
 <meta property="article:published_time" content="2023-06-30T05:10:00.000Z">
-<meta property="article:modified_time" content="2023-10-07T12:32:16.195Z">
+<meta property="article:modified_time" content="2023-10-13T00:36:16.118Z">
 <meta property="article:author" content="yring">
 <meta property="article:tag" content="reverse">
 <meta property="article:tag" content="PE">
@@ -295,7 +295,7 @@
               <p class="note note-info">
                 
                   
-                    Last updated on October 7, 2023 pm
+                    Last updated on October 13, 2023 am
                   
                 
               </p>
@@ -326,7 +326,7 @@
 <li>哪个部分在哪里开始哪里结束呢？</li>
 </ul>
 <p>不急 ，这里先给出整个PE文件结构的图</p>
-<p><img src="C:\Users\yongrin\Desktop\PE结构图1.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202310130834634.jpg" srcset="/img/loading.gif" lazyload></p>
 <p>可以看到在上面那个图中，又引申出许多小表，其实这些小表就是一个一个结构体，存储在PE文件结构中。可以这么说：PE文件结构就是由许许多多的结构体组成，每个结构体里的每个成员都有相应的含义，比如指示哪个部分的开始，哪个部分的结束，在指来指去的过程中，整个文件运行所需要的信息也就明确了。</p>
 <h2 id="DOS头"><a href="#DOS头" class="headerlink" title="DOS头"></a>DOS头</h2><p>我们先来看看DOS头部分的结构体吧</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-comment">//注释掉的不需要重点分析</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">IMAGE_DOS_HEADER</span>&#123;</span><br>    <span class="hljs-number">0X00</span> WORD e_magic;      <span class="hljs-comment">//※Magic DOS signature MZ(4Dh 5Ah):MZ标记:用于标记是否是可执行文件</span><br>    <span class="hljs-comment">//0X02 WORD e_cblp;     //Bytes on last page of file</span><br>    <span class="hljs-comment">//0X04 WORD e_cp;       //Pages in file</span><br>    <span class="hljs-comment">//0X06 WORD e_crlc;     //Relocations</span><br>    <span class="hljs-comment">//0X08 WORD e_cparhdr;  //Size of header in paragraphs</span><br>    <span class="hljs-comment">//0X0A WORD e_minalloc; //Minimun extra paragraphs needs</span><br>    <span class="hljs-comment">//0X0C WORD e_maxalloc; //Maximun extra paragraphs needs</span><br>    <span class="hljs-comment">//0X0E WORD e_ss;       //intial(relative)SS value</span><br>    <span class="hljs-comment">//0X10 WORD e_sp;       //intial SP value</span><br>    <span class="hljs-comment">//0X12 WORD e_csum;     //Checksum</span><br>    <span class="hljs-comment">//0X14 WORD e_ip;       //intial IP value</span><br>    <span class="hljs-comment">//0X16 WORD e_cs;       //intial(relative)CS value</span><br>    <span class="hljs-comment">//0X18 WORD e_lfarlc;   //File Address of relocation table</span><br>    <span class="hljs-comment">//0X1A WORD e_ovno;     //Overlay number</span><br>    <span class="hljs-comment">//0x1C WORD e_res[4];   //Reserved words</span><br>    <span class="hljs-comment">//0x24 WORD e_oemid;    //OEM identifier(for e_oeminfo)</span><br>    <span class="hljs-comment">//0x26 WORD e_oeminfo;  //OEM information;e_oemid specific</span><br>    <span class="hljs-comment">//0x28 WORD e_res2[10]; //Reserved words</span><br>    <span class="hljs-number">0x3C</span> DWORD e_lfanew;    <span class="hljs-comment">//※Offset to start of PE header:定位PE文件，PE头相对于文件的偏移量</span><br>&#125;;<br></code></pre></td></tr></table></figure>
