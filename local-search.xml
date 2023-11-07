@@ -4,6 +4,35 @@
   
   
   <entry>
+    <title>z3笔记</title>
+    <link href="/2023/11/07/z3_study/"/>
+    <url>/2023/11/07/z3_study/</url>
+    
+    <content type="html"><![CDATA[<p>记录一些z3食用方式</p><span id="more"></span><h2 id="1-变量定义"><a href="#1-变量定义" class="headerlink" title="1. 变量定义"></a>1. 变量定义</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 定义一个整型变量</span><br>x = Int(<span class="hljs-string">&#x27;x&#x27;</span>)<br><span class="hljs-comment"># 定义两个实数型变量，</span><br>a, b = Reals(<span class="hljs-string">&#x27;a b&#x27;</span>)<br><span class="hljs-comment"># 定义一个32位向量</span><br>eax = BitVec(<span class="hljs-string">&#x27;eax&#x27;</span>, <span class="hljs-number">32</span>)<br><span class="hljs-comment"># 定义两个32位向量</span><br>ebx, ecx = BitVecs(<span class="hljs-string">&#x27;ebx ecx&#x27;</span>, <span class="hljs-number">32</span>)<br><span class="hljs-comment"># 定义一组变量列表</span><br>X = [Int(<span class="hljs-string">&#x27;x_%s&#x27;</span> % i) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">8</span>)]<br></code></pre></td></tr></table></figure><h2 id="2-逻辑相关"><a href="#2-逻辑相关" class="headerlink" title="2.逻辑相关"></a>2.逻辑相关</h2><h3 id="And与Or"><a href="#And与Or" class="headerlink" title="And与Or"></a>And与Or</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python">x = Int(<span class="hljs-string">&#x27;x&#x27;</span>)<br>y = Int(<span class="hljs-string">&#x27;y&#x27;</span>)<br><br><span class="hljs-comment"># 或逻辑，两者满足其一</span><br>constrains1 = Or(x &lt; <span class="hljs-number">0</span>, x &gt; <span class="hljs-number">5</span>)<br><span class="hljs-comment"># 与逻辑，两者均要满足</span><br>constrains2 = And(<span class="hljs-number">1</span> &lt; y, y &lt; <span class="hljs-number">10</span>)<br><span class="hljs-comment"># 取反</span><br>constrains3 = Not(x &lt; -<span class="hljs-number">1</span>)<br><br>s = Solver()<br>s.add(constrains1, constrains2)<br></code></pre></td></tr></table></figure><h3 id="IF"><a href="#IF" class="headerlink" title="IF"></a>IF</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">x = Int(<span class="hljs-string">&#x27;x&#x27;</span>)<br>y = Int(<span class="hljs-string">&#x27;y&#x27;</span>)<br>s = Solver()<br><span class="hljs-comment"># 添加If约束</span><br>s.add(If(y &gt; <span class="hljs-number">10</span>, x == <span class="hljs-number">115</span>, x == <span class="hljs-number">1</span>))<br></code></pre></td></tr></table></figure><h2 id="3-输出相关"><a href="#3-输出相关" class="headerlink" title="3.输出相关"></a>3.输出相关</h2><h3 id="式子"><a href="#式子" class="headerlink" title="式子"></a>式子</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs python">x = Int(<span class="hljs-string">&#x27;x&#x27;</span>)<br>y = Int(<span class="hljs-string">&#x27;y&#x27;</span>)<br>z = Int(<span class="hljs-string">&#x27;z&#x27;</span>)<br><br>n = x + y + z == <span class="hljs-number">3</span><br><br><span class="hljs-comment"># 输出子式数目</span><br><span class="hljs-built_in">print</span>(n.num_args())<br><span class="hljs-meta">&gt;&gt;&gt; </span><span class="hljs-number">2</span><br><br><span class="hljs-comment"># 输出表达式的子式</span><br><span class="hljs-built_in">print</span>(n.children())<br><span class="hljs-meta">&gt;&gt;&gt; </span>[x + y + z, <span class="hljs-number">3</span>]<br><br><span class="hljs-comment"># 输出具体子式</span><br><span class="hljs-built_in">print</span>(n.arg(<span class="hljs-number">0</span>))<br><span class="hljs-meta">&gt;&gt;&gt; </span>x+y+Z<br><span class="hljs-built_in">print</span>(n.arg(<span class="hljs-number">1</span>))<br><span class="hljs-meta">&gt;&gt;&gt; </span><span class="hljs-number">3</span><br><br><span class="hljs-comment"># 输出具体操作</span><br><span class="hljs-built_in">print</span>(n.decl())<br><span class="hljs-meta">&gt;&gt;&gt; </span>==<br><br></code></pre></td></tr></table></figure><h3 id="输出具体值设置"><a href="#输出具体值设置" class="headerlink" title="输出具体值设置"></a>输出具体值设置</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python">x = Real(<span class="hljs-string">&#x27;x&#x27;</span>)<br><span class="hljs-comment"># 输出分数</span><br>solve(<span class="hljs-number">3</span>*x == <span class="hljs-number">1</span>)<br><span class="hljs-meta">&gt;&gt;&gt; </span>[<span class="hljs-number">1</span>/<span class="hljs-number">3</span>]<br><br><span class="hljs-comment"># 输出十进制数</span><br>set_option(rational_to_decimal=<span class="hljs-literal">True</span>)<br>solve(<span class="hljs-number">3</span>*x == <span class="hljs-number">1</span>)<br><span class="hljs-meta">&gt;&gt;&gt; </span>[x = <span class="hljs-number">0.3333333333</span>?]<br><br><span class="hljs-comment"># 设定小数位数</span><br>set_option(precision=<span class="hljs-number">30</span>)<br>solve(<span class="hljs-number">3</span>*x == <span class="hljs-number">1</span>)<br><span class="hljs-meta">&gt;&gt;&gt; </span>[x = <span class="hljs-number">0.333333333333333333333333333333</span>?]<br></code></pre></td></tr></table></figure><h3 id="输出约束"><a href="#输出约束" class="headerlink" title="输出约束"></a>输出约束</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python">x = Real(<span class="hljs-string">&#x27;x&#x27;</span>)<br>y = Real(<span class="hljs-string">&#x27;y&#x27;</span>)<br>s = Solver()<br>s.add(x &gt; <span class="hljs-number">1</span>, y &gt; <span class="hljs-number">1</span>, Or(x + y &gt; <span class="hljs-number">3</span>, x - y &lt; <span class="hljs-number">2</span>))<br><span class="hljs-comment"># 输出约束条件 可以用来验证约束设定的对不对</span><br><span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> s.assertions():<br>    <span class="hljs-built_in">print</span>(c)<br><span class="hljs-meta">&gt;&gt;&gt; </span>x &gt; <span class="hljs-number">1</span><br><span class="hljs-meta">&gt;&gt;&gt; </span>y &gt; <span class="hljs-number">1</span><br><span class="hljs-meta">&gt;&gt;&gt; </span>Or(x + y &gt; <span class="hljs-number">3</span>, x - y &lt; <span class="hljs-number">2</span>)<br></code></pre></td></tr></table></figure><h3 id="取解、解的转化"><a href="#取解、解的转化" class="headerlink" title="取解、解的转化"></a>取解、解的转化</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs python">x, y, z = Reals(<span class="hljs-string">&#x27;x y z&#x27;</span>)<br>s = Solver()<br>s.add(x &gt; <span class="hljs-number">1</span>, y &gt; <span class="hljs-number">1</span>, x + y &gt; <span class="hljs-number">3</span>, z - x &lt; <span class="hljs-number">10</span>)<br><br>s.check()<br>m = s.model()<br><span class="hljs-comment"># 取特定的值</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;x = %s&quot;</span> % m[x])<br><br><span class="hljs-comment"># 取出所有的值</span><br><span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> m.decls():<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;%s = %s&quot;</span> % (d.name(), m[d]))<br>    <br><span class="hljs-comment"># 对于Int，BitVec型可以这样将值转化为python int</span><br>x_int = x.as_long()<br><br><span class="hljs-comment"># 对于Real型可以这样将值转化为python float</span><br>x_float = x.as_decimal(<span class="hljs-number">10</span>) <span class="hljs-comment">#括号中是保留小数位数</span><br></code></pre></td></tr></table></figure><h2 id="4-列表"><a href="#4-列表" class="headerlink" title="4.列表"></a>4.列表</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 创建一个包含五个变量的列表</span><br>X = [ Int(<span class="hljs-string">&#x27;x%s&#x27;</span> % i) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">5</span>) ]<br>Y = [ Int(<span class="hljs-string">&#x27;y%s&#x27;</span> % i) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">5</span>) ]<br><span class="hljs-built_in">print</span> (X)<br><br><span class="hljs-comment"># 创建一个包含五个运算的列表</span><br>X_plus_Y = [ X[i] + Y[i] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">5</span>) ]<br><span class="hljs-built_in">print</span> (X_plus_Y)<br><br><span class="hljs-comment"># 创建一个包含五个约束的列表</span><br>X_gt_Y = [ X[i] &gt; Y[i] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">5</span>) ]<br><span class="hljs-built_in">print</span> (X_gt_Y)<br><br><span class="hljs-built_in">print</span> (And(X_gt_Y))<br><br><span class="hljs-comment"># 创建多维的变量</span><br>X = [ [ Int(<span class="hljs-string">&quot;x_%s_%s&quot;</span> % (i+<span class="hljs-number">1</span>, j+<span class="hljs-number">1</span>)) <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">3</span>) ] <br>      <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">3</span>) ]<br>pp(X)<br></code></pre></td></tr></table></figure><h2 id="5-例子"><a href="#5-例子" class="headerlink" title="5.例子"></a>5.例子</h2><h3 id="（1）数独"><a href="#（1）数独" class="headerlink" title="（1）数独"></a>（1）数独</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> z3 <span class="hljs-keyword">import</span> *<br><br><span class="hljs-comment"># 创建9*9的列表存储变量</span><br>x = [[Int(<span class="hljs-string">&quot;x_%s_%s&quot;</span> % (i + <span class="hljs-number">1</span>, j + <span class="hljs-number">1</span>)) <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">9</span>)] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">9</span>)]<br><br><span class="hljs-comment"># 对一个变量限定在取值范围</span><br>bounds = [And(<span class="hljs-number">1</span> &lt;= x[i][j], x[i][j] &lt;= <span class="hljs-number">9</span>) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">9</span>) <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">9</span>)]<br><br><span class="hljs-comment"># 每一行不能有相同元素，Distinct即为添加约束两两不同</span><br>rows = [Distinct(x[i]) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">9</span>)]<br><br><span class="hljs-comment"># 每一列不能有相同元素</span><br>cols = [Distinct([x[i][j] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">9</span>)]) <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">9</span>)]<br><br><span class="hljs-comment"># 每一个九宫格不能有相同元素</span><br>sq = [Distinct([x[<span class="hljs-number">3</span> * ii + i][<span class="hljs-number">3</span> * jj + j]<br>                <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">3</span>) <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">3</span>)])<br>      <span class="hljs-keyword">for</span> ii <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">3</span>) <span class="hljs-keyword">for</span> jj <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">3</span>)]<br><br>base_rules = bounds + rows + cols + sq<br><br><span class="hljs-comment"># 数独矩阵，为0的即为没有填的</span><br>instance = ((<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">9</span>, <span class="hljs-number">4</span>, <span class="hljs-number">0</span>, <span class="hljs-number">3</span>, <span class="hljs-number">0</span>),<br>            (<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">5</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">7</span>),<br>            (<span class="hljs-number">0</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">4</span>, <span class="hljs-number">0</span>),<br>            (<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">8</span>),<br>            (<span class="hljs-number">0</span>, <span class="hljs-number">6</span>, <span class="hljs-number">0</span>, <span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">5</span>, <span class="hljs-number">0</span>),<br>            (<span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>),<br>            (<span class="hljs-number">0</span>, <span class="hljs-number">7</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">5</span>, <span class="hljs-number">2</span>, <span class="hljs-number">0</span>),<br>            (<span class="hljs-number">9</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">6</span>, <span class="hljs-number">5</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>),<br>            (<span class="hljs-number">0</span>, <span class="hljs-number">4</span>, <span class="hljs-number">0</span>, <span class="hljs-number">9</span>, <span class="hljs-number">7</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>))<br><br><span class="hljs-comment"># 利用If语句将棋盘元素映射为z3类型</span><br>instance_c = [If(instance[i][j] == <span class="hljs-number">0</span>,<br>                 <span class="hljs-literal">True</span>,<br>                 x[i][j] == instance[i][j])<br>              <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">9</span>) <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">9</span>)]<br><br>s = Solver()<br><br>s.add(base_rules + instance_c)<br><br><span class="hljs-keyword">if</span> s.check() == sat:<br>    m = s.model()<br>    r = [[m.evaluate(x[i][j]) <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">9</span>)]<br>         <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">9</span>)]<br>    print_matrix(r)<br><br><span class="hljs-keyword">else</span>:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;failed to solve&quot;</span>)<br><br></code></pre></td></tr></table></figure><h3 id="（2）hackgame2023-小z的谜题"><a href="#（2）hackgame2023-小z的谜题" class="headerlink" title="（2）hackgame2023 小z的谜题"></a>（2）hackgame2023 小z的谜题</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> z3 <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">import</span> itertools<br><br>bound = <span class="hljs-number">5</span><br>constraints = ((<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>), (<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>), (<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">4</span>), (<span class="hljs-number">1</span>, <span class="hljs-number">4</span>, <span class="hljs-number">4</span>), (<span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>), (<span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>))<br>count = [<span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]<br>num_constraints = <span class="hljs-built_in">sum</span>(count)<br>num_dims = <span class="hljs-built_in">len</span>(constraints[<span class="hljs-number">0</span>])<br><br><span class="hljs-comment"># 创建16*3*3的列表存储变量</span><br>arrange = [[[Int(<span class="hljs-string">&#x27;x_%s_%s_%s&#x27;</span> % (k + <span class="hljs-number">1</span>, j + <span class="hljs-number">1</span>, i + <span class="hljs-number">1</span>)) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">3</span>)] <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">3</span>)] <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">16</span>)]<br><br>solver = Solver()<br><br><span class="hljs-comment"># Stage 0</span><br><span class="hljs-comment"># 添加约束一</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">16</span>):<br>    <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">3</span>):<br>        <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">3</span>):<br>            <span class="hljs-keyword">if</span> k == <span class="hljs-number">2</span>:<br>                solver.add(arrange[i][j][k] == -<span class="hljs-number">1</span>)<br>            <span class="hljs-keyword">else</span>:<br>                solver.add(<span class="hljs-number">0</span> &lt;= arrange[i][j][k])<br>                solver.add(arrange[i][j][k] &lt;= bound)<br><br><span class="hljs-comment"># Stage 2</span><br><span class="hljs-comment"># 添加约束二，因为满足其一即可，所以是Or的关系</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">16</span>):<br>    <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">16</span>):<br>        <span class="hljs-keyword">if</span> i == j:<br>            <span class="hljs-keyword">continue</span><br>        solver.add(<br>            Or([(Or(arrange[i][k][<span class="hljs-number">1</span>] &lt;= arrange[j][k][<span class="hljs-number">0</span>], arrange[j][k][<span class="hljs-number">1</span>] &lt;= arrange[i][k][<span class="hljs-number">0</span>])) <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">3</span>)]))<br><br><span class="hljs-comment"># Stage 3</span><br><span class="hljs-comment"># 添加约束三，这里的核心思想是，只要每一行能够满足其中一个</span><br><span class="hljs-comment"># ((1, 1, 3), (1, 2, 2), (1, 2, 4), (1, 4, 4), (2, 2, 2), (2, 2, 3))</span><br><span class="hljs-comment"># 即可，同时也有数量约束，利用count[t]实现对这此约束</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">16</span>):<br>    <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">6</span>):<br>        <span class="hljs-keyword">if</span> count[t]:<br>            g = []<br>            <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> <span class="hljs-built_in">set</span>(itertools.permutations(constraints[t])):<br>                o = []<br>                <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">3</span>):<br>                    o.append(arrange[i][j][<span class="hljs-number">1</span>] - arrange[i][j][<span class="hljs-number">0</span>] == p[j])<br>                g.append(And(o))<br><br>            solver.add(Or(g))<br>            count[t] -= <span class="hljs-number">1</span><br>            <span class="hljs-keyword">break</span><br><br><br> <br><span class="hljs-comment"># 计算分数</span><br><span class="hljs-comment"># 这里计算分数方式是每一行能产生多少种笛卡尔积，16行再做累计</span><br><span class="hljs-comment"># 因此只需要每一行的每一种笛卡尔积能够对应所有笛卡尔积中的一种即可</span><br><span class="hljs-comment"># 耗时操作主要就在这一步</span><br>g = []<br><span class="hljs-keyword">for</span> x0, y0, z0 <span class="hljs-keyword">in</span> itertools.product(*([<span class="hljs-built_in">list</span>(<span class="hljs-built_in">range</span>(-<span class="hljs-number">1</span>, bound + <span class="hljs-number">1</span>))] * <span class="hljs-number">3</span>)):<br>    t = []<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">16</span>):<br>        <span class="hljs-keyword">for</span> x1, y1, z1 <span class="hljs-keyword">in</span> itertools.product(*arrange[i]):<br>            o = [x0 == x1, y0 == y1, z0 == z1]<br>            t.append(And(o))<br>    g.append(Or(t))<br><br><br><span class="hljs-comment"># 统计有多少种笛卡尔积</span><br>s = Sum([If(i, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> g])<br><br><span class="hljs-comment"># 控制分数</span><br>solver.add(s &gt;= <span class="hljs-number">157</span>)<br><br><span class="hljs-keyword">if</span> solver.check() == z3.sat:<br>    ans = solver.model()<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">16</span>):<br>        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">3</span>):<br>            <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">3</span>):<br>                arrange[i][j][k] = ans[arrange[i][j][k]].as_long()<br><br>    arrange.sort()<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;&#x27;</span>.join([<span class="hljs-built_in">str</span>(arrange[i][j][k]) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num_constraints) <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num_dims) <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>)]))<br><br><span class="hljs-built_in">print</span>(arrange)<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>CTF</category>
+      
+      <category>Reverse</category>
+      
+      <category>z3</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>z3</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>jade原型链污染RCE</title>
     <link href="/2023/10/24/jade_prototype/"/>
     <url>/2023/10/24/jade_prototype/</url>
@@ -84,9 +113,9 @@
     
     <tags>
       
-      <tag>PE</tag>
-      
       <tag>reverse</tag>
+      
+      <tag>PE</tag>
       
     </tags>
     
@@ -208,9 +237,9 @@
     
     <tags>
       
-      <tag>PE</tag>
-      
       <tag>reverse</tag>
+      
+      <tag>PE</tag>
       
     </tags>
     
@@ -239,9 +268,9 @@
     
     <tags>
       
-      <tag>PE</tag>
-      
       <tag>reverse</tag>
+      
+      <tag>PE</tag>
       
     </tags>
     
@@ -270,9 +299,9 @@
     
     <tags>
       
-      <tag>PE</tag>
-      
       <tag>reverse</tag>
+      
+      <tag>PE</tag>
       
     </tags>
     
@@ -301,9 +330,9 @@
     
     <tags>
       
-      <tag>PE</tag>
-      
       <tag>reverse</tag>
+      
+      <tag>PE</tag>
       
     </tags>
     
@@ -332,9 +361,9 @@
     
     <tags>
       
-      <tag>PE</tag>
-      
       <tag>reverse</tag>
+      
+      <tag>PE</tag>
       
     </tags>
     
@@ -363,9 +392,9 @@
     
     <tags>
       
-      <tag>PE</tag>
-      
       <tag>reverse</tag>
+      
+      <tag>PE</tag>
       
     </tags>
     
@@ -394,9 +423,9 @@
     
     <tags>
       
-      <tag>PE</tag>
-      
       <tag>reverse</tag>
+      
+      <tag>PE</tag>
       
     </tags>
     
@@ -425,9 +454,9 @@
     
     <tags>
       
-      <tag>PE</tag>
-      
       <tag>reverse</tag>
+      
+      <tag>PE</tag>
       
     </tags>
     
@@ -456,9 +485,9 @@
     
     <tags>
       
-      <tag>PE</tag>
-      
       <tag>reverse</tag>
+      
+      <tag>PE</tag>
       
     </tags>
     
@@ -487,9 +516,9 @@
     
     <tags>
       
-      <tag>PE</tag>
-      
       <tag>reverse</tag>
+      
+      <tag>PE</tag>
       
     </tags>
     
@@ -518,9 +547,9 @@
     
     <tags>
       
-      <tag>PE</tag>
-      
       <tag>reverse</tag>
+      
+      <tag>PE</tag>
       
     </tags>
     
