@@ -16,16 +16,16 @@
   <meta name="author" content="yring">
   <meta name="keywords" content="">
   
-    <meta name="description" content="NaCl">
+    <meta name="description" content="NaCl	Jump">
 <meta property="og:type" content="article">
 <meta property="og:title" content="*CTF 2022">
 <meta property="og:url" content="http://example.com/2024/01/01/Nacl/index.html">
 <meta property="og:site_name" content="yring">
-<meta property="og:description" content="NaCl">
+<meta property="og:description" content="NaCl	Jump">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://www.nasachina.cn/wp-content/uploads/2023/12/CalNeb_Powell_960.jpg">
 <meta property="article:published_time" content="2023-12-31T17:58:00.000Z">
-<meta property="article:modified_time" content="2023-12-31T18:40:48.746Z">
+<meta property="article:modified_time" content="2024-01-13T08:36:07.100Z">
 <meta property="article:author" content="yring">
 <meta property="article:tag" content="reverse">
 <meta name="twitter:card" content="summary_large_image">
@@ -240,7 +240,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5.3k words
+          9.9k words
         
       </span>
     
@@ -251,7 +251,7 @@
         
         
         
-          21 mins
+          39 mins
         
       </span>
     
@@ -294,7 +294,7 @@
               <p class="note note-info">
                 
                   
-                    Last updated on January 1, 2024 am
+                    Last updated on January 13, 2024 pm
                   
                 
               </p>
@@ -302,7 +302,7 @@
             
               <div class="markdown-body">
                 
-                <p>NaCl</p>
+                <p>NaCl	Jump</p>
 <span id="more"></span>
 
 <h2 id="NaCl"><a href="#NaCl" class="headerlink" title="NaCl"></a>NaCl</h2><p>利用字符串可以快速的定位到关键函数</p>
@@ -345,12 +345,23 @@
 
 
 
+<h2 id="Jump"><a href="#Jump" class="headerlink" title="Jump"></a>Jump</h2><p>考点就是<code>setjmp()</code>和<code>longjmp()</code>的配合，这两个函数可以在函数间实现类似<code>goto</code>的跳跃。</p>
+<p>简单说就是<code>setjmp</code>会设置一个缓存点，需要一个<code>jmp_buf</code>参数来保存上下文信息，并且返回0零值</p>
+<p><code>longjmp</code>需要一个<code>jmp_buf</code>参数来知晓要去哪个缓存点，还需要一个<code>val</code>参数来告诉要返回什么值。这里要注意的是<code>longjmp</code>函数不返回，而是直接从<code>setjmp</code>返回，返回值就是<code>val</code></p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-13%2016.16.44.png" srcset="/img/loading.gif" lazyload></p>
+<p>整体的逻辑都比较简单，这里还用<code>setjmp</code>和<code>longjmp</code>做了循环操作。</p>
+<p>通过调试可以知道输入0x22个字符，然后每次循环左移1位得到二维数组给buffer2，比如输入<code>985236147adgjlqwesxzcvbnmfuiopvx</code>,就会得到</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-string">b&#x27;\x02985236147adgjlqwesxzcvbnmfuiopvx\x03&#x27;</span><br><span class="hljs-string">b&#x27;985236147adgjlqwesxzcvbnmfuiopvx\x03\x02&#x27;</span><br><span class="hljs-string">b&#x27;85236147adgjlqwesxzcvbnmfuiopvx\x03\x029&#x27;</span><br><span class="hljs-string">b&#x27;5236147adgjlqwesxzcvbnmfuiopvx\x03\x0298&#x27;</span><br><span class="hljs-string">b&#x27;236147adgjlqwesxzcvbnmfuiopvx\x03\x02985&#x27;</span><br><span class="hljs-string">b&#x27;36147adgjlqwesxzcvbnmfuiopvx\x03\x029852&#x27;</span><br><span class="hljs-string">b&#x27;6147adgjlqwesxzcvbnmfuiopvx\x03\x0298523&#x27;</span><br><span class="hljs-string">b&#x27;147adgjlqwesxzcvbnmfuiopvx\x03\x02985236&#x27;</span><br><span class="hljs-string">b&#x27;47adgjlqwesxzcvbnmfuiopvx\x03\x029852361&#x27;</span><br><span class="hljs-string">b&#x27;7adgjlqwesxzcvbnmfuiopvx\x03\x0298523614&#x27;</span><br><span class="hljs-string">b&#x27;adgjlqwesxzcvbnmfuiopvx\x03\x02985236147&#x27;</span><br><span class="hljs-string">b&#x27;dgjlqwesxzcvbnmfuiopvx\x03\x02985236147a&#x27;</span><br><span class="hljs-string">b&#x27;gjlqwesxzcvbnmfuiopvx\x03\x02985236147ad&#x27;</span><br><span class="hljs-string">b&#x27;jlqwesxzcvbnmfuiopvx\x03\x02985236147adg&#x27;</span><br><span class="hljs-string">b&#x27;lqwesxzcvbnmfuiopvx\x03\x02985236147adgj&#x27;</span><br><span class="hljs-string">b&#x27;qwesxzcvbnmfuiopvx\x03\x02985236147adgjl&#x27;</span><br><span class="hljs-string">b&#x27;wesxzcvbnmfuiopvx\x03\x02985236147adgjlq&#x27;</span><br><span class="hljs-string">b&#x27;esxzcvbnmfuiopvx\x03\x02985236147adgjlqw&#x27;</span><br><span class="hljs-string">b&#x27;sxzcvbnmfuiopvx\x03\x02985236147adgjlqwe&#x27;</span><br><span class="hljs-string">b&#x27;xzcvbnmfuiopvx\x03\x02985236147adgjlqwes&#x27;</span><br><span class="hljs-string">b&#x27;zcvbnmfuiopvx\x03\x02985236147adgjlqwesx&#x27;</span><br><span class="hljs-string">b&#x27;cvbnmfuiopvx\x03\x02985236147adgjlqwesxz&#x27;</span><br><span class="hljs-string">b&#x27;vbnmfuiopvx\x03\x02985236147adgjlqwesxzc&#x27;</span><br><span class="hljs-string">b&#x27;bnmfuiopvx\x03\x02985236147adgjlqwesxzcv&#x27;</span><br><span class="hljs-string">b&#x27;nmfuiopvx\x03\x02985236147adgjlqwesxzcvb&#x27;</span><br><span class="hljs-string">b&#x27;mfuiopvx\x03\x02985236147adgjlqwesxzcvbn&#x27;</span><br><span class="hljs-string">b&#x27;fuiopvx\x03\x02985236147adgjlqwesxzcvbnm&#x27;</span><br><span class="hljs-string">b&#x27;uiopvx\x03\x02985236147adgjlqwesxzcvbnmf&#x27;</span><br><span class="hljs-string">b&#x27;iopvx\x03\x02985236147adgjlqwesxzcvbnmfu&#x27;</span><br><span class="hljs-string">b&#x27;opvx\x03\x02985236147adgjlqwesxzcvbnmfui&#x27;</span><br><span class="hljs-string">b&#x27;pvx\x03\x02985236147adgjlqwesxzcvbnmfuio&#x27;</span><br><span class="hljs-string">b&#x27;vx\x03\x02985236147adgjlqwesxzcvbnmfuiop&#x27;</span><br><span class="hljs-string">b&#x27;x\x03\x02985236147adgjlqwesxzcvbnmfuiopv&#x27;</span><br><span class="hljs-string">b&#x27;\x03\x02985236147adgjlqwesxzcvbnmfuiopvx&#x27;</span><br></code></pre></td></tr></table></figure>
 
+<p>这里的<code>\x02</code>和<code>\x03</code>是程序加的。</p>
+<p>然后函数<code>sub_401F62</code>则根据这个二维数组的第一列进行排序，得到</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-string">b&#x27;\x02985236147adgjlqwesxzcvbnmfuiopvx\x03&#x27;</span><br><span class="hljs-string">b&#x27;\x03\x02985236147adgjlqwesxzcvbnmfuiopvx&#x27;</span><br><span class="hljs-string">b&#x27;147adgjlqwesxzcvbnmfuiopvx\x03\x02985236&#x27;</span><br><span class="hljs-string">b&#x27;236147adgjlqwesxzcvbnmfuiopvx\x03\x02985&#x27;</span><br><span class="hljs-string">b&#x27;36147adgjlqwesxzcvbnmfuiopvx\x03\x029852&#x27;</span><br><span class="hljs-string">b&#x27;47adgjlqwesxzcvbnmfuiopvx\x03\x029852361&#x27;</span><br><span class="hljs-string">b&#x27;5236147adgjlqwesxzcvbnmfuiopvx\x03\x0298&#x27;</span><br><span class="hljs-string">b&#x27;6147adgjlqwesxzcvbnmfuiopvx\x03\x0298523&#x27;</span><br><span class="hljs-string">b&#x27;7adgjlqwesxzcvbnmfuiopvx\x03\x0298523614&#x27;</span><br><span class="hljs-string">b&#x27;85236147adgjlqwesxzcvbnmfuiopvx\x03\x029&#x27;</span><br><span class="hljs-string">b&#x27;985236147adgjlqwesxzcvbnmfuiopvx\x03\x02&#x27;</span><br><span class="hljs-string">b&#x27;adgjlqwesxzcvbnmfuiopvx\x03\x02985236147&#x27;</span><br><span class="hljs-string">b&#x27;bnmfuiopvx\x03\x02985236147adgjlqwesxzcv&#x27;</span><br><span class="hljs-string">b&#x27;cvbnmfuiopvx\x03\x02985236147adgjlqwesxz&#x27;</span><br><span class="hljs-string">b&#x27;dgjlqwesxzcvbnmfuiopvx\x03\x02985236147a&#x27;</span><br><span class="hljs-string">b&#x27;esxzcvbnmfuiopvx\x03\x02985236147adgjlqw&#x27;</span><br><span class="hljs-string">b&#x27;fuiopvx\x03\x02985236147adgjlqwesxzcvbnm&#x27;</span><br><span class="hljs-string">b&#x27;gjlqwesxzcvbnmfuiopvx\x03\x02985236147ad&#x27;</span><br><span class="hljs-string">b&#x27;iopvx\x03\x02985236147adgjlqwesxzcvbnmfu&#x27;</span><br><span class="hljs-string">b&#x27;jlqwesxzcvbnmfuiopvx\x03\x02985236147adg&#x27;</span><br><span class="hljs-string">b&#x27;lqwesxzcvbnmfuiopvx\x03\x02985236147adgj&#x27;</span><br><span class="hljs-string">b&#x27;mfuiopvx\x03\x02985236147adgjlqwesxzcvbn&#x27;</span><br><span class="hljs-string">b&#x27;nmfuiopvx\x03\x02985236147adgjlqwesxzcvb&#x27;</span><br><span class="hljs-string">b&#x27;opvx\x03\x02985236147adgjlqwesxzcvbnmfui&#x27;</span><br><span class="hljs-string">b&#x27;pvx\x03\x02985236147adgjlqwesxzcvbnmfuio&#x27;</span><br><span class="hljs-string">b&#x27;qwesxzcvbnmfuiopvx\x03\x02985236147adgjl&#x27;</span><br><span class="hljs-string">b&#x27;sxzcvbnmfuiopvx\x03\x02985236147adgjlqwe&#x27;</span><br><span class="hljs-string">b&#x27;uiopvx\x03\x02985236147adgjlqwesxzcvbnmf&#x27;</span><br><span class="hljs-string">b&#x27;vbnmfuiopvx\x03\x02985236147adgjlqwesxzc&#x27;</span><br><span class="hljs-string">b&#x27;vx\x03\x02985236147adgjlqwesxzcvbnmfuiop&#x27;</span><br><span class="hljs-string">b&#x27;wesxzcvbnmfuiopvx\x03\x02985236147adgjlq&#x27;</span><br><span class="hljs-string">b&#x27;x\x03\x02985236147adgjlqwesxzcvbnmfuiopv&#x27;</span><br><span class="hljs-string">b&#x27;xzcvbnmfuiopvx\x03\x02985236147adgjlqwes&#x27;</span><br><span class="hljs-string">b&#x27;zcvbnmfuiopvx\x03\x02985236147adgjlqwesx&#x27;</span><br></code></pre></td></tr></table></figure>
 
+<p>再以这个二维数组的最后一列为密文。</p>
+<p>那么恢复也比较简单，因为每一行首尾两个一定是相连的</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python">cipher = [ <span class="hljs-number">3</span>, <span class="hljs-number">106</span>, <span class="hljs-number">109</span>,  <span class="hljs-number">71</span>, <span class="hljs-number">110</span>,  <span class="hljs-number">95</span>,  <span class="hljs-number">61</span>, <span class="hljs-number">117</span>,  <span class="hljs-number">97</span>,  <span class="hljs-number">83</span>, <span class="hljs-number">90</span>,  <span class="hljs-number">76</span>, <span class="hljs-number">118</span>,  <span class="hljs-number">78</span>,  <span class="hljs-number">52</span>, <span class="hljs-number">119</span>,  <span class="hljs-number">70</span>, <span class="hljs-number">120</span>,  <span class="hljs-number">69</span>,  <span class="hljs-number">54</span>, <span class="hljs-number">82</span>,  <span class="hljs-number">43</span>, <span class="hljs-number">112</span>,   <span class="hljs-number">2</span>,  <span class="hljs-number">68</span>,  <span class="hljs-number">50</span>, <span class="hljs-number">113</span>,  <span class="hljs-number">86</span>,  <span class="hljs-number">49</span>,  <span class="hljs-number">67</span>, <span class="hljs-number">66</span>,  <span class="hljs-number">84</span>,  <span class="hljs-number">99</span>, <span class="hljs-number">107</span>]<br><br>sort_ed = [<span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">43</span>, <span class="hljs-number">49</span>, <span class="hljs-number">50</span>, <span class="hljs-number">52</span>, <span class="hljs-number">54</span>, <span class="hljs-number">61</span>, <span class="hljs-number">66</span>, <span class="hljs-number">67</span>, <span class="hljs-number">68</span>, <span class="hljs-number">69</span>, <span class="hljs-number">70</span>, <span class="hljs-number">71</span>, <span class="hljs-number">76</span>, <span class="hljs-number">78</span>, <span class="hljs-number">82</span>, <span class="hljs-number">83</span>, <span class="hljs-number">84</span>, <span class="hljs-number">86</span>, <span class="hljs-number">90</span>, <span class="hljs-number">95</span>, <span class="hljs-number">97</span>, <span class="hljs-number">99</span>, <span class="hljs-number">106</span>, <span class="hljs-number">107</span>, <span class="hljs-number">109</span>, <span class="hljs-number">110</span>, <span class="hljs-number">112</span>, <span class="hljs-number">113</span>, <span class="hljs-number">117</span>, <span class="hljs-number">118</span>, <span class="hljs-number">119</span>, <span class="hljs-number">120</span>]<br><span class="hljs-built_in">print</span>(t)<br><br>cur = q.index(<span class="hljs-number">2</span>)<br>ans = []<br><br><span class="hljs-keyword">while</span> q[cur]!=<span class="hljs-number">3</span>:<br>    nxt = sort_ed[cur]<br>    ans.append(nxt)<br>    cur = cipher.index(nxt)<br><br><span class="hljs-built_in">print</span>(<span class="hljs-built_in">bytes</span>(ans))<br><br></code></pre></td></tr></table></figure>
 
-
-
-
+<p><code>cipher</code>就是排序后的最后一列，而<code>sort_ed</code>就是将<code>cipher</code>再进行排序，因为<code>cipher</code>包含了所有flag，那么就得到每一行的第一列。再只要一一对应即可。</p>
 
                 
               </div>
