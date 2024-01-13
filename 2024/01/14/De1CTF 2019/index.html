@@ -1,0 +1,766 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305221933187.jpeg">
+  <link rel="icon" href="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305221933187.jpeg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="yring">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Cplusplus">
+<meta property="og:type" content="article">
+<meta property="og:title" content="De1CTF 2019">
+<meta property="og:url" content="http://example.com/2024/01/14/De1CTF%202019/index.html">
+<meta property="og:site_name" content="yring">
+<meta property="og:description" content="Cplusplus">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://www.nasachina.cn/wp-content/uploads/2024/01/casa-greenmonster-1.jpg">
+<meta property="article:published_time" content="2024-01-13T16:19:00.000Z">
+<meta property="article:modified_time" content="2024-01-13T17:59:40.964Z">
+<meta property="article:author" content="yring">
+<meta property="article:tag" content="reverse">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.nasachina.cn/wp-content/uploads/2024/01/casa-greenmonster-1.jpg">
+  
+  
+  
+  <title>De1CTF 2019 - yring</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/cloudeGlass.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/scroll.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/toubudaziji.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":50,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body><!-- hexo injector body_begin start --><div id="web_bg"></div><!-- hexo injector body_begin end -->
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>yring</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('https://cdn.pixabay.com/photo/2016/05/24/16/48/mountains-1412683_1280.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="De1CTF 2019"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-01-14 00:19" pubdate>
+          January 14, 2024 am
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.2k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          5 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">De1CTF 2019</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    Last updated on January 14, 2024 am
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>Cplusplus</p>
+<span id="more"></span>
+
+<h2 id="Cplusplus"><a href="#Cplusplus" class="headerlink" title="Cplusplus"></a>Cplusplus</h2><h3 id="总体分析"><a href="#总体分析" class="headerlink" title="总体分析"></a>总体分析</h3><p>程序的输入和关键比较函数都比较明显，直接看关键的函数</p>
+<img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.21.49.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-14 00.21.49" style="zoom:50%;" />
+
+<p>在这个函数里面里面，出现了三次<code>sub_140005a90</code>这个函数，这个函数经过一点🤏时间的调试后，发现就是字符串转16进制，并且限定输入只能是数字而不能是字符。</p>
+<img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.22.22.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-14 00.22.22" style="zoom: 50%;" />
+
+<p>同时这里用了三次这个函数，也就是把输入转了三次，猜测到这里就是把flag分成三段，类似这样<code>111_111_111</code>，这里下划线就是分隔符。</p>
+<h3 id="分隔符"><a href="#分隔符" class="headerlink" title="分隔符"></a>分隔符</h3><p>然后再接着看这个<code>sub_140006910</code>，直接对着F5的代码调试的时候总会有奇奇怪怪的事情，应该IDA没有很好识别，所以转去看汇编，值得注意的是这里有两个挺关键的比较函数，位与21行和23行。</p>
+<img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.25.55.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-14 00.25.55" style="zoom:50%;" />
+
+<p>将断点下在这里，动态调试会得到这样的汇编</p>
+<img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.31.26.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-14 00.31.26" style="zoom:50%;" />
+
+<p>这里的<code>al</code>就是之前提及的分隔符，<code>[rsi+18h]</code>就是这个分隔符，如果不在这里加分隔符那么上面的<code>loc_14000599c</code>就会直接退出。查看<code>[rsi+18]</code>就可以得到这个分隔符，下面的汇编也是如此。总之现在得到了两个分隔符分别是@和#，那么输入的形式就是<code>111@111#111</code></p>
+<h3 id="第一部分"><a href="#第一部分" class="headerlink" title="第一部分"></a>第一部分</h3><p>经过第一个格式check后，进入第二个内容check，也就是检查每个部分的flag是否正确。</p>
+<p>先看第一部分flag的检查</p>
+<img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.35.43.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-14 00.35.43" style="zoom:50%;" />
+
+<p>这里的<code>v45</code>就是第一部分flag的16进制，即输入<code>78</code>那么<code>v45=4E</code>，就是<code>78=0x4e</code>。这个函数会首先限制输入小于<code>0x6f</code>，然后走一个十分复杂的算法，看其他WP说这是梅森旋转算法，不懂。但可以找到一个很关键的比较语句</p>
+<img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.39.34.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-14 00.39.34" style="zoom:50%;" />
+
+<p>不管中间算法怎样复杂，这里肯定是不能<code>exit</code>的，而且输入范围也比较小，那么就可以考虑爆破。这里爆破的基本思路就是不断改变输入的值，然后通过if语句。</p>
+<p>爆破可以考虑以下两种手段，</p>
+<blockquote>
+<ol>
+<li>直接dump源码</li>
+<li>从源程序patch</li>
+</ol>
+</blockquote>
+<p>这里用patch源程序方式。</p>
+<p>先在IDA中找到对应位置</p>
+<p>这里是与0x6f比较</p>
+<img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.42.49.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-14 00.42.49" style="zoom:50%;" />
+
+<p>x64dbg打开，注意这里<code>rbx</code>寄存器存放的就是第一部分flag值的内存地址</p>
+<img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.46.05.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-14 00.46.05" style="zoom:50%;" />
+
+
+
+<p>这里是if判断语句</p>
+<img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.43.29.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-14 00.43.29" style="zoom:50%;" />
+
+<p>x64dbg打开，<code>rbx</code>寄存器仍没有发生变化。</p>
+<img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.48.39.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-14 00.48.39" style="zoom:50%;" />
+
+<p>那么就可以通过rbx寄存器爆破flag，具体patch如下</p>
+<img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.51.13.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-14 00.51.13" style="zoom:50%;" />
+
+<img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.51.39.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-14 00.51.39" style="zoom:50%;" />
+
+<p>其余部分不变，然后在<code>140002b07</code>下一条语句处下断点然后运行，程序断下后再查看<code>rbx</code>寄存器内存对应值即可。最终也就是爆破得到第一部分flag为<code>78</code></p>
+<h3 id="第二部分"><a href="#第二部分" class="headerlink" title="第二部分"></a>第二部分</h3><p>这里的flag就比较简单了，就是数组的简单索引</p>
+<img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.55.38.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-14 00.55.38" style="zoom:50%;" />
+
+<p>得到第二部分是<code>20637</code></p>
+<h3 id="第三部分"><a href="#第三部分" class="headerlink" title="第三部分"></a>第三部分</h3><p>这部分只有一条语句，不过IDA识别有问题，直接看汇编就好</p>
+<img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.56.22.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-14 00.56.22" style="zoom:50%;" />
+
+<p>这里<code>[rbp+0x0E0h+var_58]</code>就是<code>0x22h</code>，只是之前那个梅森算法的输出，<code>[rbp+0x0E0h+var_58+4]</code>是第三部分flag。</p>
+<img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.57.09.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-14 00.57.09" style="zoom:50%;" />
+
+<p>所以这里很明确</p>
+<blockquote>
+<p>flag_3 % 0x22 &#x3D;0xc</p>
+<p>flag_3 &#x2F; 0x22 &#x3D; 3</p>
+</blockquote>
+<p>那么flag_3 &#x3D; 3 * 0x22 + 0xc &#x3D; 114</p>
+<p>所以flag就是<code>78@20637#114</code></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CTF/" class="category-chain-item">CTF</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/CTF/Reverse/" class="category-chain-item">Reverse</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/CTF/Reverse/recurrence/" class="category-chain-item">recurrence</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/reverse/">#reverse</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>De1CTF 2019</div>
+      <div>http://example.com/2024/01/14/De1CTF 2019/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>yring</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>January 14, 2024</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/01/01/Nacl/" title="*CTF 2022">
+                        <span class="hidden-mobile">*CTF 2022</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <i class="iconfont icon-love"></i>nobody knows ,but we always know
+
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/star.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/bynotes/texiao/source/js/yinghua.js"></script>
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/scroll.css.js"></script>
+<script src="//cdn.jsdelivr.net/gh/bynotes/texiao/source/js/boom.js"></script>
+<script src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/runtime.min.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+
+  <script async src="/js/fireworks.js"></script>
+  
+<!-- hexo injector body_end start --><script src="/js/backgroundize.js"></script><!-- hexo injector body_end end --></body>
+</html>
