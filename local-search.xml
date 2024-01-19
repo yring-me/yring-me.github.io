@@ -4,6 +4,35 @@
   
   
   <entry>
+    <title>CrackMe_注册码</title>
+    <link href="/2024/01/19/Register_MD5/"/>
+    <url>/2024/01/19/Register_MD5/</url>
+    
+    <content type="html"><![CDATA[<p>记录一道CrackMe</p><span id="more"></span><h2 id="Crack"><a href="#Crack" class="headerlink" title="Crack"></a>Crack</h2><p>题目逻辑很简单，题目内置一个<code>machine id</code>，然后需要输入<code>user name</code>和<code>key</code>，再进行验证</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-19%2021.39.40.png"></p><p>继续往下分析，会出现两个加密的函数<code>sub_7FF7425F1000</code>和<code>sub_7FF7425F10E0</code>，通过加密常量和调试分析可以确定这两个函数实际作用是进行MD5加密。</p><p>在经过MD5加密后，继续进行一个加密，这里用到大量的SIMD指令，粗略查看这里面涉及到打乱、乘法、相加等操作，可以先暂且跳过，不详细跟。</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-19%2021.42.25.png"></p><p>在对得到的MD5密文加密后，得到一个新的密文。</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-19%2021.46.39.png"></p><p>然后继续对<code>user_id</code>作相同的处理</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-19%2021.47.10.png"></p><p>得到密文</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-19%2021.47.54.png"></p><p>再将两个密文作拼接操作</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-19%2021.48.21.png"></p><p>得到新的密文</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-19%2021.48.43.png"></p><p>然后再对新的密文作两次完全一样的加密，即先MD5然后SIMD指令加密，这样操作两次</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-19%2021.49.03.png"></p><p>最后对输入的key进行相同的加密</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-19%2021.50.43.png"></p><p>最终进行比较</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-19%2021.51.06.png"></p><p>回顾整个加密比较流程，用<code>F</code>表示MD5和SIMD加密，那么<code>machine_code</code> 、<code>user_id</code>和<code>key</code>之间应该满足如下关系</p><blockquote><p>F(key) &#x3D; F(F(F(machine_code)+F(user_id)))</p></blockquote><p>那么<code>key</code>就应该等于</p><blockquote><p>F(F(machine_code)+F(user_id))</p></blockquote><p>而这一个可以通过调试手段在中间拿到</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-19%2021.55.26.png"></p><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol><li><p>文件没有直接存放密文，而是在程序运行中生成密文进行比较</p></li><li><p>SIMD指令总结</p><blockquote><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br></pre></td><td class="code"><pre><code class="hljs java">__m128i <span class="hljs-title function_">_mm_loadl_epi64</span> <span class="hljs-params">(__m128i const* mem_addr)</span><br><br>加载参数低64bit到低64dit，高64bit置<span class="hljs-number">0</span><br><br><br>__m128i <span class="hljs-title function_">_mm_unpacklo_epi8</span> <span class="hljs-params">(__m128i a, __m128i b)</span><br><br>a与b每按8bit交错排布到返回值，低bit对应低bit，先a再b<br><br><br>__m128i <span class="hljs-title function_">_mm_sub_epi16</span> <span class="hljs-params">(__m128i a, __m128i b)</span><br><br>每16bit相减<br><br><br>__m128i <span class="hljs-title function_">_mm_shuffle_epi32</span> <span class="hljs-params">(__m128i a, <span class="hljs-type">int</span> imm8)</span><br><br>将__m128i 分为<span class="hljs-number">4</span> * <span class="hljs-number">32</span> bit，a0 a1 a2 a3<br><br>这<span class="hljs-number">4</span>个<span class="hljs-type">int</span>有一个位置代号：<span class="hljs-number">0x11</span> <span class="hljs-number">0x10</span> <span class="hljs-number">0x01</span> <span class="hljs-number">0x00</span><br><br>如果imm = <span class="hljs-number">0x00</span> <span class="hljs-number">0x00</span> <span class="hljs-number">0x00</span> <span class="hljs-number">0x00</span> ，则得到的__m128i则是(r0 = a3,r1=a3,r2=a3,r3=a3) <br><br><br>__m128i <span class="hljs-title function_">_mm_cmpgt_epi32</span> <span class="hljs-params">(__m128i a, __m128i b)</span><br><br>每32bit比较，若a&gt;b则相应的32bit置全F，否则置<span class="hljs-number">0</span><br><br><br>__m128i <span class="hljs-title function_">_mm_xor_si128</span> <span class="hljs-params">(__m128i a, __m128i b)</span><br><br>每bit异或<br><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">_mm_cvtsi128_si32</span> <span class="hljs-params">(__m128i a)</span><br><br>取低<span class="hljs-number">32</span>位赋值<br><br><br>__m128i <span class="hljs-title function_">_mm_cvtsi32_si128</span> <span class="hljs-params">(<span class="hljs-type">int</span> a)</span><br><br>将a赋值给<span class="hljs-number">0</span>：<span class="hljs-number">31</span>，<span class="hljs-number">32</span>-<span class="hljs-number">127</span>赋值<span class="hljs-number">0</span><br><br><br>__m128i <span class="hljs-title function_">_mm_srli_epi64</span> <span class="hljs-params">(__m128i a, <span class="hljs-type">int</span> imm8)</span><br><br>每<span class="hljs-number">64</span>位右移imm8，空出的位置补零<br><br><br>__m128i <span class="hljs-title function_">_mm_srli_epi32</span> <span class="hljs-params">(__m128i a, <span class="hljs-type">int</span> imm8)</span><br><br>每<span class="hljs-number">32</span>位右移imm8，空出的位置补零<br><br><br>__m128i <span class="hljs-title function_">_mm_unpackhi_epi32</span> <span class="hljs-params">(__m128i a, __m128i b)</span><br><br>取a,b的高<span class="hljs-number">64</span>位，每32bit交错排列,如：<br><br>dst[<span class="hljs-number">31</span>:<span class="hljs-number">0</span>] := src1[<span class="hljs-number">95</span>:<span class="hljs-number">64</span>]<br><br>dst[<span class="hljs-number">63</span>:<span class="hljs-number">32</span>] := src2[<span class="hljs-number">95</span>:<span class="hljs-number">64</span>]<br><br>dst[<span class="hljs-number">95</span>:<span class="hljs-number">64</span>] := src1[<span class="hljs-number">127</span>:<span class="hljs-number">96</span>]<br><br>dst[<span class="hljs-number">127</span>:<span class="hljs-number">96</span>] := src2[<span class="hljs-number">127</span>:<span class="hljs-number">96</span>]<br><br><br>__m128i <span class="hljs-title function_">_mm_srli_si128</span> <span class="hljs-params">(__m128i a, <span class="hljs-type">int</span> imm8)</span><br><br>右移<span class="hljs-number">8</span>*imm8位<br><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">_mm_extract_epi16</span> <span class="hljs-params">(__m128i a, <span class="hljs-type">int</span> imm8)</span><br><br>a右移imm8*16bit后取低16bit赋值给目标<span class="hljs-type">int</span>的低<span class="hljs-number">16</span>位，高<span class="hljs-number">16</span>位置零<br><br><br>dst[<span class="hljs-number">15</span>:<span class="hljs-number">0</span>] := (a[<span class="hljs-number">127</span>:<span class="hljs-number">0</span>] &gt;&gt; (imm8[<span class="hljs-number">2</span>:<span class="hljs-number">0</span>] * <span class="hljs-number">16</span>))[<span class="hljs-number">15</span>:<span class="hljs-number">0</span>]<br><br>dst[<span class="hljs-number">31</span>:<span class="hljs-number">16</span>] := <span class="hljs-number">0</span><br><br>__m128i <span class="hljs-title function_">_mm_slli_epi32</span> <span class="hljs-params">(__m128i a, <span class="hljs-type">int</span> imm8)</span><br><br>每个<span class="hljs-number">32</span>左移imm8，空余补零<br><br><br>__m128 <span class="hljs-title function_">_mm_set_ps1</span> <span class="hljs-params">(<span class="hljs-type">float</span> a)</span><br><br>将a重复拷贝到<span class="hljs-number">4</span>个<span class="hljs-number">32</span>中<br><br><br>__m128 <span class="hljs-title function_">_mm_set_ps</span> <span class="hljs-params">(<span class="hljs-type">float</span> e3, <span class="hljs-type">float</span> e2, <span class="hljs-type">float</span> e1, <span class="hljs-type">float</span> e0)</span><br><br>dst[<span class="hljs-number">31</span>:<span class="hljs-number">0</span>] := e0<br><br>dst[<span class="hljs-number">63</span>:<span class="hljs-number">32</span>] := e1<br><br>dst[<span class="hljs-number">95</span>:<span class="hljs-number">64</span>] := e2<br><br>dst[<span class="hljs-number">127</span>:<span class="hljs-number">96</span>] := e3<br><br><br>__m128 <span class="hljs-title function_">_mm_max_ps</span> <span class="hljs-params">(__m128 a, __m128 b)</span><br><br>每32bit取较大值<br><br><br>__m128 <span class="hljs-title function_">_mm_set_ss</span> <span class="hljs-params">(<span class="hljs-type">float</span> a)</span><br><br>将a赋给目标的<span class="hljs-number">0</span>:<span class="hljs-number">31</span> bit<br></code></pre></td></tr></table></figure></blockquote></li></ol>]]></content>
+    
+    
+    <categories>
+      
+      <category>CTF</category>
+      
+      <category>Reverse</category>
+      
+      <category>题目复现</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>reverse</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>UofTCTF</title>
     <link href="/2024/01/17/UofTCTF_JS/"/>
     <url>/2024/01/17/UofTCTF_JS/</url>
@@ -68,35 +97,6 @@
   
   
   <entry>
-    <title>De1CTF 2019</title>
-    <link href="/2024/01/14/De1CTF%202019/"/>
-    <url>/2024/01/14/De1CTF%202019/</url>
-    
-    <content type="html"><![CDATA[<p>Cplusplus</p><span id="more"></span><h2 id="Cplusplus"><a href="#Cplusplus" class="headerlink" title="Cplusplus"></a>Cplusplus</h2><h3 id="总体分析"><a href="#总体分析" class="headerlink" title="总体分析"></a>总体分析</h3><p>程序的输入和关键比较函数都比较明显，直接看关键的函数</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.21.49.png" alt="截屏2024-01-14 00.21.49" style="zoom:50%;" /><p>在这个函数里面里面，出现了三次<code>sub_140005a90</code>这个函数，这个函数经过一点🤏时间的调试后，发现就是字符串转16进制，并且限定输入只能是数字而不能是字符。</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.22.22.png" alt="截屏2024-01-14 00.22.22" style="zoom: 50%;" /><p>同时这里用了三次这个函数，也就是把输入转了三次，猜测到这里就是把flag分成三段，类似这样<code>111_111_111</code>，这里下划线就是分隔符。</p><h3 id="分隔符"><a href="#分隔符" class="headerlink" title="分隔符"></a>分隔符</h3><p>然后再接着看这个<code>sub_140006910</code>，直接对着F5的代码调试的时候总会有奇奇怪怪的事情，应该IDA没有很好识别，所以转去看汇编，值得注意的是这里有两个挺关键的比较函数，位与21行和23行。</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.25.55.png" alt="截屏2024-01-14 00.25.55" style="zoom:50%;" /><p>将断点下在这里，动态调试会得到这样的汇编</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.31.26.png" alt="截屏2024-01-14 00.31.26" style="zoom:50%;" /><p>这里的<code>al</code>就是之前提及的分隔符，<code>[rsi+18h]</code>就是这个分隔符，如果不在这里加分隔符那么上面的<code>loc_14000599c</code>就会直接退出。查看<code>[rsi+18]</code>就可以得到这个分隔符，下面的汇编也是如此。总之现在得到了两个分隔符分别是@和#，那么输入的形式就是<code>111@111#111</code></p><h3 id="第一部分"><a href="#第一部分" class="headerlink" title="第一部分"></a>第一部分</h3><p>经过第一个格式check后，进入第二个内容check，也就是检查每个部分的flag是否正确。</p><p>先看第一部分flag的检查</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.35.43.png" alt="截屏2024-01-14 00.35.43" style="zoom:50%;" /><p>这里的<code>v45</code>就是第一部分flag的16进制，即输入<code>78</code>那么<code>v45=4E</code>，就是<code>78=0x4e</code>。这个函数会首先限制输入小于<code>0x6f</code>，然后走一个十分复杂的算法，看其他WP说这是梅森旋转算法，不懂。但可以找到一个很关键的比较语句</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.39.34.png" alt="截屏2024-01-14 00.39.34" style="zoom:50%;" /><p>不管中间算法怎样复杂，这里肯定是不能<code>exit</code>的，而且输入范围也比较小，那么就可以考虑爆破。这里爆破的基本思路就是不断改变输入的值，然后通过if语句。</p><p>爆破可以考虑以下两种手段，</p><blockquote><ol><li>直接dump源码</li><li>从源程序patch</li></ol></blockquote><p>这里用patch源程序方式。</p><p>先在IDA中找到对应位置</p><p>这里是与0x6f比较</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.42.49.png" alt="截屏2024-01-14 00.42.49" style="zoom:50%;" /><p>x64dbg打开，注意这里<code>rbx</code>寄存器存放的就是第一部分flag值的内存地址</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.46.05.png" alt="截屏2024-01-14 00.46.05" style="zoom:50%;" /><p>这里是if判断语句</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.43.29.png" alt="截屏2024-01-14 00.43.29" style="zoom:50%;" /><p>x64dbg打开，<code>rbx</code>寄存器仍没有发生变化。</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.48.39.png" alt="截屏2024-01-14 00.48.39" style="zoom:50%;" /><p>那么就可以通过rbx寄存器爆破flag，具体patch如下</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.51.13.png" alt="截屏2024-01-14 00.51.13" style="zoom:50%;" /><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.51.39.png" alt="截屏2024-01-14 00.51.39" style="zoom:50%;" /><p>其余部分不变，然后在<code>140002b07</code>下一条语句处下断点然后运行，程序断下后再查看<code>rbx</code>寄存器内存对应值即可。最终也就是爆破得到第一部分flag为<code>78</code></p><h3 id="第二部分"><a href="#第二部分" class="headerlink" title="第二部分"></a>第二部分</h3><p>这里的flag就比较简单了，就是数组的简单索引</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.55.38.png" alt="截屏2024-01-14 00.55.38" style="zoom:50%;" /><p>得到第二部分是<code>20637</code></p><h3 id="第三部分"><a href="#第三部分" class="headerlink" title="第三部分"></a>第三部分</h3><p>这部分只有一条语句，不过IDA识别有问题，直接看汇编就好</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.56.22.png" alt="截屏2024-01-14 00.56.22" style="zoom:50%;" /><p>这里<code>[rbp+0x0E0h+var_58]</code>就是<code>0x22h</code>，只是之前那个梅森算法的输出，<code>[rbp+0x0E0h+var_58+4]</code>是第三部分flag。</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.57.09.png" alt="截屏2024-01-14 00.57.09" style="zoom:50%;" /><p>所以这里很明确</p><blockquote><p>flag_3 % 0x22 &#x3D;0xc</p><p>flag_3 &#x2F; 0x22 &#x3D; 3</p></blockquote><p>那么flag_3 &#x3D; 3 * 0x22 + 0xc &#x3D; 114</p><p>所以flag就是<code>78@20637#114</code></p>]]></content>
-    
-    
-    <categories>
-      
-      <category>CTF</category>
-      
-      <category>Reverse</category>
-      
-      <category>题目复现</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>reverse</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>2024IrisCTF</title>
     <link href="/2024/01/14/2024IrisCTF/"/>
     <url>/2024/01/14/2024IrisCTF/</url>
@@ -124,6 +124,35 @@
       <tag>GO</tag>
       
       <tag>z3</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>De1CTF 2019</title>
+    <link href="/2024/01/14/De1CTF%202019/"/>
+    <url>/2024/01/14/De1CTF%202019/</url>
+    
+    <content type="html"><![CDATA[<p>Cplusplus</p><span id="more"></span><h2 id="Cplusplus"><a href="#Cplusplus" class="headerlink" title="Cplusplus"></a>Cplusplus</h2><h3 id="总体分析"><a href="#总体分析" class="headerlink" title="总体分析"></a>总体分析</h3><p>程序的输入和关键比较函数都比较明显，直接看关键的函数</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.21.49.png" alt="截屏2024-01-14 00.21.49" style="zoom:50%;" /><p>在这个函数里面里面，出现了三次<code>sub_140005a90</code>这个函数，这个函数经过一点🤏时间的调试后，发现就是字符串转16进制，并且限定输入只能是数字而不能是字符。</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.22.22.png" alt="截屏2024-01-14 00.22.22" style="zoom: 50%;" /><p>同时这里用了三次这个函数，也就是把输入转了三次，猜测到这里就是把flag分成三段，类似这样<code>111_111_111</code>，这里下划线就是分隔符。</p><h3 id="分隔符"><a href="#分隔符" class="headerlink" title="分隔符"></a>分隔符</h3><p>然后再接着看这个<code>sub_140006910</code>，直接对着F5的代码调试的时候总会有奇奇怪怪的事情，应该IDA没有很好识别，所以转去看汇编，值得注意的是这里有两个挺关键的比较函数，位与21行和23行。</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.25.55.png" alt="截屏2024-01-14 00.25.55" style="zoom:50%;" /><p>将断点下在这里，动态调试会得到这样的汇编</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.31.26.png" alt="截屏2024-01-14 00.31.26" style="zoom:50%;" /><p>这里的<code>al</code>就是之前提及的分隔符，<code>[rsi+18h]</code>就是这个分隔符，如果不在这里加分隔符那么上面的<code>loc_14000599c</code>就会直接退出。查看<code>[rsi+18]</code>就可以得到这个分隔符，下面的汇编也是如此。总之现在得到了两个分隔符分别是@和#，那么输入的形式就是<code>111@111#111</code></p><h3 id="第一部分"><a href="#第一部分" class="headerlink" title="第一部分"></a>第一部分</h3><p>经过第一个格式check后，进入第二个内容check，也就是检查每个部分的flag是否正确。</p><p>先看第一部分flag的检查</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.35.43.png" alt="截屏2024-01-14 00.35.43" style="zoom:50%;" /><p>这里的<code>v45</code>就是第一部分flag的16进制，即输入<code>78</code>那么<code>v45=4E</code>，就是<code>78=0x4e</code>。这个函数会首先限制输入小于<code>0x6f</code>，然后走一个十分复杂的算法，看其他WP说这是梅森旋转算法，不懂。但可以找到一个很关键的比较语句</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.39.34.png" alt="截屏2024-01-14 00.39.34" style="zoom:50%;" /><p>不管中间算法怎样复杂，这里肯定是不能<code>exit</code>的，而且输入范围也比较小，那么就可以考虑爆破。这里爆破的基本思路就是不断改变输入的值，然后通过if语句。</p><p>爆破可以考虑以下两种手段，</p><blockquote><ol><li>直接dump源码</li><li>从源程序patch</li></ol></blockquote><p>这里用patch源程序方式。</p><p>先在IDA中找到对应位置</p><p>这里是与0x6f比较</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.42.49.png" alt="截屏2024-01-14 00.42.49" style="zoom:50%;" /><p>x64dbg打开，注意这里<code>rbx</code>寄存器存放的就是第一部分flag值的内存地址</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.46.05.png" alt="截屏2024-01-14 00.46.05" style="zoom:50%;" /><p>这里是if判断语句</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.43.29.png" alt="截屏2024-01-14 00.43.29" style="zoom:50%;" /><p>x64dbg打开，<code>rbx</code>寄存器仍没有发生变化。</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.48.39.png" alt="截屏2024-01-14 00.48.39" style="zoom:50%;" /><p>那么就可以通过rbx寄存器爆破flag，具体patch如下</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.51.13.png" alt="截屏2024-01-14 00.51.13" style="zoom:50%;" /><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.51.39.png" alt="截屏2024-01-14 00.51.39" style="zoom:50%;" /><p>其余部分不变，然后在<code>140002b07</code>下一条语句处下断点然后运行，程序断下后再查看<code>rbx</code>寄存器内存对应值即可。最终也就是爆破得到第一部分flag为<code>78</code></p><h3 id="第二部分"><a href="#第二部分" class="headerlink" title="第二部分"></a>第二部分</h3><p>这里的flag就比较简单了，就是数组的简单索引</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.55.38.png" alt="截屏2024-01-14 00.55.38" style="zoom:50%;" /><p>得到第二部分是<code>20637</code></p><h3 id="第三部分"><a href="#第三部分" class="headerlink" title="第三部分"></a>第三部分</h3><p>这部分只有一条语句，不过IDA识别有问题，直接看汇编就好</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.56.22.png" alt="截屏2024-01-14 00.56.22" style="zoom:50%;" /><p>这里<code>[rbp+0x0E0h+var_58]</code>就是<code>0x22h</code>，只是之前那个梅森算法的输出，<code>[rbp+0x0E0h+var_58+4]</code>是第三部分flag。</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.57.09.png" alt="截屏2024-01-14 00.57.09" style="zoom:50%;" /><p>所以这里很明确</p><blockquote><p>flag_3 % 0x22 &#x3D;0xc</p><p>flag_3 &#x2F; 0x22 &#x3D; 3</p></blockquote><p>那么flag_3 &#x3D; 3 * 0x22 + 0xc &#x3D; 114</p><p>所以flag就是<code>78@20637#114</code></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>CTF</category>
+      
+      <category>Reverse</category>
+      
+      <category>题目复现</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>reverse</tag>
       
     </tags>
     
@@ -892,11 +921,11 @@
     
     <tags>
       
-      <tag>Crypto</tag>
-      
       <tag>reverse</tag>
       
       <tag>z3</tag>
+      
+      <tag>Crypto</tag>
       
       <tag>idapython</tag>
       
