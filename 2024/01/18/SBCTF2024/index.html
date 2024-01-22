@@ -25,7 +25,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://yring-me.oss-cn-beijing.aliyuncs.com/test/OrionMcc_Guzzini_960.jpg">
 <meta property="article:published_time" content="2024-01-17T16:23:43.000Z">
-<meta property="article:modified_time" content="2024-01-19T14:15:42.731Z">
+<meta property="article:modified_time" content="2024-01-22T18:35:50.346Z">
 <meta property="article:author" content="yring">
 <meta property="article:tag" content="reverse">
 <meta name="twitter:card" content="summary_large_image">
@@ -240,7 +240,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          18k words
+          19k words
         
       </span>
     
@@ -251,7 +251,7 @@
         
         
         
-          72 mins
+          75 mins
         
       </span>
     
@@ -294,7 +294,7 @@
               <p class="note note-info">
                 
                   
-                    Last updated on January 19, 2024 pm
+                    Last updated on January 23, 2024 am
                   
                 
               </p>
@@ -384,8 +384,21 @@
 <p>最终解密</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> ctypes <span class="hljs-keyword">import</span> *<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">decrypt</span>(<span class="hljs-params">v1, v2, key</span>):<br>    delta = c_uint32(-<span class="hljs-number">1640531527</span> * <span class="hljs-number">32</span>)<br>    <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">32</span>):<br>        v2.value -= (v1.value + delta.value) ^ (<span class="hljs-number">16</span> * v1.value + key[<span class="hljs-number">2</span>]) ^ ((v1.value &gt;&gt; <span class="hljs-number">5</span>) + key[<span class="hljs-number">3</span>])<br>        v1.value -= (v2.value + delta.value) ^ (<span class="hljs-number">16</span> * v2.value + key[<span class="hljs-number">0</span>]) ^ ((v2.value &gt;&gt; <span class="hljs-number">5</span>) + key[<span class="hljs-number">1</span>])<br>        delta.value += <span class="hljs-number">1640531527</span><br><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">4</span>):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-built_in">chr</span>(((v1.value &gt;&gt; (<span class="hljs-number">8</span> * i)) &amp; <span class="hljs-number">0xff</span>)), end=<span class="hljs-string">&#x27;&#x27;</span>)<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">4</span>):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-built_in">chr</span>(((v2.value &gt;&gt; (<span class="hljs-number">8</span> * i)) &amp; <span class="hljs-number">0xff</span>)), end=<span class="hljs-string">&#x27;&#x27;</span>)<br><br><br>key = [<span class="hljs-number">0x55</span>, <span class="hljs-number">0x16f</span>, <span class="hljs-number">0x1e6</span>, <span class="hljs-number">0x2a0</span>]<br><br>enc_tea = [<span class="hljs-number">0x38</span>, <span class="hljs-number">0x6a</span>, <span class="hljs-number">0xd6</span>, <span class="hljs-number">0x19</span>, <span class="hljs-number">0x7d</span>, <span class="hljs-number">0x71</span>, <span class="hljs-number">0x90</span>, <span class="hljs-number">0x6d</span>, <span class="hljs-number">0x2a</span>, <span class="hljs-number">0xb1</span>, <span class="hljs-number">0xdd</span>, <span class="hljs-number">0x12</span>, <span class="hljs-number">0x8c</span>, <span class="hljs-number">0x1b</span>, <span class="hljs-number">0x8c</span>, <span class="hljs-number">0xed</span>, <span class="hljs-number">0xe1</span>, <span class="hljs-number">0x65</span>,<br>           <span class="hljs-number">0x4f</span>, <span class="hljs-number">0x8a</span>, <span class="hljs-number">0x9f</span>, <span class="hljs-number">0x97</span>, <span class="hljs-number">0xd6</span>, <span class="hljs-number">0x23</span>, <span class="hljs-number">0x62</span>, <span class="hljs-number">0x10</span>, <span class="hljs-number">0x39</span>, <span class="hljs-number">0xc7</span>, <span class="hljs-number">0xcb</span>, <span class="hljs-number">0x62</span>, <span class="hljs-number">0x3a</span>, <span class="hljs-number">0x40</span>]<br><br><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(enc_tea),<span class="hljs-number">8</span>):<br>    v1 = (enc_tea[i + <span class="hljs-number">3</span>] &lt;&lt; <span class="hljs-number">24</span>) | (enc_tea[i + <span class="hljs-number">2</span>] &lt;&lt; <span class="hljs-number">16</span>) | (enc_tea[i + <span class="hljs-number">1</span>] &lt;&lt; <span class="hljs-number">8</span>) | enc_tea[i + <span class="hljs-number">0</span>]<br>    v2 = (enc_tea[i + <span class="hljs-number">3</span> + <span class="hljs-number">4</span>] &lt;&lt; <span class="hljs-number">24</span>) | (enc_tea[i + <span class="hljs-number">2</span> + <span class="hljs-number">4</span>] &lt;&lt; <span class="hljs-number">16</span>) | (enc_tea[i + <span class="hljs-number">1</span>+ <span class="hljs-number">4</span>] &lt;&lt; <span class="hljs-number">8</span>) | enc_tea[i + <span class="hljs-number">0</span> + <span class="hljs-number">4</span>]<br><br>    decrypt(c_uint32(v1), c_uint32(v2), key)<br><span class="hljs-comment"># SBCTF&#123;2e_easy_Anti-debug_in_ELF&#125;</span><br></code></pre></td></tr></table></figure>
 
-
-
+<h1 id="Week2"><a href="#Week2" class="headerlink" title="Week2"></a>Week2</h1><h2 id="start-main"><a href="#start-main" class="headerlink" title="start_main"></a>start_main</h2><p>程序逻辑很简单，输入36位的flag然后经过一个变表的base64解码，然后再经过一个RC4解密，通过调试可以拿到变表<code>RSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/ABCDEFGHIJKLMNOPQ</code>和RC4密钥<code>lFaUmVp=</code>，其中用变表可以解RC4密钥为<code>SBCTF</code></p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-23%2002.21.19.png" srcset="/img/loading.gif" lazyload></p>
+<p>不过奇怪的是并没有看到密文比较的地方，先运行看看</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-23%2002.24.02.png" srcset="/img/loading.gif" lazyload></p>
+<p>是有错误的输出提示的，但是直接搜这个字符串却搜不到，看来是做了一点加密。不过这也告诉我们一个东西，即在main函数运行完后还有函数在运行，这实际上就是<code>fini_array</code>了。</p>
+<p>简单说<code>main</code>函数并不是第一个运行的函数，第一个运行的函数应该是<code>start</code>，然后调用<code>_libc_start_main</code>，<code>_libc_start_main</code>再调用<code>main</code>函数，并且在<code>main</code>函数开始前运行<code>init_array</code>里面的函数，<code>main</code>函数结束后运行<code>fini_array</code>里面的函数。</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-23%2002.28.15.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-23 02.28.15"></p>
+<p>因此只需转过去看看<code>fini_array</code>有函数即可，在IDA中按<code>shift+F7</code>即可打开段窗口，在里面就有<code>fini_array</code>地址</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-23%2002.31.15.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-23 02.31.15"></p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-23%2002.31.34.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-23 02.31.34"></p>
+<p>发现一个函数<code>sub_55934E697E47</code>，跟过去看看</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-23%2002.32.16.png" srcset="/img/loading.gif" lazyload></p>
+<p>这就是很明显的比较流程了，这里俩函数就是解密失败成功字符串的。至此整题的流程就清楚了，当然<code>init_array</code>也有一个函数，那个函数就是起到一个变表的作用。除了这种方式找之外，也可以直接搜索输入的引用，同样能够找到这个地方</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-23%2002.34.21.png" srcset="/img/loading.gif" lazyload></p>
+<p>最后的base解码就是猜测了，因为输入的字符会进行一个解码，那么猜测输入的字符串也应该是经过base加密的。</p>
 
                 
               </div>
