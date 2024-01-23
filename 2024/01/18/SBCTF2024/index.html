@@ -25,7 +25,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://yring-me.oss-cn-beijing.aliyuncs.com/test/OrionMcc_Guzzini_960.jpg">
 <meta property="article:published_time" content="2024-01-17T16:23:43.000Z">
-<meta property="article:modified_time" content="2024-01-22T18:35:50.346Z">
+<meta property="article:modified_time" content="2024-01-23T11:23:12.489Z">
 <meta property="article:author" content="yring">
 <meta property="article:tag" content="reverse">
 <meta name="twitter:card" content="summary_large_image">
@@ -240,7 +240,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          19k words
+          22k words
         
       </span>
     
@@ -251,7 +251,7 @@
         
         
         
-          75 mins
+          87 mins
         
       </span>
     
@@ -294,7 +294,7 @@
               <p class="note note-info">
                 
                   
-                    Last updated on January 23, 2024 am
+                    Last updated on January 23, 2024 pm
                   
                 
               </p>
@@ -399,6 +399,55 @@
 <p>这就是很明显的比较流程了，这里俩函数就是解密失败成功字符串的。至此整题的流程就清楚了，当然<code>init_array</code>也有一个函数，那个函数就是起到一个变表的作用。除了这种方式找之外，也可以直接搜索输入的引用，同样能够找到这个地方</p>
 <p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-23%2002.34.21.png" srcset="/img/loading.gif" lazyload></p>
 <p>最后的base解码就是猜测了，因为输入的字符会进行一个解码，那么猜测输入的字符串也应该是经过base加密的。</p>
+<h2 id="ez-ptrace"><a href="#ez-ptrace" class="headerlink" title="ez_ptrace"></a>ez_ptrace</h2><p>程序逻辑也很简单</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-23%2019.05.20.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-23 19.05.20"></p>
+<p>函数<code>sub_124D</code>写了一个文件<code>son</code>，然后子进程使用调用<code>excel</code>执行这个文件，父进程收到消息然后发出信号,父子进程函数也很简单。</p>
+<p>父进程：</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-23%2019.07.23.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-23 19.07.23"></p>
+<p>子进程：</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-23%2019.07.40.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-23 19.07.40"></p>
+<p>具体流程如下</p>
+<blockquote>
+<ol>
+<li>sub_124d 写文件</li>
+<li>fork一个子进程</li>
+<li>父进程执行<code>wait</code>函数等待子进程信号</li>
+<li>子进程执行<code>ptrace()</code>函数，参数为<code>PTRACE_TRACEME</code>，表示希望得到调试，然后调用<code>execl</code>函数，将刚刚的写好的<code>son</code>文件进行运行，并替换当前的进程，这个操作回向父进程发送信号</li>
+<li>父进程收到信号，使用<code>ptrace</code>函数修改子进程内存中的一个值，然后向子进程发送继续运行信号</li>
+<li>父进程等待子进程退出</li>
+</ol>
+</blockquote>
+<p>所以这里面的关键就是找到这个<code>son</code>文件，有挺多方法可以得到这个<code>son</code>文件。</p>
+<p>第一个思路是既然父进程中写了文件，但是程序运行起来却看不到这个文件，说明调用了文件删除函数，这个函数需要一个文件路径的参数，那么把文件名字改一下，让文件删除函数无法删除即可</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-23%2019.13.32.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-23 19.13.32"></p>
+<p>比如修改写文件的名字，或者找一下子进程里面的字符串，也比较好找。</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-23%2019.14.21.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-23 19.14.21"></p>
+<p>第二个思路就是对程序下断点，先不让子进程运行<code>excel</code>函数，或者在父进程发送继续运行处下断点。</p>
+<p>第三个思路就是手动提取，这里简单用个idapython脚本即可</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs python">path = <span class="hljs-string">&#x27;my_own.elf&#x27;</span><br><br>f = <span class="hljs-built_in">open</span>(path,<span class="hljs-string">&#x27;wb&#x27;</span>)<br><br>data = idc.get_bytes(<span class="hljs-number">0x4020</span>,<span class="hljs-number">1208</span>)<br><span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> data:<br>    f.write((d^<span class="hljs-number">0x67</span>).to_bytes(length=<span class="hljs-number">1</span>,byteorder=<span class="hljs-string">&#x27;little&#x27;</span>))<br><br><span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2888</span>):<br>    f.write((<span class="hljs-number">0</span>).to_bytes(length=<span class="hljs-number">1</span>,byteorder=<span class="hljs-string">&#x27;little&#x27;</span>))<br><br>data = idc.get_bytes(<span class="hljs-number">0x44e0</span>,<span class="hljs-number">1488</span>)<br><span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> data:<br>    f.write((d^<span class="hljs-number">0x30</span>).to_bytes(length=<span class="hljs-number">1</span>,byteorder=<span class="hljs-string">&#x27;little&#x27;</span>))<br>    <br><span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2608</span>):<br>    f.write((<span class="hljs-number">0</span>).to_bytes(length=<span class="hljs-number">1</span>,byteorder=<span class="hljs-string">&#x27;little&#x27;</span>))<br><br>data = idc.get_bytes(<span class="hljs-number">0x4ac0</span>,<span class="hljs-number">420</span>)<br><span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> data:<br>    f.write((d).to_bytes(length=<span class="hljs-number">1</span>,byteorder=<span class="hljs-string">&#x27;little&#x27;</span>))<br><br><span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">3352</span>):<br>    f.write((<span class="hljs-number">0</span>).to_bytes(length=<span class="hljs-number">1</span>,byteorder=<span class="hljs-string">&#x27;little&#x27;</span>))<br><br>data = idc.get_bytes(<span class="hljs-number">0x4c80</span>,<span class="hljs-number">1764</span>)<br><span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> data:<br>    f.write((d).to_bytes(length=<span class="hljs-number">1</span>,byteorder=<span class="hljs-string">&#x27;little&#x27;</span>))<br>    <br>f.close()<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;ok&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>总之现在得到了<code>son</code>文件，打开看看</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-23%2019.16.25.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-23 19.16.25"></p>
+<p>函数流程也很简单，输入32位flag，然后<code>sub_6000131</code>对输入进行4位一组的合并，变成一个32位的整型，然后丢进<code>sub_600011ED</code>进行加密</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-23%2019.17.42.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-23 19.17.42"></p>
+<p>这个加密算法的逆运算也很好搓，但这个时候还有一个地方需要注意，父进程调用了<code>ptrace</code>函数修改了一个值，我们需要找到这个地方，修改地址是<code>dword_4c64</code></p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-23%2019.19.10.png" srcset="/img/loading.gif" lazyload></p>
+<p>而<code>dword_4c64</code>是<code>6000404c</code>，这个是RVA，还需要转换为FOA，即文件偏移，这里应该就是<code>404c</code></p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-23%2019.20.28.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-23 19.20.28"></p>
+<p>在子文件中找到这个地方，发现是把密钥最后一个给改了</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-23%2019.22.02.png" srcset="/img/loading.gif" lazyload alt="截屏2024-01-23 19.22.02"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> ctypes <span class="hljs-keyword">import</span> *<br><br>key = [<span class="hljs-number">0x74</span>, <span class="hljs-number">0x71</span>, <span class="hljs-number">0x6c</span>, <span class="hljs-number">0x31</span>]<br><br>rounds = <span class="hljs-number">12</span><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">encrypt</span>(<span class="hljs-params">input_</span>):<br>    delta = c_uint32(<span class="hljs-number">0</span>)<br>    v8 = c_uint32(input_[<span class="hljs-built_in">len</span>(input_)-<span class="hljs-number">1</span>].value)<br>    v4 = c_uint32(<span class="hljs-number">0</span>)<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(rounds):<br>        delta.value -= <span class="hljs-number">0x61C88647</span><br>        <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">8</span>):<br>            v4.value = input_[(k + <span class="hljs-number">1</span>) % <span class="hljs-number">8</span>].value<br>            input_[k].value += ((v4.value ^ delta.value) + (v8.value ^ key[((delta.value &gt;&gt; <span class="hljs-number">2</span>) &amp; <span class="hljs-number">3</span>) ^ (k &amp; <span class="hljs-number">3</span>)])) ^ (<br>                    ((<span class="hljs-number">4</span> * v4.value) ^ (v8.value &gt;&gt; <span class="hljs-number">5</span>)) + ((v4.value &gt;&gt; <span class="hljs-number">3</span>) ^ (<span class="hljs-number">16</span> * v8.value)))<br>            v8.value = input_[k].value<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">decrypt</span>(<span class="hljs-params">input_</span>):<br>    delta = c_uint32(-<span class="hljs-number">0x61C88647</span> * rounds)<br>    v8 = c_uint32(<span class="hljs-number">0</span>)<br>    v4 = c_uint32(<span class="hljs-number">0</span>)<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(rounds):<br>        <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">7</span>, -<span class="hljs-number">1</span>, -<span class="hljs-number">1</span>):<br>            v8.value = input_[(k - <span class="hljs-number">1</span>) % <span class="hljs-number">8</span>].value<br>            <span class="hljs-keyword">if</span> i == rounds - <span class="hljs-number">1</span> <span class="hljs-keyword">and</span> k == <span class="hljs-number">0</span>:<br>                v8.value = input_[<span class="hljs-built_in">len</span>(input_)-<span class="hljs-number">1</span>].value<br>            v4.value = input_[(k + <span class="hljs-number">1</span>) % <span class="hljs-number">8</span>].value<br>            input_[k].value -= ((v4.value ^ delta.value) + (v8.value ^ key[(delta.value &gt;&gt; <span class="hljs-number">2</span>) &amp; <span class="hljs-number">3</span> ^ k &amp; <span class="hljs-number">3</span>])) ^ (<br>                    ((<span class="hljs-number">4</span> * v4.value) ^ (v8.value &gt;&gt; <span class="hljs-number">5</span>)) + ((v4.value &gt;&gt; <span class="hljs-number">3</span>) ^ (<span class="hljs-number">16</span> * v8.value)))<br>        delta.value += <span class="hljs-number">0x61C88647</span><br>    <span class="hljs-keyword">return</span> input_<br><br><br>src = [c_uint32(<span class="hljs-number">0x61616161</span>), c_uint32(<span class="hljs-number">0x61616161</span>), c_uint32(<span class="hljs-number">0x61616161</span>), c_uint32(<span class="hljs-number">0x61616161</span>),<br>       c_uint32(<span class="hljs-number">0x61616161</span>), c_uint32(<span class="hljs-number">0x61616161</span>), c_uint32(<span class="hljs-number">0x61616161</span>), c_uint32(<span class="hljs-number">0x61616161</span>)]<br><br>enc = [c_uint32(<span class="hljs-number">0x0913bc10</span>),c_uint32(<span class="hljs-number">0x7ad2de6f</span>),c_uint32(<span class="hljs-number">0xec01321e</span>),c_uint32(<span class="hljs-number">0x33c2a85d</span>),<br>       c_uint32(<span class="hljs-number">0x4476c2de</span>),c_uint32(<span class="hljs-number">0x59714e3b</span>),c_uint32(<span class="hljs-number">0xf5b45769</span>),c_uint32(<span class="hljs-number">0x04b4e6ec</span>)]<br><br>decrypt(enc)<br><span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> enc:<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">4</span>):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-built_in">chr</span>(((k.value &gt;&gt; (<span class="hljs-number">8</span> * i)) &amp; <span class="hljs-number">0xff</span>)),end=<span class="hljs-string">&#x27;&#x27;</span>)<br><span class="hljs-comment"># SBCTF&#123;enjoy_the_time_with_XXTea&#125;</span><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
 
                 
               </div>
