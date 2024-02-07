@@ -1,0 +1,773 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305221933187.jpeg">
+  <link rel="icon" href="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202305221933187.jpeg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="yring">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="wasm 笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="wasm 学习笔记">
+<meta property="og:url" content="http://example.com/2024/02/07/wasm/index.html">
+<meta property="og:site_name" content="yring">
+<meta property="og:description" content="wasm 笔记">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://yring-me.oss-cn-beijing.aliyuncs.com/test/Antennae_Biggs_960.jpg">
+<meta property="article:published_time" content="2024-02-07T15:10:22.000Z">
+<meta property="article:modified_time" content="2024-02-07T16:03:11.560Z">
+<meta property="article:author" content="yring">
+<meta property="article:tag" content="reverse">
+<meta property="article:tag" content="wasm">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://yring-me.oss-cn-beijing.aliyuncs.com/test/Antennae_Biggs_960.jpg">
+  
+  
+  
+  <title>wasm 学习笔记 - yring</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/cloudeGlass.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/scroll.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/toubudaziji.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":50,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body><!-- hexo injector body_begin start --><div id="web_bg"></div><!-- hexo injector body_begin end -->
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>yring</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('https://cdn.pixabay.com/photo/2016/05/24/16/48/mountains-1412683_1280.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="wasm 学习笔记"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-02-07 23:10" pubdate>
+          February 7, 2024 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          32 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">wasm 学习笔记</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    Last updated on February 8, 2024 am
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>wasm 笔记</p>
+<span id="more"></span>
+
+<p>N1CTF Junior出了一道wasm的题目，前几天在国际赛TetCTF上也出了一道wasm的题，不过是属于签到级别，正好借此机会学习一下。</p>
+<h2 id="wasm简介"><a href="#wasm简介" class="headerlink" title="wasm简介"></a>wasm简介</h2><p>以下内容摘抄自<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/WebAssembly">MDN</a></p>
+<blockquote>
+<p>WebAssembly 是一种新的编码方式，可以在现代的网络浏览器中运行 － 它是一种低级的类汇编语言，具有紧凑的二进制格式，可以接近原生的性能运行，并为诸如 C &#x2F; C ++等语言提供一个编译目标，以便它们可以在 Web 上运行。它也被设计为可以与 JavaScript 共存，允许两者一起工作。</p>
+<p>于网络平台而言，WebAssembly 具有巨大的意义——它提供了一条途径，以使得以各种语言编写的代码都可以以接近原生的速度在 Web 中运行。在这种情况下，以前无法以此方式运行的客户端软件都将可以运行在 Web 中。</p>
+<p>WebAssembly 被设计为可以和 JavaScript 一起协同工作——通过使用 WebAssembly 的 JavaScript API，你可以把 WebAssembly 模块加载到一个 JavaScript 应用中并且在两者之间共享功能。这允许你在同一个应用中利用 WebAssembly 的性能和威力以及 JavaScript 的表达力和灵活性，即使你可能并不知道如何编写 WebAssembly 代码。</p>
+</blockquote>
+<h2 id="TetCTF"><a href="#TetCTF" class="headerlink" title="TetCTF"></a>TetCTF</h2><p>题目只给了一个html文件，用谷歌浏览器打开然后测试一下</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-02-07%2023.18.05.png" srcset="/img/loading.gif" lazyload></p>
+<p>就是简单的输入然后判断，在html文件中很容易找到关键地方。</p>
+<p>此函数用于接收回车信息，并获取文本内容然后调用<code>processInput</code>函数</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-02-07%2023.19.16.png" srcset="/img/loading.gif" lazyload></p>
+<p>在<code>processInput</code>函数中，先检查格式长度，然后调用<code>wasm</code>模块内容</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-02-07%2023.20.11.png" srcset="/img/loading.gif" lazyload></p>
+<p><code>wasm</code>内容由前面的<code>code</code>而来</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-02-07%2023.21.01.png" srcset="/img/loading.gif" lazyload></p>
+<p>可以在<code>Chrome</code>等浏览器将文件下载下来</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-02-07%2023.22.04.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="wasm-init"><a href="#wasm-init" class="headerlink" title="wasm.init()"></a><code>wasm</code>.init()</h3><figure class="highlight wasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs wasm"><span class="hljs-keyword">func</span> <span class="hljs-title function_">$init</span> <span class="hljs-comment">(;1;)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">export</span> <span class="hljs-string">&quot;init&quot;</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">param</span> <span class="hljs-variable">$var0</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">result</span> <span class="hljs-punctuation">(</span>ref <span class="hljs-variable">$type1</span><span class="hljs-punctuation">))</span><br>    <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br>    array.new_default <span class="hljs-variable">$type1</span><br>    <span class="hljs-keyword">call</span> <span class="hljs-title function_">$1</span><br></code></pre></td></tr></table></figure>
+
+<p>调用<code>$1</code></p>
+<figure class="highlight wasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs wasm"><span class="hljs-keyword">func</span> <span class="hljs-title function_">$1</span> <span class="hljs-comment">(;0;)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">export</span> <span class="hljs-string">&quot;1&quot;</span><span class="hljs-punctuation">)</span><br>    <span class="hljs-keyword">global.get</span> <span class="hljs-variable">$global0</span><br>    <span class="hljs-keyword">i32.const</span> <span class="hljs-number">19</span><br>    <span class="hljs-keyword">i32.xor</span><br>    <span class="hljs-keyword">global.set</span> <span class="hljs-variable">$global0</span><br>    <span class="hljs-keyword">global.get</span> <span class="hljs-variable">$global1</span><br>    <span class="hljs-keyword">i32.const</span> <span class="hljs-number">55</span><br>    <span class="hljs-keyword">i32.xor</span><br>    <span class="hljs-keyword">global.set</span> <span class="hljs-variable">$global1</span><br>    <span class="hljs-keyword">global.get</span> <span class="hljs-variable">$global2</span><br>    <span class="hljs-keyword">i32.const</span> <span class="hljs-number">32</span><br>    <span class="hljs-keyword">i32.xor</span><br>    <span class="hljs-keyword">global.set</span> <span class="hljs-variable">$global2</span><br>    <span class="hljs-keyword">global.get</span> <span class="hljs-variable">$global3</span><br>    <span class="hljs-keyword">i32.const</span> <span class="hljs-number">36</span><br>    …………<br></code></pre></td></tr></table></figure>
+
+<p>这个函数就是对一些全局变量进行设定，全局变量在<code>wasm</code>开始有定义</p>
+<figure class="highlight wasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs wasm"><span class="hljs-punctuation">(</span><span class="hljs-keyword">type</span> <span class="hljs-variable">$type0</span> <span class="hljs-punctuation">(</span>struct <span class="hljs-punctuation">(</span>field <span class="hljs-variable">$field0</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">))))</span><br><span class="hljs-punctuation">(</span><span class="hljs-keyword">type</span> <span class="hljs-variable">$type1</span> <span class="hljs-punctuation">(</span>array <span class="hljs-punctuation">(</span>field <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-punctuation">(</span>ref null <span class="hljs-variable">$type0</span><span class="hljs-punctuation">)))))</span><br><span class="hljs-punctuation">(</span><span class="hljs-keyword">global</span> <span class="hljs-variable">$global0</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">i32.const</span> <span class="hljs-number">96</span><span class="hljs-punctuation">))</span><br><span class="hljs-punctuation">(</span><span class="hljs-keyword">global</span> <span class="hljs-variable">$global1</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">i32.const</span> <span class="hljs-number">101</span><span class="hljs-punctuation">))</span><br><span class="hljs-punctuation">(</span><span class="hljs-keyword">global</span> <span class="hljs-variable">$global2</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">i32.const</span> <span class="hljs-number">20</span><span class="hljs-punctuation">))</span><br><span class="hljs-punctuation">(</span><span class="hljs-keyword">global</span> <span class="hljs-variable">$global3</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">i32.const</span> <span class="hljs-number">177</span><span class="hljs-punctuation">))</span><br><span class="hljs-punctuation">(</span><span class="hljs-keyword">global</span> <span class="hljs-variable">$global4</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">i32.const</span> <span class="hljs-number">155</span><span class="hljs-punctuation">))</span><br><span class="hljs-punctuation">(</span><span class="hljs-keyword">global</span> <span class="hljs-variable">$global5</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">i32.const</span> <span class="hljs-number">116</span><span class="hljs-punctuation">))</span><br><span class="hljs-punctuation">(</span><span class="hljs-keyword">global</span> <span class="hljs-variable">$global6</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">i32.const</span> <span class="hljs-number">108</span><span class="hljs-punctuation">))</span><br><span class="hljs-punctuation">(</span><span class="hljs-keyword">global</span> <span class="hljs-variable">$global7</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">i32.const</span> <span class="hljs-number">69</span><span class="hljs-punctuation">))</span><br><span class="hljs-punctuation">(</span><span class="hljs-keyword">global</span> <span class="hljs-variable">$global8</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">i32.const</span> <span class="hljs-number">84</span><span class="hljs-punctuation">))</span><br><span class="hljs-punctuation">(</span><span class="hljs-keyword">global</span> <span class="hljs-variable">$global9</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">i32.const</span> <span class="hljs-number">109</span><span class="hljs-punctuation">))</span><br><span class="hljs-punctuation">(</span><span class="hljs-keyword">global</span> <span class="hljs-variable">$global10</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">i32.const</span> <span class="hljs-number">103</span><span class="hljs-punctuation">))</span><br><span class="hljs-punctuation">(</span><span class="hljs-keyword">global</span> <span class="hljs-variable">$global11</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">i32.const</span> <span class="hljs-number">110</span><span class="hljs-punctuation">))</span><br><span class="hljs-punctuation">(</span><span class="hljs-keyword">global</span> <span class="hljs-variable">$global12</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">i32.const</span> <span class="hljs-number">111</span><span class="hljs-punctuation">))</span><br><span class="hljs-punctuation">(</span><span class="hljs-keyword">global</span> <span class="hljs-variable">$global13</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">i32.const</span> <span class="hljs-number">95</span><span class="hljs-punctuation">))</span><br><span class="hljs-punctuation">(</span><span class="hljs-keyword">global</span> <span class="hljs-variable">$global14</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">i32.const</span> <span class="hljs-number">116</span><span class="hljs-punctuation">))</span><br><span class="hljs-punctuation">(</span><span class="hljs-keyword">global</span> <span class="hljs-variable">$global15</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">i32.const</span> <span class="hljs-number">103</span><span class="hljs-punctuation">))</span><br><span class="hljs-punctuation">(</span><span class="hljs-keyword">global</span> <span class="hljs-variable">$global16</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">i32.const</span> <span class="hljs-number">97</span><span class="hljs-punctuation">))</span><br><span class="hljs-punctuation">(</span><span class="hljs-keyword">global</span> <span class="hljs-variable">$global17</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">i32.const</span> <span class="hljs-number">72</span><span class="hljs-punctuation">))</span><br><span class="hljs-punctuation">(</span><span class="hljs-keyword">global</span> <span class="hljs-variable">$global18</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">i32.const</span> <span class="hljs-number">20</span><span class="hljs-punctuation">))</span><br><span class="hljs-punctuation">(</span><span class="hljs-keyword">global</span> <span class="hljs-variable">$global19</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">mut</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">i32.const</span> <span class="hljs-number">59</span><span class="hljs-punctuation">))</span><br></code></pre></td></tr></table></figure>
+
+<p>写成对应的python则是</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python">array1 = [<span class="hljs-number">96</span>, <span class="hljs-number">101</span>, <span class="hljs-number">20</span>, <span class="hljs-number">177</span>, <span class="hljs-number">155</span>, <span class="hljs-number">116</span>, <span class="hljs-number">108</span>, <span class="hljs-number">69</span>, <span class="hljs-number">84</span>, <span class="hljs-number">109</span>, <span class="hljs-number">103</span>, <span class="hljs-number">110</span>, <span class="hljs-number">111</span>, <span class="hljs-number">95</span>, <span class="hljs-number">116</span>, <span class="hljs-number">103</span>, <span class="hljs-number">97</span>, <span class="hljs-number">72</span>, <span class="hljs-number">20</span>, <span class="hljs-number">59</span>]<br>array2 = [<span class="hljs-number">19</span>, <span class="hljs-number">55</span>, <span class="hljs-number">32</span>, <span class="hljs-number">36</span>, <span class="hljs-number">19</span>, <span class="hljs-number">55</span>, <span class="hljs-number">32</span>, <span class="hljs-number">36</span>, <span class="hljs-number">19</span>, <span class="hljs-number">55</span>, <span class="hljs-number">32</span>, <span class="hljs-number">36</span>, <span class="hljs-number">19</span>, <span class="hljs-number">55</span>, <span class="hljs-number">32</span>, <span class="hljs-number">36</span>, <span class="hljs-number">19</span>, <span class="hljs-number">55</span>, <span class="hljs-number">32</span>, <span class="hljs-number">36</span>]<br>global_arr = [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>]<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">init</span>():<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(array1)):<br>        global_arr[i] = array1[i] ^ array2[i]<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="wasm-array-fill"><a href="#wasm-array-fill" class="headerlink" title="wasm.array_fill()"></a>wasm.array_fill()</h3><p>继续接着往下看，调用了<code>wasm.array_fill</code>函数</p>
+<figure class="highlight wasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs wasm"><span class="hljs-keyword">func</span> <span class="hljs-title function_">$array_fill</span> <span class="hljs-comment">(;2;)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">export</span> <span class="hljs-string">&quot;array_fill&quot;</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">param</span> <span class="hljs-variable">$var0</span> <span class="hljs-punctuation">(</span>ref null <span class="hljs-variable">$type1</span><span class="hljs-punctuation">))</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">param</span> <span class="hljs-variable">$var1</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">param</span> <span class="hljs-variable">$var2</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span><br>  <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br>  <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var1</span><br>  <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var2</span><br>  <span class="hljs-keyword">i32.const</span> <span class="hljs-number">19</span><br>  <span class="hljs-keyword">i32.add</span><br>  <span class="hljs-keyword">i32.const</span> <span class="hljs-number">-64</span><br>  <span class="hljs-keyword">i32.sub</span><br>  struct.new <span class="hljs-variable">$type0</span><br>  <span class="hljs-keyword">i32.const</span> <span class="hljs-number">1</span><br>  array.fill <span class="hljs-variable">$type1</span><br><br></code></pre></td></tr></table></figure>
+
+<p>这个函数有两个参数，结合调用点可知，第一个参数是输入，第二参数是字符</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-02-07%2023.34.01.png" srcset="/img/loading.gif" lazyload></p>
+<p>值得一提的是，也可以通过打断点方式查看变量</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-02-07%2023.37.33.png" srcset="/img/loading.gif" lazyload></p>
+<p>可以发现<code>wasm</code>中参数传递是通过栈来进行传递的，<code>local.get</code>就是把参数放入当前这个函数的栈中，如果有调用其他函数，也先参数压栈，然后调用，这里调用约定是从左向右，即最右边的参数最靠晚压栈。</p>
+<p>比如现在要调用<code>i32.add</code>函数，它需要两个参数，那么就从栈顶依次弹出两个参数，然后调用该函数，如果函数有返回值，那么就压入栈中</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-02-07%2023.41.04.png" srcset="/img/loading.gif" lazyload></p>
+<p>现在就可以看到参数<code>97</code>和<code>19</code>已经弹出，而函数返回值<code>97+19=116</code>则压入栈中</p>
+<p>写成对应的python</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">array_fill</span>(<span class="hljs-params"><span class="hljs-built_in">str</span></span>):<br>    str_re = []<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">str</span>[<span class="hljs-number">7</span>:<span class="hljs-number">27</span>]:<br>        str_re.append(<span class="hljs-built_in">ord</span>(i) + <span class="hljs-number">19</span> + <span class="hljs-number">64</span>)<br>    <span class="hljs-keyword">return</span> str_re<br><br></code></pre></td></tr></table></figure>
+
+<p>以上两个函数都是对输入和全局变量做一些初始的处理，现在进入到<code>check</code>函数</p>
+<h3 id="wasm-check"><a href="#wasm-check" class="headerlink" title="wasm.check"></a><code>wasm.check</code></h3><figure class="highlight wasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs wasm"><span class="hljs-keyword">func</span> <span class="hljs-title function_">$check</span> <span class="hljs-comment">(;6;)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">export</span> <span class="hljs-string">&quot;check&quot;</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">param</span> <span class="hljs-variable">$var0</span> <span class="hljs-punctuation">(</span>ref null <span class="hljs-variable">$type1</span><span class="hljs-punctuation">))</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">result</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span><br>    <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br>    <span class="hljs-keyword">i32.const</span> <span class="hljs-number">0</span><br>    <span class="hljs-keyword">i32.const</span> <span class="hljs-number">1</span><br>    <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br>    <span class="hljs-keyword">i32.const</span> <span class="hljs-number">0</span><br>    <span class="hljs-keyword">call</span> <span class="hljs-title function_">$3</span><br>    <span class="hljs-keyword">global.get</span> <span class="hljs-variable">$global0</span><br>    <span class="hljs-keyword">i32.add</span><br>    <span class="hljs-keyword">call</span> <span class="hljs-title function_">$4</span><br>    <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br>    <span class="hljs-keyword">i32.const</span> <span class="hljs-number">1</span><br>    <span class="hljs-keyword">i32.const</span> <span class="hljs-number">2</span><br>    <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br>    <span class="hljs-keyword">i32.const</span> <span class="hljs-number">1</span><br>    <span class="hljs-keyword">call</span> <span class="hljs-title function_">$3</span><br>    <span class="hljs-keyword">global.get</span> <span class="hljs-variable">$global1</span><br>    <span class="hljs-keyword">i32.sub</span><br>    <span class="hljs-keyword">call</span> <span class="hljs-title function_">$4</span><br>    <br>    …………<br>    <br>    <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br>    <span class="hljs-keyword">i32.const</span> <span class="hljs-number">3</span><br>    <span class="hljs-keyword">i32.const</span> <span class="hljs-number">16</span><br>    <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br>    <span class="hljs-keyword">i32.const</span> <span class="hljs-number">19</span><br>    <span class="hljs-keyword">call</span> <span class="hljs-title function_">$3</span><br>    <span class="hljs-keyword">global.get</span> <span class="hljs-variable">$global19</span><br>    <span class="hljs-keyword">i32.xor</span><br>    <span class="hljs-keyword">call</span> <span class="hljs-title function_">$4</span><br>    <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br>    <span class="hljs-keyword">call</span> <span class="hljs-title function_">$5</span><br></code></pre></td></tr></table></figure>
+
+<p>这个函数也很长，不过细看就会发现一个块在不断循环</p>
+<figure class="highlight wasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs wasm"><span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br><span class="hljs-keyword">i32.const</span> X <span class="hljs-comment">;;where X  0-&gt;1-&gt;2-&gt;3-&gt;0-&gt;1-&gt;2-&gt;3-&gt;0...</span><br><span class="hljs-keyword">i32.const</span> Y <span class="hljs-comment">;;where Y 0&lt;=Y&lt;=20 but multiple of 4s are -4</span><br><span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br><span class="hljs-keyword">i32.const</span> Z <span class="hljs-comment">;;where 1&lt;=Z&lt;=19</span><br><span class="hljs-keyword">call</span> <span class="hljs-title function_">$3</span><br><span class="hljs-keyword">global.get</span> <span class="hljs-variable">$globalZ</span> <span class="hljs-comment">;;where 1&lt;=Z&lt;=19</span><br>i32.AAA <span class="hljs-comment">;;where AAA add-&gt;sub-&gt;mul-&gt;xor-&gt;add-&gt;sub...</span><br><span class="hljs-keyword">call</span> <span class="hljs-title function_">$4</span><br></code></pre></td></tr></table></figure>
+
+<p>这里涉及到<code>$3</code>函数</p>
+<figure class="highlight wasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs wasm"><span class="hljs-keyword">func</span> <span class="hljs-title function_">$3</span> <span class="hljs-comment">(;3;)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">export</span> <span class="hljs-string">&quot;3&quot;</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">param</span> <span class="hljs-variable">$var0</span> <span class="hljs-punctuation">(</span>ref null <span class="hljs-variable">$type1</span><span class="hljs-punctuation">))</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">param</span> <span class="hljs-variable">$var1</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">result</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span><br>    <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br>    <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var1</span><br>    array.get <span class="hljs-variable">$type1</span><br>    struct.get <span class="hljs-variable">$type0</span> <span class="hljs-variable">$field0</span><br>  <br></code></pre></td></tr></table></figure>
+
+<p>这里稍微调试一下就知道是数组取值而已，重点是<code>$4</code>函数</p>
+<figure class="highlight wasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><code class="hljs wasm"><span class="hljs-keyword">func</span> <span class="hljs-title function_">$4</span> <span class="hljs-comment">(;4;)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">export</span> <span class="hljs-string">&quot;4&quot;</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">param</span> <span class="hljs-variable">$var0</span> <span class="hljs-punctuation">(</span>ref null <span class="hljs-variable">$type1</span><span class="hljs-punctuation">))</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">param</span> <span class="hljs-variable">$var1</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">param</span> <span class="hljs-variable">$var2</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">param</span> <span class="hljs-variable">$var3</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span><br>    <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var1</span><br>    <span class="hljs-keyword">i32.const</span> <span class="hljs-number">0</span><br>    <span class="hljs-keyword">i32.eq</span><br>    <span class="hljs-keyword">if</span><br>      <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br>      <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var2</span><br>      <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br>      <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var2</span><br>      <span class="hljs-keyword">call</span> <span class="hljs-title function_">$3</span><br>      <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var3</span><br>      <span class="hljs-keyword">i32.add</span><br>      <span class="hljs-keyword">i32.const</span> <span class="hljs-number">32</span><br>      <span class="hljs-keyword">i32.xor</span><br>      <span class="hljs-keyword">call</span> <span class="hljs-title function_">$array_fill</span><br>    <span class="hljs-keyword">else</span><br>      <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var1</span><br>      <span class="hljs-keyword">i32.const</span> <span class="hljs-number">1</span><br>      <span class="hljs-keyword">i32.eq</span><br>      <span class="hljs-keyword">if</span><br>        <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br>        <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var2</span><br>        <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br>        <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var2</span><br>        <span class="hljs-keyword">call</span> <span class="hljs-title function_">$3</span><br>        <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var3</span><br>        <span class="hljs-keyword">i32.add</span><br>        <span class="hljs-keyword">i32.const</span> <span class="hljs-number">36</span><br>        <span class="hljs-keyword">i32.xor</span><br>        <span class="hljs-keyword">call</span> <span class="hljs-title function_">$array_fill</span><br>      <span class="hljs-keyword">else</span><br>        <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var1</span><br>        <span class="hljs-keyword">i32.const</span> <span class="hljs-number">2</span><br>        <span class="hljs-keyword">i32.eq</span><br>        <span class="hljs-keyword">if</span><br>          <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br>          <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var2</span><br>          <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br>          <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var2</span><br>          <span class="hljs-keyword">call</span> <span class="hljs-title function_">$3</span><br>          <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var3</span><br>          <span class="hljs-keyword">i32.add</span><br>          <span class="hljs-keyword">i32.const</span> <span class="hljs-number">19</span><br>          <span class="hljs-keyword">i32.xor</span><br>          <span class="hljs-keyword">call</span> <span class="hljs-title function_">$array_fill</span><br>        <span class="hljs-keyword">else</span><br>          <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var1</span><br>          <span class="hljs-keyword">i32.const</span> <span class="hljs-number">3</span><br>          <span class="hljs-keyword">i32.eq</span><br>          <span class="hljs-keyword">if</span><br>            <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br>            <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var2</span><br>            <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br>            <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var2</span><br>            <span class="hljs-keyword">call</span> <span class="hljs-title function_">$3</span><br>            <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var3</span><br>            <span class="hljs-keyword">i32.add</span><br>            <span class="hljs-keyword">i32.const</span> <span class="hljs-number">55</span><br>            <span class="hljs-keyword">i32.xor</span><br>            <span class="hljs-keyword">call</span> <span class="hljs-title function_">$array_fill</span><br>          <span class="hljs-keyword">end</span><br>        <span class="hljs-keyword">end</span><br>      <span class="hljs-keyword">end</span><br>    <span class="hljs-keyword">end</span><br></code></pre></td></tr></table></figure>
+
+<p>也比较长，但都是<code>if else</code>的操作块，根据参数不同选择不同的操作</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-02-07%2023.52.58.png" srcset="/img/loading.gif" lazyload></p>
+<p>结合调用前的堆栈情况，以及调试，可以比较轻松的写出对应的python代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">four</span>(<span class="hljs-params">array, operand, index, cons</span>):<br>    <span class="hljs-keyword">if</span> operand == <span class="hljs-number">0</span>:<br>        array[index] = ((array[index] + cons) ^ <span class="hljs-number">32</span>) + <span class="hljs-number">19</span> + <span class="hljs-number">64</span><br>    <span class="hljs-keyword">if</span> operand == <span class="hljs-number">1</span>:<br>        array[index] = ((array[index] + cons) ^ <span class="hljs-number">36</span>) + <span class="hljs-number">19</span> + <span class="hljs-number">64</span><br>    <span class="hljs-keyword">if</span> operand == <span class="hljs-number">2</span>:<br>        array[index] = ((array[index] + cons) ^ <span class="hljs-number">19</span>) + <span class="hljs-number">19</span> + <span class="hljs-number">64</span><br>    <span class="hljs-keyword">if</span> operand == <span class="hljs-number">3</span>:<br>        array[index] = ((array[index] + cons) ^ <span class="hljs-number">55</span>) + <span class="hljs-number">19</span> + <span class="hljs-number">64</span><br></code></pre></td></tr></table></figure>
+
+<p>然后就是最后<code>$5</code>函数，不过这个函数就是比较而已</p>
+<figure class="highlight wasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs wasm"><span class="hljs-keyword">func</span> <span class="hljs-title function_">$5</span> <span class="hljs-comment">(;5;)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">export</span> <span class="hljs-string">&quot;5&quot;</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">param</span> <span class="hljs-variable">$var0</span> <span class="hljs-punctuation">(</span>ref null <span class="hljs-variable">$type1</span><span class="hljs-punctuation">))</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">result</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span><br>    <span class="hljs-punctuation">(</span><span class="hljs-keyword">local</span> <span class="hljs-variable">$var1</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span><br>    <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br>    <span class="hljs-keyword">i32.const</span> <span class="hljs-number">0</span><br>    <span class="hljs-keyword">call</span> <span class="hljs-title function_">$3</span><br>    <span class="hljs-keyword">i32.const</span> <span class="hljs-number">38793</span><br>    <span class="hljs-keyword">i32.eq</span><br>    <span class="hljs-keyword">if</span><br>      <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var1</span><br>      <span class="hljs-keyword">i32.const</span> <span class="hljs-number">1</span><br>      <span class="hljs-keyword">i32.add</span><br>      <span class="hljs-keyword">local.set</span> <span class="hljs-variable">$var1</span><br>    <span class="hljs-keyword">else</span><br>    <span class="hljs-keyword">end</span><br>    <span class="hljs-keyword">local.get</span> <span class="hljs-variable">$var0</span><br>    <span class="hljs-keyword">i32.const</span> <span class="hljs-number">1</span><br>    <span class="hljs-keyword">call</span> <span class="hljs-title function_">$3</span><br>    <span class="hljs-keyword">i32.const</span> <span class="hljs-number">584</span><br>    <span class="hljs-keyword">i32.eq</span><br>    …………<br></code></pre></td></tr></table></figure>
+
+<h3 id="solve"><a href="#solve" class="headerlink" title="solve"></a>solve</h3><p>因此整体加密函数如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> ctypes <span class="hljs-keyword">import</span> *<br><br>array1 = [<span class="hljs-number">96</span>, <span class="hljs-number">101</span>, <span class="hljs-number">20</span>, <span class="hljs-number">177</span>, <span class="hljs-number">155</span>, <span class="hljs-number">116</span>, <span class="hljs-number">108</span>, <span class="hljs-number">69</span>, <span class="hljs-number">84</span>, <span class="hljs-number">109</span>, <span class="hljs-number">103</span>, <span class="hljs-number">110</span>, <span class="hljs-number">111</span>, <span class="hljs-number">95</span>, <span class="hljs-number">116</span>, <span class="hljs-number">103</span>, <span class="hljs-number">97</span>, <span class="hljs-number">72</span>, <span class="hljs-number">20</span>, <span class="hljs-number">59</span>]<br>array2 = [<span class="hljs-number">19</span>, <span class="hljs-number">55</span>, <span class="hljs-number">32</span>, <span class="hljs-number">36</span>, <span class="hljs-number">19</span>, <span class="hljs-number">55</span>, <span class="hljs-number">32</span>, <span class="hljs-number">36</span>, <span class="hljs-number">19</span>, <span class="hljs-number">55</span>, <span class="hljs-number">32</span>, <span class="hljs-number">36</span>, <span class="hljs-number">19</span>, <span class="hljs-number">55</span>, <span class="hljs-number">32</span>, <span class="hljs-number">36</span>, <span class="hljs-number">19</span>, <span class="hljs-number">55</span>, <span class="hljs-number">32</span>, <span class="hljs-number">36</span>]<br>global_arr = [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>]<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">init</span>():<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(array1)):<br>        global_arr[i] = array1[i] ^ array2[i]<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">array_fill</span>(<span class="hljs-params"><span class="hljs-built_in">str</span></span>):<br>    str_re = []<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">str</span>[<span class="hljs-number">7</span>:<span class="hljs-number">27</span>]:<br>        str_re.append(<span class="hljs-built_in">ord</span>(i) + <span class="hljs-number">19</span> + <span class="hljs-number">64</span>)<br>    <span class="hljs-keyword">return</span> str_re<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">four</span>(<span class="hljs-params">array, operand, index, cons</span>):<br>    <span class="hljs-keyword">if</span> operand == <span class="hljs-number">0</span>:<br>        array[index] = ((array[index] + cons) ^ <span class="hljs-number">32</span>) + <span class="hljs-number">19</span> + <span class="hljs-number">64</span><br>    <span class="hljs-keyword">if</span> operand == <span class="hljs-number">1</span>:<br>        array[index] = ((array[index] + cons) ^ <span class="hljs-number">36</span>) + <span class="hljs-number">19</span> + <span class="hljs-number">64</span><br>    <span class="hljs-keyword">if</span> operand == <span class="hljs-number">2</span>:<br>        array[index] = ((array[index] + cons) ^ <span class="hljs-number">19</span>) + <span class="hljs-number">19</span> + <span class="hljs-number">64</span><br>    <span class="hljs-keyword">if</span> operand == <span class="hljs-number">3</span>:<br>        array[index] = ((array[index] + cons) ^ <span class="hljs-number">55</span>) + <span class="hljs-number">19</span> + <span class="hljs-number">64</span><br><br><br>operands = [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]<br>indexes = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">0</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">4</span>, <span class="hljs-number">9</span>, <span class="hljs-number">10</span>, <span class="hljs-number">11</span>, <span class="hljs-number">8</span>, <span class="hljs-number">13</span>, <span class="hljs-number">14</span>, <span class="hljs-number">15</span>, <span class="hljs-number">12</span>, <span class="hljs-number">17</span>, <span class="hljs-number">18</span>, <span class="hljs-number">19</span>, <span class="hljs-number">16</span>]<br>ipt = <span class="hljs-string">&#x27;TetCTF&#123;aaaaaaaaaaaaaaaaaaa&#125;&#x27;</span><br><br>init()<br>ipt = array_fill(ipt)<br><span class="hljs-comment"># print(ipt)</span><br><span class="hljs-comment"># print(len(ipt))</span><br><br>op = <span class="hljs-number">0</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">20</span>):<br>    <span class="hljs-keyword">if</span> op % <span class="hljs-number">4</span> == <span class="hljs-number">0</span>:<br>        <span class="hljs-comment"># print(global_arr[i] + ipt[i])</span><br>        four(ipt, operands[i], indexes[i], global_arr[i] + ipt[i])<br>    <span class="hljs-keyword">if</span> op % <span class="hljs-number">4</span> == <span class="hljs-number">1</span>:<br>        four(ipt, operands[i], indexes[i], ipt[i] - global_arr[i])<br>    <span class="hljs-keyword">if</span> op % <span class="hljs-number">4</span> == <span class="hljs-number">2</span>:<br>        four(ipt, operands[i], indexes[i], global_arr[i] * ipt[i])<br>    <span class="hljs-keyword">if</span> op % <span class="hljs-number">4</span> == <span class="hljs-number">3</span>:<br>        four(ipt, operands[i], indexes[i], global_arr[i] ^ ipt[i])<br>    op = op + <span class="hljs-number">1</span><br><br><span class="hljs-built_in">print</span>(ipt)<br><br><br></code></pre></td></tr></table></figure>
+
+<p>用z3一把梭</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> z3 <span class="hljs-keyword">import</span> *<br><br>global_arr = [<span class="hljs-number">115</span>, <span class="hljs-number">82</span>, <span class="hljs-number">52</span>, <span class="hljs-number">149</span>, <span class="hljs-number">136</span>, <span class="hljs-number">67</span>, <span class="hljs-number">76</span>, <span class="hljs-number">97</span>, <span class="hljs-number">71</span>, <span class="hljs-number">90</span>, <span class="hljs-number">71</span>, <span class="hljs-number">74</span>, <span class="hljs-number">124</span>, <span class="hljs-number">104</span>, <span class="hljs-number">84</span>, <span class="hljs-number">67</span>, <span class="hljs-number">114</span>, <span class="hljs-number">127</span>, <span class="hljs-number">52</span>, <span class="hljs-number">31</span>]<br>flag = [BitVec(<span class="hljs-string">&#x27;flag_%i&#x27;</span> % i, <span class="hljs-number">32</span>) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">20</span>)]<br>enc = [<span class="hljs-number">38793</span>, <span class="hljs-number">584</span>, <span class="hljs-number">738</span>, <span class="hljs-number">38594</span>, <span class="hljs-number">63809</span>, <span class="hljs-number">647</span>, <span class="hljs-number">833</span>, <span class="hljs-number">63602</span>, <span class="hljs-number">47526</span>, <span class="hljs-number">494</span>, <span class="hljs-number">663</span>, <span class="hljs-number">47333</span>, <span class="hljs-number">67041</span>, <span class="hljs-number">641</span>, <span class="hljs-number">791</span>, <span class="hljs-number">66734</span>, <span class="hljs-number">35553</span>, <span class="hljs-number">561</span>, <span class="hljs-number">673</span>,<br>       <span class="hljs-number">35306</span>]<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">four</span>(<span class="hljs-params">array, operand, index, cons</span>):<br>    <span class="hljs-keyword">if</span> operand == <span class="hljs-number">0</span>:<br>        array[index] = ((array[index] + cons) ^ <span class="hljs-number">32</span>) + <span class="hljs-number">19</span> + <span class="hljs-number">64</span><br>    <span class="hljs-keyword">if</span> operand == <span class="hljs-number">1</span>:<br>        array[index] = ((array[index] + cons) ^ <span class="hljs-number">36</span>) + <span class="hljs-number">19</span> + <span class="hljs-number">64</span><br>    <span class="hljs-keyword">if</span> operand == <span class="hljs-number">2</span>:<br>        array[index] = ((array[index] + cons) ^ <span class="hljs-number">19</span>) + <span class="hljs-number">19</span> + <span class="hljs-number">64</span><br>    <span class="hljs-keyword">if</span> operand == <span class="hljs-number">3</span>:<br>        array[index] = ((array[index] + cons) ^ <span class="hljs-number">55</span>) + <span class="hljs-number">19</span> + <span class="hljs-number">64</span><br><br><br>s = Solver()<br><br>op = <span class="hljs-number">0</span><br>operands = [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]<br>indexes = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">0</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">4</span>, <span class="hljs-number">9</span>, <span class="hljs-number">10</span>, <span class="hljs-number">11</span>, <span class="hljs-number">8</span>, <span class="hljs-number">13</span>, <span class="hljs-number">14</span>, <span class="hljs-number">15</span>, <span class="hljs-number">12</span>, <span class="hljs-number">17</span>, <span class="hljs-number">18</span>, <span class="hljs-number">19</span>, <span class="hljs-number">16</span>]<br><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">20</span>):<br>    <span class="hljs-keyword">if</span> op % <span class="hljs-number">4</span> == <span class="hljs-number">0</span>:<br>        <span class="hljs-comment"># print(global_arr[i] + flag[i])</span><br>        four(flag, operands[i], indexes[i], global_arr[i] + flag[i])<br>    <span class="hljs-keyword">if</span> op % <span class="hljs-number">4</span> == <span class="hljs-number">1</span>:<br>        four(flag, operands[i], indexes[i], flag[i] - global_arr[i])<br>    <span class="hljs-keyword">if</span> op % <span class="hljs-number">4</span> == <span class="hljs-number">2</span>:<br>        four(flag, operands[i], indexes[i], global_arr[i] * flag[i])<br>    <span class="hljs-keyword">if</span> op % <span class="hljs-number">4</span> == <span class="hljs-number">3</span>:<br>        four(flag, operands[i], indexes[i], global_arr[i] ^ flag[i])<br>    op = op + <span class="hljs-number">1</span><br><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">20</span>):<br>    s.add(flag[i] == enc[i])<br><br>s.check()<br>m = s.model()<br><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">20</span>):<br>    s = BitVec(<span class="hljs-string">f&#x27;flag_<span class="hljs-subst">&#123;i&#125;</span>&#x27;</span>, <span class="hljs-number">32</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-built_in">chr</span>(m[s].as_long()- <span class="hljs-number">19</span> - <span class="hljs-number">64</span>), end=<span class="hljs-string">&#x27;&#x27;</span>)<br><br><span class="hljs-comment">#WebAss3mblyMystique</span><br></code></pre></td></tr></table></figure>
+
+<p><code>TetCTF&#123;WebAss3mblyMystique&#125;</code></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CTF/" class="category-chain-item">CTF</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/CTF/Reverse/" class="category-chain-item">Reverse</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/CTF/Reverse/wp/" class="category-chain-item">wp</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/reverse/">#reverse</a>
+      
+        <a href="/tags/wasm/">#wasm</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>wasm 学习笔记</div>
+      <div>http://example.com/2024/02/07/wasm/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>yring</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>February 7, 2024</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/02/05/Nu1L_junior/" title="N1CTF Junior">
+                        <span class="hidden-mobile">N1CTF Junior</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <i class="iconfont icon-love"></i>nobody knows ,but we always know
+
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/star.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/bynotes/texiao/source/js/yinghua.js"></script>
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/scroll.css.js"></script>
+<script src="//cdn.jsdelivr.net/gh/bynotes/texiao/source/js/boom.js"></script>
+<script src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/runtime.min.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+
+  <script async src="/js/fireworks.js"></script>
+  
+<!-- hexo injector body_end start --><script src="/js/backgroundize.js"></script><!-- hexo injector body_end end --></body>
+</html>
