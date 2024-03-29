@@ -4,6 +4,37 @@
   
   
   <entry>
+    <title>app-crack</title>
+    <link href="/2024/03/29/sunxingzhe/"/>
+    <url>/2024/03/29/sunxingzhe/</url>
+    
+    <content type="html"><![CDATA[<p>记录一次app逆向</p><span id="more"></span><p>在吾爱上看见个easy的帖子，还有原app，故来尝试。原app是一个修改虚拟定位的程序。</p><p>打开程序，就要求输入卡号，而且还不能取消，点击试用也提示暂未开放。</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/2.png" style="zoom: 33%;" /><p>用Jadx打开，字符串搜索很容易定位到关键位置</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/3.png" style="zoom:33%;" /><p>在这里面看到了user字段出现在<code>strpost</code>方法中，跟进此方法</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/4.png" style="zoom:33%;" /><p>这里应该就是将卡号发送给远端，起到验证作用。</p><p>现在还需要验证虚拟定位逻辑写在哪，如果是在本地运算，那么想办法绕过这个卡号限制就能免费使用。通过断网实验可以知晓，此虚拟定位在本地实现。</p><p>那么现在只需要关掉一开始的那个窗口即可。</p><h2 id="frida"><a href="#frida" class="headerlink" title="frida"></a>frida</h2><p>容易发现，这个load方法还是个静态方法，写一个frida验证</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs js"><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">hookTest1</span>(<span class="hljs-params"></span>)&#123;<br>    <span class="hljs-keyword">var</span> utils = <span class="hljs-title class_">Java</span>.<span class="hljs-title function_">use</span>(<span class="hljs-string">&quot;yz.local&quot;</span>);<br>    utils.<span class="hljs-property">load</span>.<span class="hljs-property">implementation</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(hack);<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">main</span>(<span class="hljs-params"></span>)&#123;<br>    <span class="hljs-title class_">Java</span>.<span class="hljs-title function_">perform</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br>        <span class="hljs-title function_">hookTest1</span>();<br>    &#125;);<br>&#125;<br><span class="hljs-title function_">setImmediate</span>(main);<br></code></pre></td></tr></table></figure><p>再使用命令<code>frida -U -f 包名 -l hook.js</code>启动脚本即可。</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-03-29%2021.01.36.png" style="zoom:33%;" /><p>成功进入。</p><h2 id="crack"><a href="#crack" class="headerlink" title="crack"></a>crack</h2><p>那么这个crack就很简单了，直接改smali代码即可</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/5.png" style="zoom:50%;" /><p>由于直接return-void即可，这里就直接使用MT管理器完成修改以及重签名等操作了。</p><p>ps：这个app还是比较简单的，没有混淆加密，也没有签名认证（</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>CTF</category>
+      
+      <category>Reverse</category>
+      
+      <category>android</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>reverse</tag>
+      
+      <tag>android</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>AliyunCTF &amp; NKCTF</title>
     <link href="/2024/03/24/Ali_NK/"/>
     <url>/2024/03/24/Ali_NK/</url>
@@ -390,11 +421,11 @@
       
       <tag>reverse</tag>
       
+      <tag>z3</tag>
+      
       <tag>JS</tag>
       
       <tag>GO</tag>
-      
-      <tag>z3</tag>
       
     </tags>
     
