@@ -18,14 +18,14 @@
   
     <meta name="description" content="复现一下以前的没做安卓题，顺便加深新学的知识">
 <meta property="og:type" content="article">
-<meta property="og:title" content="2023NewStar-Reverser-Android">
+<meta property="og:title" content="2023NewStar-Reverser-Android(all)">
 <meta property="og:url" content="http://example.com/2024/03/30/2023NewStartAndroid/index.html">
 <meta property="og:site_name" content="yring">
 <meta property="og:description" content="复现一下以前的没做安卓题，顺便加深新学的知识">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://yring-me.oss-cn-beijing.aliyuncs.com/test/NGC5139_mdf1024.png">
 <meta property="article:published_time" content="2024-03-29T16:21:00.000Z">
-<meta property="article:modified_time" content="2024-03-30T15:31:45.759Z">
+<meta property="article:modified_time" content="2024-03-31T14:26:56.065Z">
 <meta property="article:author" content="yring">
 <meta property="article:tag" content="reverse">
 <meta property="article:tag" content="android">
@@ -34,7 +34,7 @@
   
   
   
-  <title>2023NewStar-Reverser-Android - yring</title>
+  <title>2023NewStar-Reverser-Android(all) - yring</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -218,7 +218,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="2023NewStar-Reverser-Android"></span>
+            <span id="subtitle" data-typed-text="2023NewStar-Reverser-Android(all)"></span>
           
         </div>
 
@@ -241,7 +241,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.3k words
+          7k words
         
       </span>
     
@@ -252,7 +252,7 @@
         
         
         
-          17 mins
+          28 mins
         
       </span>
     
@@ -290,12 +290,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">2023NewStar-Reverser-Android</h1>
+            <h1 style="display: none">2023NewStar-Reverser-Android(all)</h1>
             
               <p class="note note-info">
                 
                   
-                    Last updated on March 30, 2024 pm
+                    Last updated on March 31, 2024 pm
                   
                 
               </p>
@@ -364,6 +364,45 @@
 <p>然后还需要转换一下，从C的<code>char*</code>转回<code>utf-8</code></p>
 <p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/image-20240330231842329.png" srcset="/img/loading.gif" lazyload alt="image-20240330231842329"></p>
 <p>flag因为出题人脚本有问题，故不全。</p>
+<h1 id="Week4"><a href="#Week4" class="headerlink" title="Week4"></a>Week4</h1><h2 id="iwannarest"><a href="#iwannarest" class="headerlink" title="iwannarest"></a>iwannarest</h2><p>没什么特别的，跟一跟就可以了，一个TEA类型的算法</p>
+<img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/image-20240331215601053.png" srcset="/img/loading.gif" lazyload alt="image-20240331215601053" style="zoom:33%;" />
+
+<p>对应加密</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">encrypt</span>(<span class="hljs-params">v1:c_uint32,v2:c_uint32</span>):<br>    sum_ = c_uint32(<span class="hljs-number">0x9E3779B9</span>)<br><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">32</span>):<br>        <span class="hljs-comment"># v13 = (sum_.value &gt;&gt; 2) &amp; 3</span><br>        v1.value += (((v2.value &lt;&lt; <span class="hljs-number">2</span>) ^ (v2.value &gt;&gt; <span class="hljs-number">5</span>)) + ((v2.value &gt;&gt; <span class="hljs-number">3</span>) ^ (v2.value &lt;&lt; <span class="hljs-number">4</span>))) ^ ((key[(sum_.value &gt;&gt; <span class="hljs-number">2</span>) &amp; <span class="hljs-number">3</span>] ^ v2.value) + (v2.value ^ sum_.value))<br>        <span class="hljs-comment"># print(hex(v1.value))</span><br>        v2.value += (((v1.value &lt;&lt; <span class="hljs-number">2</span>) ^ (v1.value &gt;&gt; <span class="hljs-number">5</span>)) +  ((v1.value &gt;&gt; <span class="hljs-number">3</span>) ^ (v1.value &lt;&lt; <span class="hljs-number">4</span>))) ^ ((key[((sum_.value &gt;&gt; <span class="hljs-number">2</span>) &amp; <span class="hljs-number">3</span>) ^ <span class="hljs-number">1</span>] ^ v1.value) + (v1.value ^ sum_.value))<br>        sum_.value += <span class="hljs-number">0x9E3779B9</span><br>        <span class="hljs-comment"># print(hex(v2.value))</span><br>    <span class="hljs-comment"># print(hex(sum_.value))</span><br>    <span class="hljs-keyword">return</span> v1.value,v2.value<br><br></code></pre></td></tr></table></figure>
+
+<p>对应解密</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> ctypes <span class="hljs-keyword">import</span> *<br><br>key=  [<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>]<br><span class="hljs-keyword">def</span> <span class="hljs-title function_">decrypt</span>(<span class="hljs-params">v1:c_uint32,v2:c_uint32</span>):<br>    sum_ = c_uint32(<span class="hljs-number">0x9E3779B9</span> + <span class="hljs-number">0x9E3779B9</span> * <span class="hljs-number">32</span>)<br><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">32</span>):<br>        sum_.value -= <span class="hljs-number">0x9E3779B9</span><br>        v2.value -= (((v1.value &lt;&lt; <span class="hljs-number">2</span>) ^ (v1.value &gt;&gt; <span class="hljs-number">5</span>)) +  ((v1.value &gt;&gt; <span class="hljs-number">3</span>) ^ (v1.value &lt;&lt; <span class="hljs-number">4</span>))) ^ ((key[((sum_.value &gt;&gt; <span class="hljs-number">2</span>) &amp; <span class="hljs-number">3</span>) ^ <span class="hljs-number">1</span>] ^ v1.value) + (v1.value ^ sum_.value))<br>        v1.value -= (((v2.value &lt;&lt; <span class="hljs-number">2</span>) ^ (v2.value &gt;&gt; <span class="hljs-number">5</span>)) + ((v2.value &gt;&gt; <span class="hljs-number">3</span>) ^ (v2.value &lt;&lt; <span class="hljs-number">4</span>))) ^ ((key[(sum_.value &gt;&gt; <span class="hljs-number">2</span>) &amp; <span class="hljs-number">3</span>] ^ v2.value) + (v2.value ^ sum_.value))<br><br>    <span class="hljs-comment"># print(hex(sum_.value))</span><br>    <span class="hljs-keyword">return</span> v1.value,v2.value<br><br><span class="hljs-comment"># v1,v2 = encrypt(c_uint32(0x61616161),c_uint32(0x62626262))</span><br><span class="hljs-comment"># print(hex(v1),hex(v2))</span><br><br>enc= [<span class="hljs-number">0xEC339492</span>,<span class="hljs-number">0xBB7D6A5F</span>,<span class="hljs-number">0x5BD9F28A</span>,<span class="hljs-number">0x412C450B</span>,<span class="hljs-number">0xC5982391</span>,<span class="hljs-number">0x3355F5FD</span>,<span class="hljs-number">0x1503E350</span>,<span class="hljs-number">0x3945171</span>]<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(enc),<span class="hljs-number">2</span>):<br><br>    v1 = c_uint32(enc[i])<br>    v2 = c_uint32(enc[i+<span class="hljs-number">1</span>])<br>    v1,v2 = decrypt(v1,v2)<br><br>    <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">4</span>):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-built_in">chr</span>((v1 &gt;&gt; (k*<span class="hljs-number">8</span>))&amp;<span class="hljs-number">0xff</span>),end=<span class="hljs-string">&#x27;&#x27;</span>)<br>    <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">4</span>):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-built_in">chr</span>((v2 &gt;&gt; (k*<span class="hljs-number">8</span>))&amp;<span class="hljs-number">0xff</span>),end=<span class="hljs-string">&#x27;&#x27;</span>)<br><br><span class="hljs-comment"># flag&#123;GDu7Il0v3uP1zl3tm3Gr@duate&#125;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="简单的跨栏"><a href="#简单的跨栏" class="headerlink" title="简单的跨栏"></a>简单的跨栏</h2><p>Java层RC4，Native层变表64，直接静态手撕</p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/image-20240331202859796.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="Week5"><a href="#Week5" class="headerlink" title="Week5"></a>Week5</h1><p>Java层有两个反调试，patch一下即可。</p>
+<p>然后主要逻辑都是在Native层，函数是动态注册的，所以名字找不到。不过关键地方也很容易看到，这里用了一个indirectJump混淆，即通过跳转寄存器来混淆。动态调试一下，比较容易看到关键地方。</p>
+<img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/image-20240331173929338.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<p>显然这里将前8字节拆分为两个4字节分别存入<code>w10 w9</code>寄存器，还有魔数<code>0x9E3779B9</code>，大体可以猜测出是TEA类的算法加密，然后继续跟一下就能看到完整的加密流程</p>
+<img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/image-20240330210331437.png" srcset="/img/loading.gif" lazyload alt="image-20240330210331437" style="zoom:33%;" />
+
+<p>Key、密文什么的也很容易拿到，直接搓逆脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> ctypes <span class="hljs-keyword">import</span> *<br><br>key=  [<span class="hljs-number">52</span>,<span class="hljs-number">20</span>,<span class="hljs-number">22</span>,<span class="hljs-number">11</span>]<br><span class="hljs-keyword">def</span> <span class="hljs-title function_">decrypt</span>(<span class="hljs-params">v1:c_uint32,v2:c_uint32</span>):<br>    sum_ = c_uint32(<span class="hljs-number">0x9E3779B9</span> * <span class="hljs-number">32</span>)<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">32</span>):<br>        v2.value -= (((v1.value &lt;&lt; <span class="hljs-number">4</span>) ^ (v1.value &gt;&gt; <span class="hljs-number">5</span>)) + v1.value) ^ (sum_.value + key[(sum_.value &gt;&gt; <span class="hljs-number">11</span>) &amp; <span class="hljs-number">3</span>])<br>        sum_.value -= <span class="hljs-number">0x9E3779B9</span><br>        v1.value -= (((v2.value &lt;&lt; <span class="hljs-number">4</span>) ^ (v2.value &gt;&gt; <span class="hljs-number">5</span>)) + v2.value) ^ (sum_.value + key[sum_.value &amp; <span class="hljs-number">3</span>])<br>    <span class="hljs-keyword">return</span> v1.value,v2.value<br><br><br>enc = [<span class="hljs-number">4040038566</span>,<span class="hljs-number">2148388880</span>,<span class="hljs-number">4143339962</span>,<span class="hljs-number">1106011462</span>,<span class="hljs-number">1625757206</span>,<span class="hljs-number">2404338960</span>,<span class="hljs-number">2235309951</span>,<span class="hljs-number">2545489960</span>,<span class="hljs-number">249417902</span>,<span class="hljs-number">3999178384</span>,<span class="hljs-number">2860580105</span>,<span class="hljs-number">1697496044</span>]<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(enc),<span class="hljs-number">2</span>):<br><br>    v1 = c_uint32(enc[i])<br>    v2 = c_uint32(enc[i+<span class="hljs-number">1</span>])<br>    v1,v2 = decrypt(v1,v2)<br><br>    <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">4</span>):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-built_in">chr</span>((v1 &gt;&gt; (k*<span class="hljs-number">8</span>))&amp;<span class="hljs-number">0xff</span>),end=<span class="hljs-string">&#x27;&#x27;</span>)<br>    <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">4</span>):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-built_in">chr</span>((v2 &gt;&gt; (k*<span class="hljs-number">8</span>))&amp;<span class="hljs-number">0xff</span>),end=<span class="hljs-string">&#x27;&#x27;</span>)<br><br><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                 
               </div>
@@ -425,7 +464,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>2023NewStar-Reverser-Android</div>
+      <div>2023NewStar-Reverser-Android(all)</div>
       <div>http://example.com/2024/03/30/2023NewStartAndroid/</div>
     </div>
     <div class="license-meta">
@@ -469,6 +508,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2024/03/31/CCB/" title="长城杯第三场-逆向">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">长城杯第三场-逆向</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
