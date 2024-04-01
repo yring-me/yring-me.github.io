@@ -4,6 +4,37 @@
   
   
   <entry>
+    <title>某盗版切水果小游戏破解</title>
+    <link href="/2024/04/01/crack-fruit/"/>
+    <url>/2024/04/01/crack-fruit/</url>
+    
+    <content type="html"><![CDATA[<p>记录某盗版切水果小游戏充值破解</p><span id="more"></span><p>简单运行下程序</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-04-01%2012.04.29.png" style="zoom:33%;" /><p>尝试购买会失败</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-04-01%2012.04.48.png" style="zoom:33%;" /><h2 id="doPaySuccess"><a href="#doPaySuccess" class="headerlink" title="doPaySuccess"></a>doPaySuccess</h2><p>Jadx打开，搜索字符串很容易定位到关键地方</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-04-01%2012.11.35.png" style="zoom:33%;" /><p>这里逻辑很清晰，支付成功调用<code>doPaySuccess(payId)</code>，失败则调用<code>doPayFalse(payId)</code>，取消也差不多<code>doPayCancel(payId)</code>，那么这里patch思路就比较清晰，即在smali代码里面，不管失败还是取消，都调用<code>doPaySuccess(payId)</code>，然后再把<code>this.falseTime++</code>啥的也给patch掉</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-04-01%2015.35.44.png" style="zoom:33%;" /><p>比如这样，可以仿照<code>payResultSuccess</code>里面进行处理，需要改一下参数寄存器。</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-04-01%2016.49.42.png" alt="截屏2024-04-01 16.49.42" style="zoom:33%;" /><p>其他相关变量也可以跟着改改。</p><p>当然还有一种更暴力的思路，即把<code>payResultSuccess</code>的全部smali代码完全复制进去。</p><p>patch完之后就是常规的重签名等操作.</p><p>重新安装查看</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-04-01%2015.35.59.png" style="zoom:33%;" /><p>可以发现，虽然还是会弹窗提示失败，但是道具已经增加。</p><h2 id="Pay"><a href="#Pay" class="headerlink" title="Pay"></a>Pay</h2><p>ok继续往下优化，查找支付的地方，交叉索引也很容易找到，</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-04-01%2017.10.23.png" alt="截屏2024-04-01 17.10.23" style="zoom: 50%;" /><p>点击支付按钮的时候会触发函数<code>doBilling()</code>，函数<code>doBilling()</code>则是一些支付逻辑，成功则调用<code>payResultSuccess()</code>,那么patch思路就是直接调用此函数。</p><p>找到pay的地方，做如下patch。</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-04-01%2017.21.54.png" alt="截屏2024-04-01 17.21.54" style="zoom:50%;" /><p>然后只需要点击购买</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-04-01%2017.23.29.png" style="zoom:50%;" /><p>就能直接购买成功，没有失败的窗口。</p><p>而且这样修改之后，所有购买都一定会成功，包括解锁关卡什么的</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-04-01%2017.25.24.png" style="zoom:50%;" /><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-04-01%2017.25.28.png" alt="截屏2024-04-01 17.25.28" style="zoom:50%;" /><p>所有的关卡都能玩，所有的道具都能买，就相当于完全破解版了吧！</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>CTF</category>
+      
+      <category>Reverse</category>
+      
+      <category>android</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>reverse</tag>
+      
+      <tag>android</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>长城杯第三场-逆向</title>
     <link href="/2024/03/31/CCB/"/>
     <url>/2024/03/31/CCB/</url>
@@ -461,6 +492,35 @@
   
   
   <entry>
+    <title>De1CTF 2019 (一)</title>
+    <link href="/2024/01/14/De1CTF%202019/"/>
+    <url>/2024/01/14/De1CTF%202019/</url>
+    
+    <content type="html"><![CDATA[<p>Cplusplus，RE_sign</p><span id="more"></span><h2 id="Cplusplus"><a href="#Cplusplus" class="headerlink" title="Cplusplus"></a>Cplusplus</h2><h3 id="总体分析"><a href="#总体分析" class="headerlink" title="总体分析"></a>总体分析</h3><p>程序的输入和关键比较函数都比较明显，直接看关键的函数</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.21.49.png" alt="截屏2024-01-14 00.21.49" style="zoom:50%;" /><p>在这个函数里面里面，出现了三次<code>sub_140005a90</code>这个函数，这个函数经过一点🤏时间的调试后，发现就是字符串转16进制，并且限定输入只能是数字而不能是字符。</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.22.22.png" alt="截屏2024-01-14 00.22.22" style="zoom: 50%;" /><p>这里用了三次这个函数，也就是把输入转了三次，猜测到这里就是把flag分成三段，类似这样<code>111_111_111</code>，这里下划线就是分隔符。</p><h3 id="分隔符"><a href="#分隔符" class="headerlink" title="分隔符"></a>分隔符</h3><p>然后再接着看这个<code>sub_140006910</code>，直接对着F5的代码调试的时候总会有奇奇怪怪的事情，应该IDA没有很好识别，所以转去看汇编，值得注意的是这里有两个挺关键的比较函数，位与21行和23行。</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.25.55.png" alt="截屏2024-01-14 00.25.55" style="zoom:50%;" /><p>将断点下在这里，动态调试会得到这样的汇编</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.31.26.png" alt="截屏2024-01-14 00.31.26" style="zoom:50%;" /><p>这里的<code>al</code>就是之前提及的分隔符，<code>[rsi+18h]</code>就是这个分隔符，如果不在这里加分隔符那么上面的<code>loc_14000599c</code>就会直接退出。查看<code>[rsi+18]</code>就可以得到这个分隔符，下面的汇编也是如此。总之现在得到了两个分隔符分别是@和#，那么输入的形式就是<code>111@111#111</code></p><h3 id="第一部分"><a href="#第一部分" class="headerlink" title="第一部分"></a>第一部分</h3><p>经过第一个格式check后，进入第二个内容check，也就是检查每个部分的flag是否正确。</p><p>先看第一部分flag的检查</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.35.43.png" alt="截屏2024-01-14 00.35.43" style="zoom:50%;" /><p>这里的<code>v45</code>就是第一部分flag的16进制，即输入<code>78</code>那么<code>v45=4E</code>，就是<code>78=0x4e</code>。这个函数会首先限制输入小于<code>0x6f</code>，然后走一个十分复杂的算法，看其他WP说这是梅森旋转算法，不懂。但可以找到一个很关键的比较语句</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.39.34.png" alt="截屏2024-01-14 00.39.34" style="zoom:50%;" /><p>不管中间算法怎样复杂，这里肯定是不能<code>exit</code>的，而且输入范围也比较小，那么就可以考虑爆破。这里爆破的基本思路就是不断改变输入的值，然后通过if语句。</p><p>爆破可以考虑以下两种手段，</p><blockquote><ol><li>直接dump源码</li><li>从源程序patch</li></ol></blockquote><p>这里用patch源程序方式。</p><p>先在IDA中找到对应位置</p><p>这里是与0x6f比较</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.42.49.png" alt="截屏2024-01-14 00.42.49" style="zoom:50%;" /><p>x64dbg打开，注意这里<code>rbx</code>寄存器存放的就是第一部分flag值的内存地址</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.46.05.png" alt="截屏2024-01-14 00.46.05" style="zoom:50%;" /><p>这里是if判断语句</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.43.29.png" alt="截屏2024-01-14 00.43.29" style="zoom:50%;" /><p>x64dbg打开，<code>rbx</code>寄存器仍没有发生变化。</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.48.39.png" alt="截屏2024-01-14 00.48.39" style="zoom:50%;" /><p>那么就可以通过rbx寄存器爆破flag，具体patch如下</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.51.13.png" alt="截屏2024-01-14 00.51.13" style="zoom:50%;" /><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.51.39.png" alt="截屏2024-01-14 00.51.39" style="zoom:50%;" /><p>其余部分不变，然后在<code>140002b07</code>下一条语句处下断点然后运行，程序断下后再查看<code>rbx</code>寄存器内存对应值即可。最终也就是爆破得到第一部分flag为<code>78</code></p><h3 id="第二部分"><a href="#第二部分" class="headerlink" title="第二部分"></a>第二部分</h3><p>这里的flag就比较简单了，就是数组的简单索引</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.55.38.png" alt="截屏2024-01-14 00.55.38" style="zoom:50%;" /><p>得到第二部分是<code>20637</code></p><h3 id="第三部分"><a href="#第三部分" class="headerlink" title="第三部分"></a>第三部分</h3><p>这部分只有一条语句，不过IDA识别有问题，直接看汇编就好</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.56.22.png" alt="截屏2024-01-14 00.56.22" style="zoom:50%;" /><p>这里<code>[rbp+0x0E0h+var_58]</code>就是<code>0x22h</code>，只是之前那个梅森算法的输出，<code>[rbp+0x0E0h+var_58+4]</code>是第三部分flag。</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.57.09.png" alt="截屏2024-01-14 00.57.09" style="zoom:50%;" /><p>所以这里很明确</p><blockquote><p>flag_3 % 0x22 &#x3D;0xc</p><p>flag_3 &#x2F; 0x22 &#x3D; 3</p></blockquote><p>那么flag_3 &#x3D; 3 * 0x22 + 0xc &#x3D; 114</p><p>所以flag就是<code>78@20637#114</code></p><h2 id="RE-sign"><a href="#RE-sign" class="headerlink" title="RE_sign"></a>RE_sign</h2><p>主程序逻辑比较明显</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-20%2000.03.03.png"></p><p>大意就是输入flag，然后经过<code>sub_401233</code>进行加密，中间进行一些运算然后去到33行的if判读语句进行判断。经过简单调试可以发现，<code>sub_401233</code>高度疑似是一个变表的base64操作，中间21行至31行不会对输入进行操作。</p><p>现在就需要跟进<code>sub_401233</code>进行分析。</p><p><code>sub_401233</code>函数很长，很多if、while等语句，逐一分析不太现实。程序中存在原base64的字符串表，并且在这个函数中有所引用，可以基本推测变表是基于原表进行变化。</p><p>往下审计过程中会发现有一个特殊的判断语句<code>if (i &gt; 63)</code>，而base的表正是64为长度，推测这里可能是生成变表，于是打个断点，看看会得到什么</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-20%2000.10.50.png"></p><p>在if处下断点，在Hex View中可以发现新的特殊的字符串</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-20%2000.18.34.png"></p><p>然后打断点跳出循环</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-20%2000.30.53.png"></p><p>点击v221变量去它的地址处，找附近有没有可能的base64字符串</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-20%2000.35.56.png"></p><p>找到类似的字符串<code>0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm+/</code>，经过验证，这个就是变表后的base64表。</p><p>继续往后分析进入到于flag比较的地方，这里面也挺多操作，但是可以从后往前看。</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-20%2000.37.51.png"></p><p>首先很显然不能进入<code>else</code>里面，否则会返回0值，而要返回1则需要<code>v34==49</code>，推测是比较成功的密文字符数量，继续往前倒推可以看到71行的if判断语句，这里这是涉及到<code>break</code>操作，而想要进入到这个if语句判断，前面还有一个if需要满足</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-20%2000.40.10.png"></p><p>这里的v5是经过变表base64后的字符串，其长度需要为48，那么原始字符串就需要是33～36个字节。</p><p>进入<code>sub_402160</code>查看</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-20%2000.41.52.png"></p><p>这里又用到了原始的base64表，并且还用到了加密了的base64输入，猜测这里是返回加密的字符在原表中的索引，经过调试发现确实如此，而原始判断左边v19则是密文。</p><p>至此加密逻辑就已经很清晰了，首先进行变表的base64加密，变表为<code>0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm+/</code>，再把加密字符在原base64表中的索引作为最后的密文，那么解密就很简单了，</p><p>先得到加密的base64密文</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python">enc = [<span class="hljs-number">8</span>, <span class="hljs-number">59</span>, <span class="hljs-number">1</span>, <span class="hljs-number">32</span>, <span class="hljs-number">7</span>, <span class="hljs-number">52</span>, <span class="hljs-number">9</span>, <span class="hljs-number">31</span>, <span class="hljs-number">24</span>, <span class="hljs-number">36</span>, <span class="hljs-number">19</span>, <span class="hljs-number">3</span>, <span class="hljs-number">16</span>, <span class="hljs-number">56</span>, <span class="hljs-number">9</span>, <span class="hljs-number">27</span>, <span class="hljs-number">8</span>, <span class="hljs-number">52</span>, <span class="hljs-number">19</span>, <span class="hljs-number">2</span>, <span class="hljs-number">8</span>, <span class="hljs-number">34</span>, <span class="hljs-number">18</span>, <span class="hljs-number">3</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">18</span>, <span class="hljs-number">3</span>, <span class="hljs-number">15</span>, <span class="hljs-number">34</span>, <span class="hljs-number">18</span>, <span class="hljs-number">23</span>, <span class="hljs-number">8</span>, <span class="hljs-number">1</span>, <span class="hljs-number">41</span>, <span class="hljs-number">34</span>, <span class="hljs-number">6</span>, <span class="hljs-number">36</span>, <span class="hljs-number">50</span>, <span class="hljs-number">36</span>, <span class="hljs-number">15</span>, <span class="hljs-number">31</span>, <span class="hljs-number">43</span>, <span class="hljs-number">36</span>, <span class="hljs-number">3</span>, <span class="hljs-number">21</span>, <span class="hljs-number">65</span>, <span class="hljs-number">65</span>]<br><br>table = <span class="hljs-string">&#x27;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=&#x27;</span><br><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> enc:<br>    <span class="hljs-built_in">print</span>(table[i-<span class="hljs-number">1</span>],end=<span class="hljs-string">&#x27;&#x27;</span>)<br><span class="hljs-comment"># H6AfGzIeXjSCP3IaHzSBHhRCEFRCOhRWHAohFjxjOeqjCU==</span><br></code></pre></td></tr></table></figure><p>再base64解密即可</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-20%2000.45.48.png"></p><p><code>de1ctf&#123;E_L4nguag3_1s_K3KeK3_N4Ji4&#125;</code></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>CTF</category>
+      
+      <category>Reverse</category>
+      
+      <category>wp</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>reverse</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>2024IrisCTF</title>
     <link href="/2024/01/14/2024IrisCTF/"/>
     <url>/2024/01/14/2024IrisCTF/</url>
@@ -488,35 +548,6 @@
       <tag>JS</tag>
       
       <tag>GO</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
-    <title>De1CTF 2019 (一)</title>
-    <link href="/2024/01/14/De1CTF%202019/"/>
-    <url>/2024/01/14/De1CTF%202019/</url>
-    
-    <content type="html"><![CDATA[<p>Cplusplus，RE_sign</p><span id="more"></span><h2 id="Cplusplus"><a href="#Cplusplus" class="headerlink" title="Cplusplus"></a>Cplusplus</h2><h3 id="总体分析"><a href="#总体分析" class="headerlink" title="总体分析"></a>总体分析</h3><p>程序的输入和关键比较函数都比较明显，直接看关键的函数</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.21.49.png" alt="截屏2024-01-14 00.21.49" style="zoom:50%;" /><p>在这个函数里面里面，出现了三次<code>sub_140005a90</code>这个函数，这个函数经过一点🤏时间的调试后，发现就是字符串转16进制，并且限定输入只能是数字而不能是字符。</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.22.22.png" alt="截屏2024-01-14 00.22.22" style="zoom: 50%;" /><p>这里用了三次这个函数，也就是把输入转了三次，猜测到这里就是把flag分成三段，类似这样<code>111_111_111</code>，这里下划线就是分隔符。</p><h3 id="分隔符"><a href="#分隔符" class="headerlink" title="分隔符"></a>分隔符</h3><p>然后再接着看这个<code>sub_140006910</code>，直接对着F5的代码调试的时候总会有奇奇怪怪的事情，应该IDA没有很好识别，所以转去看汇编，值得注意的是这里有两个挺关键的比较函数，位与21行和23行。</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.25.55.png" alt="截屏2024-01-14 00.25.55" style="zoom:50%;" /><p>将断点下在这里，动态调试会得到这样的汇编</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.31.26.png" alt="截屏2024-01-14 00.31.26" style="zoom:50%;" /><p>这里的<code>al</code>就是之前提及的分隔符，<code>[rsi+18h]</code>就是这个分隔符，如果不在这里加分隔符那么上面的<code>loc_14000599c</code>就会直接退出。查看<code>[rsi+18]</code>就可以得到这个分隔符，下面的汇编也是如此。总之现在得到了两个分隔符分别是@和#，那么输入的形式就是<code>111@111#111</code></p><h3 id="第一部分"><a href="#第一部分" class="headerlink" title="第一部分"></a>第一部分</h3><p>经过第一个格式check后，进入第二个内容check，也就是检查每个部分的flag是否正确。</p><p>先看第一部分flag的检查</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.35.43.png" alt="截屏2024-01-14 00.35.43" style="zoom:50%;" /><p>这里的<code>v45</code>就是第一部分flag的16进制，即输入<code>78</code>那么<code>v45=4E</code>，就是<code>78=0x4e</code>。这个函数会首先限制输入小于<code>0x6f</code>，然后走一个十分复杂的算法，看其他WP说这是梅森旋转算法，不懂。但可以找到一个很关键的比较语句</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.39.34.png" alt="截屏2024-01-14 00.39.34" style="zoom:50%;" /><p>不管中间算法怎样复杂，这里肯定是不能<code>exit</code>的，而且输入范围也比较小，那么就可以考虑爆破。这里爆破的基本思路就是不断改变输入的值，然后通过if语句。</p><p>爆破可以考虑以下两种手段，</p><blockquote><ol><li>直接dump源码</li><li>从源程序patch</li></ol></blockquote><p>这里用patch源程序方式。</p><p>先在IDA中找到对应位置</p><p>这里是与0x6f比较</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.42.49.png" alt="截屏2024-01-14 00.42.49" style="zoom:50%;" /><p>x64dbg打开，注意这里<code>rbx</code>寄存器存放的就是第一部分flag值的内存地址</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.46.05.png" alt="截屏2024-01-14 00.46.05" style="zoom:50%;" /><p>这里是if判断语句</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.43.29.png" alt="截屏2024-01-14 00.43.29" style="zoom:50%;" /><p>x64dbg打开，<code>rbx</code>寄存器仍没有发生变化。</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.48.39.png" alt="截屏2024-01-14 00.48.39" style="zoom:50%;" /><p>那么就可以通过rbx寄存器爆破flag，具体patch如下</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.51.13.png" alt="截屏2024-01-14 00.51.13" style="zoom:50%;" /><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.51.39.png" alt="截屏2024-01-14 00.51.39" style="zoom:50%;" /><p>其余部分不变，然后在<code>140002b07</code>下一条语句处下断点然后运行，程序断下后再查看<code>rbx</code>寄存器内存对应值即可。最终也就是爆破得到第一部分flag为<code>78</code></p><h3 id="第二部分"><a href="#第二部分" class="headerlink" title="第二部分"></a>第二部分</h3><p>这里的flag就比较简单了，就是数组的简单索引</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.55.38.png" alt="截屏2024-01-14 00.55.38" style="zoom:50%;" /><p>得到第二部分是<code>20637</code></p><h3 id="第三部分"><a href="#第三部分" class="headerlink" title="第三部分"></a>第三部分</h3><p>这部分只有一条语句，不过IDA识别有问题，直接看汇编就好</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.56.22.png" alt="截屏2024-01-14 00.56.22" style="zoom:50%;" /><p>这里<code>[rbp+0x0E0h+var_58]</code>就是<code>0x22h</code>，只是之前那个梅森算法的输出，<code>[rbp+0x0E0h+var_58+4]</code>是第三部分flag。</p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-14%2000.57.09.png" alt="截屏2024-01-14 00.57.09" style="zoom:50%;" /><p>所以这里很明确</p><blockquote><p>flag_3 % 0x22 &#x3D;0xc</p><p>flag_3 &#x2F; 0x22 &#x3D; 3</p></blockquote><p>那么flag_3 &#x3D; 3 * 0x22 + 0xc &#x3D; 114</p><p>所以flag就是<code>78@20637#114</code></p><h2 id="RE-sign"><a href="#RE-sign" class="headerlink" title="RE_sign"></a>RE_sign</h2><p>主程序逻辑比较明显</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-20%2000.03.03.png"></p><p>大意就是输入flag，然后经过<code>sub_401233</code>进行加密，中间进行一些运算然后去到33行的if判读语句进行判断。经过简单调试可以发现，<code>sub_401233</code>高度疑似是一个变表的base64操作，中间21行至31行不会对输入进行操作。</p><p>现在就需要跟进<code>sub_401233</code>进行分析。</p><p><code>sub_401233</code>函数很长，很多if、while等语句，逐一分析不太现实。程序中存在原base64的字符串表，并且在这个函数中有所引用，可以基本推测变表是基于原表进行变化。</p><p>往下审计过程中会发现有一个特殊的判断语句<code>if (i &gt; 63)</code>，而base的表正是64为长度，推测这里可能是生成变表，于是打个断点，看看会得到什么</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-20%2000.10.50.png"></p><p>在if处下断点，在Hex View中可以发现新的特殊的字符串</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-20%2000.18.34.png"></p><p>然后打断点跳出循环</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-20%2000.30.53.png"></p><p>点击v221变量去它的地址处，找附近有没有可能的base64字符串</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-20%2000.35.56.png"></p><p>找到类似的字符串<code>0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm+/</code>，经过验证，这个就是变表后的base64表。</p><p>继续往后分析进入到于flag比较的地方，这里面也挺多操作，但是可以从后往前看。</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-20%2000.37.51.png"></p><p>首先很显然不能进入<code>else</code>里面，否则会返回0值，而要返回1则需要<code>v34==49</code>，推测是比较成功的密文字符数量，继续往前倒推可以看到71行的if判断语句，这里这是涉及到<code>break</code>操作，而想要进入到这个if语句判断，前面还有一个if需要满足</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-20%2000.40.10.png"></p><p>这里的v5是经过变表base64后的字符串，其长度需要为48，那么原始字符串就需要是33～36个字节。</p><p>进入<code>sub_402160</code>查看</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-20%2000.41.52.png"></p><p>这里又用到了原始的base64表，并且还用到了加密了的base64输入，猜测这里是返回加密的字符在原表中的索引，经过调试发现确实如此，而原始判断左边v19则是密文。</p><p>至此加密逻辑就已经很清晰了，首先进行变表的base64加密，变表为<code>0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm+/</code>，再把加密字符在原base64表中的索引作为最后的密文，那么解密就很简单了，</p><p>先得到加密的base64密文</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python">enc = [<span class="hljs-number">8</span>, <span class="hljs-number">59</span>, <span class="hljs-number">1</span>, <span class="hljs-number">32</span>, <span class="hljs-number">7</span>, <span class="hljs-number">52</span>, <span class="hljs-number">9</span>, <span class="hljs-number">31</span>, <span class="hljs-number">24</span>, <span class="hljs-number">36</span>, <span class="hljs-number">19</span>, <span class="hljs-number">3</span>, <span class="hljs-number">16</span>, <span class="hljs-number">56</span>, <span class="hljs-number">9</span>, <span class="hljs-number">27</span>, <span class="hljs-number">8</span>, <span class="hljs-number">52</span>, <span class="hljs-number">19</span>, <span class="hljs-number">2</span>, <span class="hljs-number">8</span>, <span class="hljs-number">34</span>, <span class="hljs-number">18</span>, <span class="hljs-number">3</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">18</span>, <span class="hljs-number">3</span>, <span class="hljs-number">15</span>, <span class="hljs-number">34</span>, <span class="hljs-number">18</span>, <span class="hljs-number">23</span>, <span class="hljs-number">8</span>, <span class="hljs-number">1</span>, <span class="hljs-number">41</span>, <span class="hljs-number">34</span>, <span class="hljs-number">6</span>, <span class="hljs-number">36</span>, <span class="hljs-number">50</span>, <span class="hljs-number">36</span>, <span class="hljs-number">15</span>, <span class="hljs-number">31</span>, <span class="hljs-number">43</span>, <span class="hljs-number">36</span>, <span class="hljs-number">3</span>, <span class="hljs-number">21</span>, <span class="hljs-number">65</span>, <span class="hljs-number">65</span>]<br><br>table = <span class="hljs-string">&#x27;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=&#x27;</span><br><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> enc:<br>    <span class="hljs-built_in">print</span>(table[i-<span class="hljs-number">1</span>],end=<span class="hljs-string">&#x27;&#x27;</span>)<br><span class="hljs-comment"># H6AfGzIeXjSCP3IaHzSBHhRCEFRCOhRWHAohFjxjOeqjCU==</span><br></code></pre></td></tr></table></figure><p>再base64解密即可</p><p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-01-20%2000.45.48.png"></p><p><code>de1ctf&#123;E_L4nguag3_1s_K3KeK3_N4Ji4&#125;</code></p>]]></content>
-    
-    
-    <categories>
-      
-      <category>CTF</category>
-      
-      <category>Reverse</category>
-      
-      <category>wp</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>reverse</tag>
       
     </tags>
     
@@ -1287,9 +1318,9 @@
       
       <tag>reverse</tag>
       
-      <tag>z3</tag>
-      
       <tag>Crypto</tag>
+      
+      <tag>z3</tag>
       
       <tag>idapython</tag>
       
