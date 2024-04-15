@@ -25,7 +25,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://yring-me.oss-cn-beijing.aliyuncs.com/test/CoronaGraph_1024.jpg">
 <meta property="article:published_time" content="2024-04-14T10:10:00.000Z">
-<meta property="article:modified_time" content="2024-04-15T08:19:50.946Z">
+<meta property="article:modified_time" content="2024-04-15T11:24:10.041Z">
 <meta property="article:author" content="yring">
 <meta property="article:tag" content="reverse">
 <meta property="article:tag" content="android">
@@ -497,7 +497,7 @@
 <p>2）Extensions ClassLoader（拓展类加载器）　　</p>
 <p>Java中的实现类为ExtClassLoader，提供了除了系统类之外的额外功能，可以在java里获取，负责加载&#x2F;lib&#x2F;ext下的类。　　</p>
 <p>3）Application ClassLoader（应用程序类加载器）　　</p>
-<p>ava中的实现类为AppClassLoader，是与我们接触对多的类加载器，开发人员写的代码默认就是由它来加载，ClassLoader.getSystemClassLoader返回的就是它。</p>
+<p>Java中的实现类为AppClassLoader，是与我们接触对多的类加载器，开发人员写的代码默认就是由它来加载，ClassLoader.getSystemClassLoader返回的就是它。</p>
 <p>也可以通过继承<code>java.lang.ClassLoader</code>的方式来实现自己的类加载器即可，</p>
 <h3 id="双亲委派"><a href="#双亲委派" class="headerlink" title="双亲委派"></a>双亲委派</h3><p>这几种加载器的加载顺序如下</p>
 <ol>
@@ -589,7 +589,7 @@
 <h3 id="so加固种类"><a href="#so加固种类" class="headerlink" title="so加固种类"></a>so加固种类</h3><p>1、基于init、init_array以及JNI_Onload函数的加壳</p>
 <p>2、基于自定义linker的加壳</p>
 <h2 id="Dex文件格式"><a href="#Dex文件格式" class="headerlink" title="Dex文件格式"></a>Dex文件格式</h2><h3 id="一、文件头介绍"><a href="#一、文件头介绍" class="headerlink" title="一、文件头介绍"></a>一、文件头介绍</h3><h4 id="1、文件头简介"><a href="#1、文件头简介" class="headerlink" title="1、文件头简介"></a>1、文件头简介</h4><p>dex 文件头一般固定为 0x70 个字节大小，包含标志、版本号、校验码、sha-1 签名以及其他一些方法、类的数量和偏移地址等信息。如下图所示：</p>
-<p><img src="https://ask.qcloudimg.com/http-save/yehe-2822697/out4fhht2b.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/202404151924573.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <h4 id="2、dex文件头各字段解析"><a href="#2、dex文件头各字段解析" class="headerlink" title="2、dex文件头各字段解析"></a>2、dex文件头各字段解析</h4><blockquote>
 <p><strong>magic</strong>: 包含了 dex 文件标识符以及版本，从 0x00 开始，长度为 8 个字节 </p>
 <p><strong>checksum</strong>: dex 文件校验码，偏移量为: 0x08，长度为 4 个字节。 </p>
