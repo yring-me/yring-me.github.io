@@ -25,7 +25,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://yring-me.oss-cn-beijing.aliyuncs.com/test/CoronaGraph_1024.jpg">
 <meta property="article:published_time" content="2024-04-14T10:10:00.000Z">
-<meta property="article:modified_time" content="2024-04-17T13:59:12.402Z">
+<meta property="article:modified_time" content="2024-04-18T03:49:32.802Z">
 <meta property="article:author" content="yring">
 <meta property="article:tag" content="reverse">
 <meta property="article:tag" content="android">
@@ -241,7 +241,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          32k words
+          28k words
         
       </span>
     
@@ -252,7 +252,7 @@
         
         
         
-          127 mins
+          109 mins
         
       </span>
     
@@ -295,7 +295,7 @@
               <p class="note note-info">
                 
                   
-                    Last updated on April 17, 2024 pm
+                    Last updated on April 18, 2024 am
                   
                 
               </p>
@@ -839,108 +839,6 @@
 <p><code>try_item--tries</code>，该值存在的前提是<code>tries-size &gt; 0</code>，作用是指明异常具体位置和处理方式，该结构不是解析重点，重点是解析指令，感兴趣的查看官方文档 </p>
 <p><code>encoded_catch_handler_list--handlers</code>, 该结构存在前提为<code>tries-size &gt; 0</code>，同样不是解析重点</p>
 <p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/%E6%88%AA%E5%B1%8F2024-04-13%2018.11.15.png" srcset="/img/loading.gif" lazyload alt="截屏2024-04-13 18.11.15"></p>
-<h1 id="Frida"><a href="#Frida" class="headerlink" title="Frida"></a>Frida</h1><h2 id="obejction"><a href="#obejction" class="headerlink" title="obejction"></a>obejction</h2><h3 id="基本信息"><a href="#基本信息" class="headerlink" title="基本信息"></a>基本信息</h3><ol>
-<li>手机上启动frida-server，并启动应用，这里以<code>W4terCTF2024</code>为例</li>
-</ol>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">./data/local/tmp/fr14            <br></code></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>使用命令<code>objection -g com.w4ter.w4terctf2024 explore</code>将objection注入应用，可以用<code>frida-ps -U|grep -i w4ter</code>查看完整包名</li>
-</ol>
-<p>启动objection之后，会出现提示它的logo，这时候不知道输入啥命令的话，可以按下空格，有提示的命令及其功能出来；再按空格选中，又会有新的提示命令出来，这时候按回车就可以执行该命令，见执行的应用环境信息命令env和frida-server版本信息命令。</p>
-<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/390d78c4114ac56ea4db4e1d40ecfcd351087b6a3b2a5dc75a1790853c64da8a.png" srcset="/img/loading.gif" lazyload alt="图 0">  </p>
-<h3 id="提取内存信息"><a href="#提取内存信息" class="headerlink" title="提取内存信息"></a>提取内存信息</h3><ol>
-<li>查看内存中加载的库<br>命令<code>memory list modules</code></li>
-</ol>
-<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/0dad926880d41d733510443ecc488cbaf7e14fc5755537d0514e4b3ccbb79dae.png" srcset="/img/loading.gif" lazyload alt="图 1">  </p>
-<ol start="2">
-<li>查看库的导出函数<br>命令<code>memory list exports libgsl.so</code></li>
-</ol>
-<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/image.png" srcset="/img/loading.gif" lazyload alt="alt text"></p>
-<p>可以将结果导出到文件中<br><code>memory list exports libgsl.so --json /root/libart.json  </code></p>
-<ol start="3">
-<li><p>提取整个（或部分）内存<br>命令<code>memory dump all from_base</code>，在脱壳部分详细介绍</p>
-</li>
-<li><p>搜索整个内存<br>命令<code>memory search --string --offsets-only</code></p>
-</li>
-</ol>
-<h3 id="内存堆搜索与执行"><a href="#内存堆搜索与执行" class="headerlink" title="内存堆搜索与执行"></a>内存堆搜索与执行</h3><ol>
-<li><p>在堆上搜索实例<br>命令<code>android heap search instances com.w4ter.w4terctf2024.FirstChall</code><br>注意，这里可能需要先通过点击手机界面，触发相应的类才行，即需要实例化。<br><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/image-1.png" srcset="/img/loading.gif" lazyload alt="alt text"><br>这里会得到一个HashCode，相当于这个实例的句柄，可以以此作更多操作。</p>
-</li>
-<li><p>调用实例方法<br>命令<code>android heap execute 102367040 w4terCheck</code><br><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/image-2.png" srcset="/img/loading.gif" lazyload alt="alt text"></p>
-<p>同时可以使用命令<code>android heap evaluate 102367040</code>进入一个mini的js编辑器，可以编写复杂点的代码，比如有参数的函数等。</p>
-<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/image-3.png" srcset="/img/loading.gif" lazyload alt="alt text"></p>
-</li>
-</ol>
-<h3 id="启动activity或service"><a href="#启动activity或service" class="headerlink" title="启动activity或service"></a>启动activity或service</h3><ol>
-<li><p>直接启动activity<br>命令<code>android intent launch_activity com.w4ter.w4terctf2024.SecondChall</code><br><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/image-4.png" srcset="/img/loading.gif" lazyload alt="alt text"></p>
-</li>
-<li><p>查看当前可用<code>activity</code><br>命令<code>android hooking list activities</code><br><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/image-5.png" srcset="/img/loading.gif" lazyload alt="alt text"></p>
-</li>
-<li><p>列出所有的类<br>命令<code>android hooking list classes</code><br><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/image-6.png" srcset="/img/loading.gif" lazyload alt="alt text"></p>
-</li>
-<li><p>搜索包含特定关键字符串的类<br>命令<code>android hooking search classes w4ter</code><br><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/image-7.png" srcset="/img/loading.gif" lazyload alt="alt text"></p>
-</li>
-<li><p>同理，搜索特定字符串方法<br>命令<code>android hooking search methods w4tercheck</code></p>
-</li>
-<li><p>特定类所有方法<br>命令<code>android hooking list class_methods com.w4ter.w4terctf2024.FirstChall</code><br><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/image-8.png" srcset="/img/loading.gif" lazyload alt="alt text"></p>
-</li>
-</ol>
-<h3 id="hook操作"><a href="#hook操作" class="headerlink" title="hook操作"></a>hook操作</h3><ol>
-<li><p>生成简易Hook模板<br> 命令<code>android hooking generate simple com.w4ter.w4terctf2024.FirstChall</code><br> <img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/image-9.png" srcset="/img/loading.gif" lazyload alt="alt text"></p>
-</li>
-<li><p>动态查看类信息<br> 命令<code>android hooking watch class com.w4ter.w4terctf2024.FirstChall</code><br> <img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/image-10.png" srcset="/img/loading.gif" lazyload alt="alt text"><br> 后续，这个类的操作都会被自动打出<br> <img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/image-11.png" srcset="/img/loading.gif" lazyload alt="alt text"></p>
-</li>
-<li><p>Hook方法的参数、返回值、调用栈<br> 命令<code>android hooking watch class_method com.w4ter.w4terctf2024.FirstChall.doWin --dump-args --dump-return --dump-backtrace</code></p>
-</li>
-<li><p>可以使用<code>jobs list</code>和<code>jobs kill</code>来取消<code>hook</code></p>
-</li>
-</ol>
-<h3 id="抓包原理"><a href="#抓包原理" class="headerlink" title="抓包原理"></a>抓包原理</h3><p>Http抓包只需要配置好代理即可，麻烦的是Https，如下是基本抓包原理。</p>
-<p>有了中间代理置于中间之后，本来<code>C/S</code>架构的通信过程会“分裂”为两个独立的通信过程，<code>app</code>本来验证的是服务器的证书，服务器的证书手机的根证书是认可的，直接内置的；但是分裂成两个独立的通信过程之后，<code>app</code>验证的是<code>Charles</code>的证书，它的证书手机根证书并不认可，它并不是由手机内置的权威根证书签发机构签发的，所以手机不认，然后<code>app</code>也不认；所以我们要把中间代理的的证书导入到手机根证书目录中去，这样手机就会认可，如果<code>app</code>没有进行额外的校验（比如在代码中对该证书进行校验，也就是SSL pinning系列API，这种情况下一小节具体阐述)的话，<code>app</code>也会直接认可接受。</p>
-<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/t01c2d220dfd81d4d18.png" srcset="/img/loading.gif" lazyload></p>
-<p>既然<code>app</code>客户端会校验服务器证书，那么服务器可不可能校验<code>app</code>客户端证书呢？答案是肯定的。</p>
-<p>在许多业务非常聚焦并且当单一，比如行业应用、银行、公共交通、游戏等行业，<code>C/S</code>架构中服务器高度集中，对应用的版本控制非常严格，这时候就会在服务器上部署对<code>app</code>内置证书的校验代码。</p>
-<p>上一小节中已经看到，单一通信已经分裂成两个互相独立的通信，这时候与服务器进行通信的已经不是<code>app</code>、而是<code>Charles</code>了，所以我们要将<code>app</code>中内置的证书导入到<code>Charles</code>中去。</p>
-<p>这个操作通常需要完成两项内容：</p>
-<ol>
-<li>找到证书文件</li>
-<li>找到证书密码</li>
-</ol>
-<p>找到证书文件很简单，一般<code>apk</code>进行解包，直接过滤搜索后缀名为<code>p12</code>的文件即可，一般常用的命令为<code>tree -NCfhl |grep -i p12</code>，直接打印出<code>p12</code>文件的路径，当然也有一些<code>app</code>比较“狡猾”，比如我们通过搜索<code>p12</code>没有搜到证书，然后看<code>jadx</code>反编译的源码得出它将证书伪装成<code>border_ks_19</code>文件，我们找到这个文件用<code>file</code>命令查看果然不是后缀名所显示的<code>png</code>格式，将其改成<code>p12</code>的后缀名尝试打开时要求输入密码，可见其确实是一个证书，见下图2-17。</p>
-<p><img src="https://yring-me.oss-cn-beijing.aliyuncs.com/test/t019ea1e3683f695957.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
-<p>想要拿到密码也很简单，一般在<code>jadx</code>反编译的代码中或者<code>so</code>库拖进<code>IDA</code>后可以看到硬编码的明文；也可以使用下面这一段脚本，直接打印出来，终于到了<code>Frida</code>派上用场的时候。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">hook_KeyStore_load</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-title class_">Java</span>.<span class="hljs-title function_">perform</span>(<span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) &#123;<br>        <span class="hljs-keyword">var</span> <span class="hljs-title class_">StringClass</span> = <span class="hljs-title class_">Java</span>.<span class="hljs-title function_">use</span>(<span class="hljs-string">&quot;java.lang.String&quot;</span>);<br>        <span class="hljs-keyword">var</span> <span class="hljs-title class_">KeyStore</span> = <span class="hljs-title class_">Java</span>.<span class="hljs-title function_">use</span>(<span class="hljs-string">&quot;java.security.KeyStore&quot;</span>);<br>        <span class="hljs-title class_">KeyStore</span>.<span class="hljs-property">load</span>.<span class="hljs-title function_">overload</span>(<span class="hljs-string">&#x27;java.security.KeyStore$LoadStoreParameter&#x27;</span>).<span class="hljs-property">implementation</span> = <span class="hljs-keyword">function</span> (<span class="hljs-params">arg0</span>) &#123;<br>            <span class="hljs-title function_">printStack</span>(<span class="hljs-string">&quot;KeyStore.load1&quot;</span>);<br>            <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;KeyStore.load1:&quot;</span>, arg0);<br>            <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">load</span>(arg0);<br>        &#125;;<br>        <span class="hljs-title class_">KeyStore</span>.<span class="hljs-property">load</span>.<span class="hljs-title function_">overload</span>(<span class="hljs-string">&#x27;java.io.InputStream&#x27;</span>, <span class="hljs-string">&#x27;[C&#x27;</span>).<span class="hljs-property">implementation</span> = <span class="hljs-keyword">function</span> (<span class="hljs-params">arg0, arg1</span>) &#123;<br>            <span class="hljs-title function_">printStack</span>(<span class="hljs-string">&quot;KeyStore.load2&quot;</span>);<br>            <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;KeyStore.load2:&quot;</span>, arg0, arg1 ? <span class="hljs-title class_">StringClass</span>.$new(arg1) : <span class="hljs-literal">null</span>);<br>            <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">load</span>(arg0, arg1);<br>        &#125;;<br><br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;hook_KeyStore_load...&quot;</span>);<br>    &#125;);<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<h4 id="SSL-Pinning-ByPass"><a href="#SSL-Pinning-ByPass" class="headerlink" title="SSL Pinning ByPass"></a>SSL Pinning ByPass</h4><p>上文中我们还有一种情况没有分析，就是客户端并不会默认信任系统根证书目录中的证书，而是在代码里再加一层校验，这就是证书绑定机制——<code>SSL pinning</code>，如果这段代码的校验过不了，那么客户端还是会报证书错误。</p>
-<p>遇到这种情况的时候，我们一般有三种方式，当然目标是一样的，都是<code>hook</code>住这段校验的代码，使这段判断的机制失效即可。</p>
-<ol>
-<li><code>hook</code>住<code>checkServerTrusted</code>，将其所有重载都置空</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">hook_ssl</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-title class_">Java</span>.<span class="hljs-title function_">perform</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) &#123;<br>        <span class="hljs-keyword">var</span> <span class="hljs-title class_">ClassName</span> = <span class="hljs-string">&quot;com.android.org.conscrypt.Platform&quot;</span>;<br>        <span class="hljs-keyword">var</span> <span class="hljs-title class_">Platform</span> = <span class="hljs-title class_">Java</span>.<span class="hljs-title function_">use</span>(<span class="hljs-title class_">ClassName</span>);<br>        <span class="hljs-keyword">var</span> targetMethod = <span class="hljs-string">&quot;checkServerTrusted&quot;</span>;<br>        <span class="hljs-keyword">var</span> len = <span class="hljs-title class_">Platform</span>[targetMethod].<span class="hljs-property">overloads</span>.<span class="hljs-property">length</span>;<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(len);<br>        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; len; ++i) &#123;<br>            <span class="hljs-title class_">Platform</span>[targetMethod].<span class="hljs-property">overloads</span>[i].<span class="hljs-property">implementation</span> = <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) &#123;<br>                <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;class:&quot;</span>, <span class="hljs-title class_">ClassName</span>, <span class="hljs-string">&quot;target:&quot;</span>, targetMethod, <span class="hljs-string">&quot; i:&quot;</span>, i, <span class="hljs-variable language_">arguments</span>);<br>                <span class="hljs-comment">//printStack(ClassName + &quot;.&quot; + targetMethod);</span><br>            &#125;<br>        &#125;<br>    &#125;);<br>&#125;<br></code></pre></td></tr></table></figure>
-
-
-
-<ol start="2">
-<li>使用<code>objection</code>，直接将<code>SSL pinning</code>给<code>disable</code>掉</li>
-</ol>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">android sslpinning <span class="hljs-built_in">disable</span></span><br></code></pre></td></tr></table></figure>
-
-
-
-<h4 id="Socket-抓包"><a href="#Socket-抓包" class="headerlink" title="Socket 抓包"></a>Socket 抓包</h4><p>当我们在使用<code>Charles</code>进行抓包的时候，会发现针对某些<code>IP</code>的数据传输一直显示<code>CONNECT</code>，无法<code>Complete</code>，显示<code>Sending request body</code>，并且数据包大小持续增长，这时候说明我们遇到了<code>Socket</code>端口通信。</p>
-<p><code>Socket</code>端口通信运行在会话层，并不是应用层，<code>Socket</code>抓包的原理与应用层<code>Http(s)</code>有着显著的区别。准确的说，<code>Http(s)</code>抓包是真正的“中间人”抓包，而<code>Socket</code>抓包是在接口上进行转储；<code>Http(s)</code>抓包是明显的将一套<code>C/S</code>架构通信分裂成两套完整的通信过程，而<code>Socket</code>抓包是在接口上将发送与接收的内容存储下来，并不干扰其原本的通信过程。</p>
-<p>对于安卓应用来说，<code>Socket</code>通信天生又分为两种<code>Java</code>层<code>Socket</code>通信和<code>Native</code>层<code>Socket</code>通信。</p>
-<ul>
-<li><code>Java</code>层：使用的是<code>java.net.InetAddress</code>、<code>java.net.Socket</code>、<code>java.net.ServerSocket</code>等类，与证书绑定的情形类似，也可能存在着自定义框架的<code>Socket</code>通信，这时候就需要具体情况具体分析，比如谷歌的<code>protobuf</code>框架等；</li>
-<li><code>Native</code>层：一般使用的是<code>C Socket API</code>，一般<code>hook</code>住<code>send()</code>和<code>recv()</code>函数可以得到其发送和接受的内容</li>
-</ul>
-<p>抓包方法分为三种，接口转储、驱动转储和路由转储：</p>
-<ul>
-<li>接口转储：比如给<code>outputStream.write</code>下<code>hook</code>，把内容存下来看看，可能是经过压缩、或加密后的包，毕竟是二进制，一切皆有可能；</li>
-<li>驱动转储：使用<code>tcpdump</code>将经过网口驱动时的数据包转储下来，再使用<code>Wireshark</code>进行分析；</li>
-<li>路由转储：自己做个路由器，运行<code>jnettop</code>，观察实时进过的流量和<code>IP</code>，可以使用<code>WireShark</code>实时抓包，也可以使用<code>tcpdump</code>抓包后用<code>WireShark</code>分析。</li>
-</ul>
 
                 
               </div>
